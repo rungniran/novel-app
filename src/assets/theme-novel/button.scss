@@ -1,0 +1,83 @@
+$font-size:16px;
+$border:2px;
+.nv-tag{
+    padding: 0px 10px;
+    border: 2px solid #d3d3d3;
+    border-radius: 50px;
+    color: #7e7e7e;
+		// width: 100px;
+		text-align: center;
+    font-size: 14px;
+		margin: 2px 0px;
+		top: 10px;
+}
+.btn-link{
+    text-align: center;
+}
+.btn{
+    padding: 5px 15px;
+    border-radius: 5px;
+    color: #fff;
+    font-size: $font-size;
+    transition: .3s;
+    cursor: pointer;
+}
+@mixin all-btn($color) {
+    @extend .btn;
+    border: 2px solid $color;
+    background: $color;
+
+
+}
+.nv-btn-orange{
+    @include all-btn($primary-orange);
+}
+.nv-btn-light-blue{
+    @include all-btn($primary-lightBlue);
+}
+.nv-btn-blue{
+    @include all-btn($second-blue);
+}
+
+.nv-btn-yellow{
+    @include all-btn($primary-yellow);
+}
+.nv-btn-red{
+    @include all-btn(#DF3D0A);
+}
+
+
+// btn hover______________________________________
+
+
+@mixin  btn-hover($color){
+    // box-shadow: $color 0px 7px 25px 0px;
+    box-shadow: $color 0px 3px 10px 0px;
+}
+.nv-btn-orange:hover{
+    @include btn-hover($primary-orange)
+}
+.nv-btn-light-blue:hover{
+    @include btn-hover($primary-lightBlue)
+}
+.nv-btn-blue:hover{
+    @include btn-hover($second-blue)
+}
+.nv-btn-yellow:hover{
+    @include btn-hover($primary-yellow);
+}
+.nv-btn-red:hover{
+    @include btn-hover(#DF3D0A);
+}
+// btn-active_______________________________________
+
+
+.btn-active{
+    transform: scale(0.9);
+}
+.nv-btn-orange:active , .nv-btn-light-blue:active,  .nv-btn-yellow:active , .nv-btn-red:active, .nv-btn-blue:active{
+    @extend .btn-active
+}
+.nv-router-link{
+	border: 0px solid #d3d3d3;
+}

@@ -1,0 +1,32 @@
+export const coin = [
+  {
+    type:"",
+    coin:"44", 
+    wallet:50.00
+  },
+  {
+    type:"",
+    coin:"88", 
+    wallet:100.00
+  },
+  {
+    type:"",
+    coin:"294",
+    wallet:300.00
+  },
+  {
+    type:"",
+    coin:"490", 
+    wallet:500
+  },
+  {
+    type:"",
+    coin:"980", 
+    wallet:1000
+  },
+  {
+    type:"",
+    coin:"2940", 
+    wallet:3000
+  }
+]

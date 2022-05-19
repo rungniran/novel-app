@@ -1,0 +1,6 @@
+export * from './public.services'
+export * from './gateway.services'
+export * from './auth.services'
+export * from './privateList.services'
+export * from './privateGet.services'
+export * from './facebook.service'

@@ -1,0 +1,110 @@
+<template>
+  <div>
+    <div class="nv-box-white nv-mt-40">
+      <cover />
+      <div class="btn-c">ภารกิจประจำวัน!</div>
+      <div class="nv-mt-30">
+
+        <div class="title">คลังสมบัติ</div>
+        <div class="con-tsry nv-mt-10">
+          <div v-for="item,index in treasury" :key="index" class="box-tsry">
+              <div class="title-tsry">
+                  Common
+              </div>
+              <img src="https://novelkingdom.co/images/dragon/dragon-level-3.png"  width="90%">
+              <div class="cover">
+
+              </div>
+           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script lang="ts">
+import { Gatway } from "@/shares/services";
+import Vue from "vue";
+export default Vue.extend({
+  name: "treasury",
+  data() {
+    return {
+      treasury: [...Array(10).keys()],
+    };
+  },
+  components: {
+    cover: () => import("@/components/Cover.vue"),
+  },
+  methods:{
+    async get(){
+      let res = await Gatway.getService('/customers/treasure-box-data/index')
+      // console.log('>>>',res);
+      this.treasury = res.data.data
+      
+    }
+    
+  },mounted(){
+      this.get()
+    }
+});
+</script>
+<style lang="scss" scoped>
+.nv-box-white {
+  position: relative;
+  overflow: hidden;
+}
+.title {
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  text-align: left;
+}
+.con-tsry {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr ;
+  grid-gap: 25px 30px;
+}
+.box-tsry{
+    display: flex;
+    justify-content: center;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    padding: 60px 0px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+}
+.title-tsry{
+   position: absolute;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 100%;
+   top: 0px;
+   height: 35px;
+   background: #01070780;
+   color: #fff;
+   left: 0px;
+   z-index: 200px;
+}
+
+.cover{
+position: absolute;
+top: 0;
+width: 100%;
+height: 100%;
+background: #07070780;
+z-index: 100px;
+}
+img{
+    opacity: .2;
+}
+.btn-c{
+    background: #ee7809;
+		box-shadow:  #eeb909e1 0px 10px 36px 0px,  #ee7809 0px 0px 0px 1px;
+    width: 150px;
+    padding: 5px 10px;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+}
+</style>

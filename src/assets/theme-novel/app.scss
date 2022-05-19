@@ -1,0 +1,189 @@
+$second-blue: #1E2046 ;
+$second-gray: #444349 ;
+$second-grayLight: #CFD4D9 ;
+$primary-orange: #E4803A;
+$primary-yellow:#F4BA40;
+$primary-lightBlue:#61BCBE;
+$primary-purple:#AB93F9;
+@import 'reset.scss';
+@import 'card.scss';
+@import 'text.scss';
+@import 'font.scss';
+@import 'layout.scss';
+@import 'button.scss';
+@import 'from.scss';
+@import 'editter.scss';
+
+*{
+    box-sizing: border-box;
+}
+*, :after, :before {
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+}
+// * { 
+//     pointer-events: fill; /* only use !important if you have to */
+// }
+.nv-shadow{
+    box-shadow:#bdbdbd 0px 7px 29px 0px;
+}
+
+.nv-btn-rount {
+    border: 0px solid #E4803A;
+}
+
+.err{
+    // background: #fff2f2;
+    box-shadow: 0 0 0 0.15rem rgba(253, 167, 167, 0.537);
+    border: 2px solid #ff5f5f;
+    // box-shadow: rgba(255, 87, 36, 0.2) 0px 8px 24px;
+}
+.col-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 10px 20px;
+  }
+  .is-valid{
+    color: red;
+    font-size: 18px;
+  }
+
+  .nv-alert-confirm{
+    position: fixed;
+    width: 100%;
+    background: #ffffffb4;
+    height: 100vh;
+    font-family: "Sarabun", sans-serif;
+    z-index: 1500;
+    top: 0;
+    left: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: saturate(180%) blur(4px);
+    opacity: 10;
+    transition: .3s;
+    // pointer-events: none;
+   
+  }
+
+
+  .nv-con-confirm{ 
+    color: #000;
+    background: #ffffff;
+    box-shadow: 0 10px 50px 0 rgba(0, 0, 0, 0.2);
+    margin: 20px;
+    // padding: 20px;
+    border-radius: 7px;
+    overflow: hidden;
+    min-width: 400px;
+    opacity: 10;
+    transition: .3s;
+    // transform: scale(0.7);
+  }
+
+  .nv-haeder-confirm{
+    font-size: 20px;
+    display: flex;
+    justify-content: space-between;
+    background: #ff6b6b;
+    padding: 15px 20px;
+    color: #ffffff;
+  }
+
+  .loading-img{
+    background: #eee;
+ background: linear-gradient(90deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+//  border-radius: 20px;
+ background-size: 200% 100%;
+ animation: 1.5s shine linear infinite;
+ }
+
+@keyframes shine {
+to {
+ background-position-x: -200%;
+}
+}
+img{
+   position: relative;
+}
+
+
+input[type=checkbox]{
+  height: 20px;
+  width: 20px;
+}
+
+.buy{
+  width: 100%;
+  padding: 7px 10px;
+  background: #F4BA40;
+  color: white;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 12px;
+}
+.buy-ep--coin{
+  display: flex;
+  align-items: center;
+  grid-gap: 10px;
+  font-size: 21px;
+      justify-content: center;
+}   
+#epCoin{
+    color: #efd244;
+}
+// img:before {
+//   content: ' ';
+//   display: block;
+//   position: absolute;
+//   height: 100%;
+//   width: 100%;
+//   background-image: url(http://thelongfortgroup.com/public/img/default/no-image-icon.jpg);
+// }
+.page-link{
+  border: 0.3px solid #c3c3c3 !important;
+  color: #9a9a9a;
+}
+.active .page-link{
+  border: 0.3px solid #f4bb40c9 !important;
+  background: #f4bb40c9 !important;
+  color: #ffffff;
+}
+.page-link:hover{
+  background: #ffecc3 ;
+  
+}
+.ql-align-center{
+  text-align: center;
+}
+.ql-syntax{
+  background-color: #23241f;
+  color: #f8f8f2;
+  border-radius: 3px;
+  overflow: visible;
+}
+.ql-snow .ql-editor code, .ql-snow .ql-editor pre {
+  background-color: #f0f0f0;
+  
+}
+#google-signin-btn-0{
+ border: 0px solid;
+ background: #ffffff00;
+ padding: 0px;
+}
+
+button:disabled,
+button[disabled]{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+  cursor: default;
+}

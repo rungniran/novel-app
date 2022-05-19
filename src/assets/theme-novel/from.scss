@@ -1,0 +1,49 @@
+select,input {
+    border: 2px solid #e7e7e7;
+    border-radius: 7px;
+    width: 100%;
+    padding: 10px;
+}
+textarea{
+    width: 100%;
+
+    padding: 10px;
+    border-radius: 7px;
+    width: 100%;
+    border: 2px solid #e7e7e7;
+}
+
+textarea:focus-visible ,select:focus-visible ,input:focus-visible{
+    outline: none;
+    // box-shadow: 0 0 0 0.15rem rgba(167, 210, 253, 0.537);
+    // border: 2px solid #2497fb;
+    
+}
+option{
+    padding: 90px;
+
+}
+.from{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    grid-gap: 20px;
+}
+.con-from{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+}
+.from-date{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 20px;
+}
+.from-title{
+    margin-left: 3px;
+        color: #444349;
+    font-size: 13px;
+}
+input:disabled {
+    background: #f3f3f3;
+}

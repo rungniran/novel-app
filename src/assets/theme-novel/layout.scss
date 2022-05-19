@@ -1,0 +1,146 @@
+.content{
+    padding-top:  59px;
+}
+.content{
+    top: 0;
+    width: 100%;
+    min-height: 105vh;
+    background: linear-gradient(180deg, rgba(230, 222, 255, 0.22) 2.72%, rgba(175, 151, 249, 0.22) 100%);
+    padding-bottom: 100px;
+}
+
+.center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.nv-container{
+    margin: 0px 100px;
+}
+
+
+.nv-box-white{
+    padding: 40px 40px;
+    background: #FFFFFF;
+    border-radius: 15px;
+    margin: 0px 150px;
+    margin: auto;
+    margin-top: 40px;
+    max-width: 1150px;
+}
+.nv-title-item{
+  display: flex;
+  flex-direction: column;
+  grid-gap: 10px;
+}
+
+.nv-title-item-20{
+  display: flex;
+  flex-direction: column;
+  grid-gap: 20px;
+}
+.nv-title-item-40{
+  display: flex;
+  flex-direction: column;
+  grid-gap: 40px;
+}
+
+@for $i from 1 through 20 {
+    .nv-mt-#{$i}0 {
+        margin-top: #{$i}0px;
+    }
+}
+.view-list, .list, .view{
+    display: flex;
+    align-items: center;zoom: 0.895;
+}
+.list{
+    margin-left: 20px;
+}
+.count-numble-view{
+    margin-left: 7px;
+    color: #606060;
+    // font-weight: 500;
+}
+.view .count-numble-view{
+    margin-left: 6px;
+}
+.fa-list{
+    margin-top: 1.69px;
+		color: #606060;
+}
+.fa-eye{
+    margin-top: 1.9px;
+		color: #606060;
+}
+.nv-center{
+    display: flex;
+    align-items: center;
+}
+.nv-col-2{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.nv-con-coin{
+    display: flex;
+    align-items: center;
+    grid-gap: 5px;
+}
+.writer-profile{
+    display: flex;
+    align-items: center;
+    grid-gap: 20px;
+}
+@media (max-width: 1024px){
+    .detail{
+        grid-gap: 10px;
+    }
+}
+@media (max-width: 768px){
+    .nv-box-white{
+        // margin: 40px 0px;
+        border-radius: 0px;
+        padding: 35px 15px;
+
+    }
+		.content{
+			padding-top: 25px;
+		}
+}
+@media (max-width: 415px){
+	.nv-box-white{
+        // margin: 40px 0px;
+        border-radius: 0px;
+        padding: 35px 15px;
+
+    }
+    .content{
+           padding-top: 21px;
+        padding-bottom: 0px;
+
+    }
+
+}
+
+// .nv-box-white{
+//     opacity: 1.0;
+//     animation-fill-mode: both;
+//     animation-name: example12;
+//     animation-duration: 0.5s;
+//     transform: translateX(100px);
+// }
+
+// @keyframes example12 {
+//   from {
+//       opacity: 1.0;
+//       transform: translateX(100px);;
+// }
+//   to {
+//       opacity: 1;
+//       transform: translateX(0px);;
+
+//     }
+// }
