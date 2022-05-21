@@ -14,7 +14,7 @@
       </div>
       <div class="contor-input">
         <div class="from-title">ชื่อผู้ใช้</div>
-        <input :value="profile.username" />
+        <input :value="profile.username" disabled/>
       </div>
       <div class="contor-input">
         <div class="from-title" >อีเมล์</div>
@@ -61,7 +61,7 @@
         <div class="nv-btn-light-blue btn" @click="submit()">บันทึกข้อมูล</div>
       </div>
     </div>
-    <div class="from nv-mt-30">
+    <!-- <div class="from nv-mt-30">
       <div class="contor-input">
         <div class="from-title">รหัสผ่าน</div>
         <input type="password" placeholder="*********" />
@@ -73,7 +73,7 @@
       <div class="con-save">
         <div class="nv-btn-light-blue btn">บันทึกข้อมูล</div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script lang="ts">
@@ -88,7 +88,7 @@ export default Vue.extend({
         id:this.$store.state.auth.dataset.user_profile_datas[0].id,
         last_name:this.$store.state.auth.dataset.user_profile_datas[0].last_name,
         user_id:this.$store.state.auth.dataset.id,
-        user_nickname:this.$store.state.auth.dataset.user_profile_datas[0].user_nickname,
+        user_nickname:this.$store.state.auth.dataset.user_profile_datas[0].first_name + ' ' + this.$store.state.auth.dataset.user_profile_datas[0].last_name,
         user_profile_data_type_id:'a406c04d-3f50-4ea8-986e-315452753638'
       }
     }

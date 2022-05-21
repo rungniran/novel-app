@@ -214,7 +214,6 @@ export default Vue.extend({
   },
   mounted(){
     this.getNovelType()
-    this.getRecommend()
   }
 });
 </script>

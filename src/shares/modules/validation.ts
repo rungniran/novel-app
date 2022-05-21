@@ -15,6 +15,6 @@ export function Validation (arrvalidate:[]):boolean {
     }
   }
   const error = document.getElementsByClassName("err")[0] as  HTMLElement
-  window.scrollTo({top: error.offsetTop , behavior: 'smooth' })
+  window.scrollTo({top: error.offsetTop - 85 , behavior: 'smooth' })
   return false
 }

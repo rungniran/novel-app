@@ -9,33 +9,32 @@ import { alert } from './shares/modules/alert'
 import GAuth from 'vue-google-oauth2'
 import VueApexCharts from 'vue-apexcharts'
 Vue.use(VueApexCharts)
-
 Vue.component('apexchart', VueApexCharts)
-// import VueMeta from 'vue-meta'
-
-// Vue.use(VueMeta)
 Vue.config.productionTip = false
 
-// const gauthOption = {
-//   clientId: '1002950262285-jft3s7uqb5n9adk5kn8140bn48edpasf.apps.googleusercontent.com',
-//   scope: 'profile email',
-//   prompt: 'consent',
-//   fetch_basic_profile: true
-// }
-
-
-// Vue.use(GAuth, gauthOption)
-
-const gauthClientId = "1002950262285-jft3s7uqb5n9adk5kn8140bn48edpasf.apps.googleusercontent.com" //production
-
-const gAuthOptions = { 
-  clientId: gauthClientId, 
-  scope: 'profile email', 
-  prompt: 'consent', 
-  fetch_basic_profile: true 
+const gauthOption = {
+  clientId: '1002950262285-jft3s7uqb5n9adk5kn8140bn48edpasf.apps.googleusercontent.com',
+  scope: 'profile email',
+  prompt: 'consent',
+  fetch_basic_profile: true
 }
-Vue.use(GAuth, gAuthOptions)
 
+
+Vue.use(GAuth, gauthOption)
+
+// const gauthClientId = "1002950262285-jft3s7uqb5n9adk5kn8140bn48edpasf.apps.googleusercontent.com" 
+
+// const gAuthOptions = { 
+//   clientId: gauthClientId, 
+//   scope: 'profile email', 
+//   prompt: 'consent', 
+//   fetch_basic_profile: true 
+// }
+// Vue.use(GAuth, gAuthOptions)
+// import { LoaderPlugin } from 'vue-google-login';
+// Vue.use(LoaderPlugin, {
+//   client_id:  "1002950262285-jft3s7uqb5n9adk5kn8140bn48edpasf.apps.googleusercontent.com" 
+// });
 Vue.prototype.$alert = alert as any
 Vue.prototype.$filter = func.filters
 Vue.prototype.$base = base as any

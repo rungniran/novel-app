@@ -4,7 +4,11 @@
       <div class="box-nove">
         <div class="image-nv loading-img">
           <img
-            :src="getNover.image_data ? getNover.image_data.url : $path.svg('imgload.svg')"
+            :src="
+              getNover.image_data
+                ? getNover.image_data.url
+                : $path.svg('imgload.svg')
+            "
             class="nv-img-novel"
             width="100%"
           />
@@ -16,7 +20,8 @@
               {{ getNover.publisher_novel_data_id }}
             </div>
             <div class="con-review">
-              <NovelStar :rating="Math.round (getNover.avg_star)" /> <span></span>
+              <NovelStar :rating="Math.round(getNover.avg_star)" />
+              <span></span>
             </div>
             <div class="nv-mt-10">
               <router-link to="#" class="nv-tag">{{
@@ -43,8 +48,8 @@
           </div>
           <div class="grud-btn">
             <button class="nv-btn-orange" @click="Views">
-                    <i class="fas fa-chart-line"></i> ดูสถิติ
-                </button>
+              <i class="fas fa-chart-line"></i> ดูสถิติ
+            </button>
             <router-link
               :to="
                 '/writer/editnovel/' +
@@ -58,20 +63,19 @@
             >
 
             <!-- <button class="nv-btn-light-blue">โปรโมชั่น</button> -->
-              <button
+            <button
               class="nv-btn-blue"
               @click="$base.openalert('deletenovel', 'conDeletenovel')"
             >
               ลบหนังสือ
             </button>
-             
           </div>
         </div>
       </div>
     </div>
     <div class="nv-box-white nv-mt-40">
       <div>
-        <div class="nv-col-2" style="padding-bottom: 20px;">
+        <div class="nv-col-2" style="padding-bottom: 20px">
           <div class="nv-title">สารบัญ</div>
           <div class="grud-btn">
             <router-link :to="'/writer/novelpreview/' + novelUuid + '/novelep'">
@@ -81,8 +85,6 @@
           </div>
         </div>
         <div>
-
-
           <!-- <div class="nv-mt-20">
           <div v-for="(item, index) in EpisodeData" :key="index" class="episode">
              <div>#{{index + 1}} {{item.name}}</div>
@@ -109,10 +111,9 @@
           </div>
           </div> -->
 
-
           <div v-for="(item, indexmoment) in moment" :key="indexmoment">
             <div class="box-price_range" @click="openEp(indexmoment)">
-              <div >{{ item.moment }}</div>
+              <div>{{ item.moment }}</div>
               <div>
                 <i class="fas fa-chevron-right"></i>
               </div>
@@ -121,7 +122,7 @@
               <div
                 v-for="(item, index) in item.ep"
                 :key="index"
-                :class="'episode episode'+index "
+                :class="'episode episode' + index"
               >
                 <div>#{{ item.ep_no }} {{ item.name }}</div>
                 <div class="p-con-detail">
@@ -149,7 +150,7 @@
                         $base.openalert('deleteEP', 'conDeleteEp');
                         epObj = item;
                         epIndex = index;
-                        momentIndex = indexmoment
+                        momentIndex = indexmoment;
                       "
                       class="grud-btn-manager"
                     >
@@ -160,27 +161,62 @@
               </div>
             </div>
           </div>
-
-
-          
         </div>
       </div>
     </div>
-    <div class="nv-box-white nv-mt-40 " id="series">
+    <div class="nv-box-white nv-mt-40" id="series">
+      <!-- {{EpisodeData}} -->
+      <div class="series">
+        <select name="cars" id="cars" @change="test">
+          <option value="volvo">รวมทุกตอน</option>
+          <option
+            v-for="(item, index) in EpisodeData.data"
+            :key="index"
+            value="volvo"
+          >
+            {{ item.name }}
+          </option>
+        </select>
+      </div>
+      <br />
       <div>
-            <div>สถิติการขายรวม</div>
-            <div class="series">
-                <apexchart width="100%" type="bar" :options="options" :series="series"></apexchart>
-                <apexchart width="100%" type="line" :options="options" :series="series"></apexchart>
-            </div>
+        <div>สถิติการขายรวม</div>
+        <div class="series">
+          <apexchart
+            width="100%"
+            type="bar"
+            :options="chartOptions"
+            :series="series"
+            ref="chartSell"
+          ></apexchart>
+          <apexchart
+            width="100%"
+            type="line"
+            :options="chartOptions"
+            :series="series"
+            ref="chartSell1"
+          ></apexchart>
         </div>
-         <div>
-            <div>สถิติยอดวิวรวม</div>
-            <div class="series">
-                <apexchart width="100%" type="bar" :options="options" :series="series"></apexchart>
-                <apexchart width="100%" type="line" :options="options" :series="series"></apexchart>
-            </div>
+      </div>
+      <div>
+        <div>สถิติยอดวิวรวม</div>
+        <div class="series">
+          <apexchart
+            width="100%"
+            type="bar"
+            :options="chartOptions"
+            :series="series"
+            ref="chartView"
+          ></apexchart>
+          <apexchart
+            width="100%"
+            type="line"
+            :options="chartOptions"
+            :series="series"
+            ref="chartView1"
+          ></apexchart>
         </div>
+      </div>
     </div>
     <NovelConfirm
       color="#ffb900"
@@ -253,27 +289,52 @@ export default Vue.extend({
       epObj: {} as any,
       epIndex: 0,
       moment: [] as any[],
-      momentIndex: 0, 
-      eplength:'',
-          options: {
+      momentIndex: 0,
+      eplength: "",
+      options: {
         chart: {
-          id: 'vuechart-example'
+          id: "vuechart-example",
         },
         xaxis: {
-          categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
-        }
+          categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998],
+        },
       },
-      series: [{
-        name: 'series-1',
-        data: [30, 40, 45, 50, 49, 60, 70, 91]
-      }]
+      series: [
+        {
+          name: "series-1",
+          data: [30, 40, 45, 50, 49, 60],
+        },
+      ],
+      chartOptions: {
+        chart: {
+          id: "realtime",
+          height: 350,
+          type: "line",
+          animations: {
+            enabled: true,
+            easing: "linear",
+            dynamicAnimation: {
+              speed: 500,
+            },
+          },
+          toolbar: {
+            show: false,
+          },
+          zoom: {
+            enabled: false,
+          },
+        },
+        xaxis: {
+          categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998],
+        },
+      },
     };
   },
   methods: {
     async getnNovel() {
       const resGetNovel = await GetService.getNovel(this.$route.params.id);
       console.log(resGetNovel.data.data);
-      
+
       this.getNover = await resGetNovel.data.data;
     },
     async getListEp() {
@@ -281,7 +342,7 @@ export default Vue.extend({
         `/customers/episode_data/index/${this.$route.params.id}`
       );
       this.EpisodeData = await resEpisodeData.data.data;
-      this.eplength = resEpisodeData.data.data.data.length
+      this.eplength = resEpisodeData.data.data.data.length;
       this.momentEp(resEpisodeData.data.data.data);
     },
     confirmDelete() {
@@ -312,15 +373,15 @@ export default Vue.extend({
 
     // },
     async deleteEP() {
-        // let moment:any[] = this.moment[0] 
-        // console.log(moment);
-        this.moment[this.momentIndex].ep.splice(this.epIndex, 1)
+      // let moment:any[] = this.moment[0]
+      // console.log(moment);
+      this.moment[this.momentIndex].ep.splice(this.epIndex, 1);
       const res = await Gatway.DelService(
         `/customers/episode_data/${this.epObj.id}`
       );
       if (res) {
-        this.moment[this.momentIndex]
-        this.moment[this.momentIndex].ep.splice(this.epIndex, 1)
+        this.moment[this.momentIndex];
+        this.moment[this.momentIndex].ep.splice(this.epIndex, 1);
         // this.EpisodeData.splice(this.epIndex, 1);
         alert(res.data.data, "success");
         closealert("deleteEp", "conDeleteEp");
@@ -336,19 +397,19 @@ export default Vue.extend({
     momentEp(countEp: any) {
       let arraymoment = [] as any;
       let count = countEp.length / 50;
-      let momentCount = count + 0.00;    
+      let momentCount = count + 0.0;
       let ep = 0;
       let eplast = 50;
-      if(countEp.length > 0){
-        for (let i = 0; i < ~~ momentCount + 1; i++) {
-          if(countEp.length < eplast){
+      if (countEp.length > 0) {
+        for (let i = 0; i < ~~momentCount + 1; i++) {
+          if (countEp.length < eplast) {
             arraymoment.push({
               moment: `บทที่ ${ep + 1} - ${countEp.length}`,
               ep: countEp.slice(ep, eplast),
             });
             ep = +50;
             eplast = eplast + 50;
-          }else{
+          } else {
             arraymoment.push({
               moment: `บทที่ ${ep + 1} - ${eplast}`,
               ep: countEp.slice(ep, eplast),
@@ -360,26 +421,65 @@ export default Vue.extend({
       }
       this.moment = arraymoment;
     },
-    openEp(key:any){
-      let containerEP = document.getElementsByClassName('container-ep')[key] as HTMLElement
+    openEp(key: any) {
+      let containerEP = document.getElementsByClassName("container-ep")[
+        key
+      ] as HTMLElement;
       // containerEP.style.display = "block"
-      if(containerEP.style.display === "block"){
-        containerEP.style.display = "none"
-      }else{
-        containerEP.style.display = "block"
+      if (containerEP.style.display === "block") {
+        containerEP.style.display = "none";
+      } else {
+        containerEP.style.display = "block";
       }
-      
     },
-    Views(){
-      let series = document.getElementById('series') as HTMLElement
-    console.log(series.offsetHeight);
-    window.scrollTo({ top: series.offsetHeight, behavior: 'smooth' })
-    }
+    Views() {
+      let series = document.getElementById("series") as HTMLElement;
+      console.log(series.offsetHeight);
+      window.scrollTo({ top: series.offsetHeight, behavior: "smooth" });
+    },
+    test() {
+      const limit = 100
+      let Sell = [
+        Math.floor(Math.random() * limit),
+        Math.floor(Math.random() * limit),
+        Math.floor(Math.random() * limit),
+        Math.floor(Math.random() * limit),
+        Math.floor(Math.random() * limit),
+        Math.floor(Math.random() * limit),
+      ];
+      let View = [
+        Math.floor(Math.random() * limit),
+        Math.floor(Math.random() * limit),
+        Math.floor(Math.random() * limit),
+        Math.floor(Math.random() * limit),
+        Math.floor(Math.random() * limit),
+        Math.floor(Math.random() * limit),
+      ];
+      (this as any).$refs.chartSell.updateSeries([
+        {
+          data: Sell as any,
+        },
+      ]);
+      (this as any).$refs.chartSell1.updateSeries([
+        {
+          data: Sell as any,
+        },
+      ]);
+      (this as any).$refs.chartView.updateSeries([
+        {
+          data: View as any,
+        },
+      ]);
+      (this as any).$refs.chartView1.updateSeries([
+        {
+          data: View as any,
+        },
+      ]);
+    },
   },
   mounted() {
     this.getnNovel();
     this.getListEp();
-    
   },
 });
 </script>
@@ -507,12 +607,12 @@ export default Vue.extend({
   gap: 10px;
   color: #febc2a;
 }
-.episode0{
+.episode0 {
   border-top: 0px solid;
 }
-.series{
-    display: grid;
- grid-template-columns: 1fr 1fr;
+.series {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 @media (max-width: 1024px) {
   .box-nove {

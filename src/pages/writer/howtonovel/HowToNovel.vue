@@ -30,6 +30,7 @@ export default Vue.extend({
   
 }
 .con-layout{
+    margin: auto;
     max-width: 1150px;
     height: 100vh;
     background: #fff;

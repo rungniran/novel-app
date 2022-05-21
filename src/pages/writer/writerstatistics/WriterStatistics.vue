@@ -1,5 +1,5 @@
 <template>
-    <div class="Statistics">
+    <div class="Statistics" v-if="wraning === true">
         <!-- <div
             v-for="(item, index) in mywork"
             :key="index"
@@ -43,6 +43,7 @@
                 </div>
             </div>
         </div> -->
+        
         <div>
             <div>สถิติการขายรวม</div>
             <div class="series">
@@ -57,6 +58,10 @@
                 <apexchart width="100%" type="line" :options="options" :series="series"></apexchart>
             </div>
         </div>
+        
+    </div>
+    <div v-else class="not-novel">
+            คุณยังไม่มีนิยาย
     </div>
 </template>
 
@@ -66,6 +71,9 @@ import NovelStar from "@/components/widget/NovelStar.vue";
 import { ListService} from '@/shares/services'
 export default Vue.extend({
     name: "Statistics",
+    props:{
+        wraning:Boolean
+    },
     data() {
         return {
             mywork: [],

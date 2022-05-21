@@ -2,9 +2,9 @@
 <template>
   <NovelModal classlist="walllet-modal"  animation="create-novel-show">
     <template v-slot:body>
+<!-- :style="`height: ${Height}px`" -->
 
-
-        <div class="walllet-conthai" :style="`height: ${Height}px`">
+        <div class="walllet-conthai" >
           <div class="walllet-page"  id="page1">
             <div class="walllet-title">ช่องทางการเติมเหรียญ</div>
             <div v-for="item, index in page1" :key="index" class="walllet-list" @click="leftPage(2, item)">
@@ -59,7 +59,7 @@
             </div>
             <div v-else-if="dataObj.typeHowto === 'prompt_pay'" class="prompt_pay">
               <div class="box-img-pp">
-                <img :src="qrcode" class="PromptPayimg">
+                <img :src="qrcode" class="PromptPayimg" width="100%">
               </div>
               <span class="price_amount" v-if="dataPay">{{dataPay.price_amount.split('.')[0]}} บาท</span>
             </div>
@@ -114,7 +114,7 @@ export default Vue.extend({
   },
   data(){
     return{
-      qrcode:this.$path.svg('loading.svg'),
+      qrcode: 'londing',
       titlePage2:"",
       Height: '',
       page1: Howto,

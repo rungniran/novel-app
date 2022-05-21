@@ -16,10 +16,10 @@
               <!-- <GoogleLogin :params="params" :onSuccess="onSuccess($event)" ><div class="google">
             <img src="../assets/images/image 5.png" width="18px" />
             เข้าสู่ระบบด้วย Google
-          </div>s</GoogleLogin> -->
+          </div></GoogleLogin> -->
 
-
-           <GoogleLogin :params="params" :onSuccess="onSuccess" :onFailure="onFailure">
+<!-- <GoogleLogin :params="params" :logoutButton="true">Logout</GoogleLogin> -->
+            <GoogleLogin :params="params"  :onSuccess="onSuccess" :onFailure="onFailure">
 
              <div class="google">
             <img src="../assets/images/image 5.png" width="18px" />
@@ -31,7 +31,7 @@
               <img :src="imagefacebook" class="imagefacebook" /> {{datafacebook.name}} <div>เข้าสู่ระบบ</div>
             </div>
             <div v-else class="facebook">
-               <i class="fab fa-facebook-f"></i> เข้าสู่ระบบด้วย Facebook
+               <i class="fab fa-facebook" style="font-size:20px"></i>  เข้าสู่ระบบด้วย Facebook
             </div>
           </div>
         </div>
@@ -100,7 +100,7 @@ import Vue from "vue";
 import { Auth, Gatway } from "../shares/services";
 import { facebook_app_id } from "../shares/constants";
 import GoogleLogin from "vue-google-login";
-import { alert } from '@/shares/modules/alert'
+// import { alert } from '@/shares/modules/alert'
 
 
 export default Vue.extend({
@@ -125,7 +125,7 @@ export default Vue.extend({
       renderParams: {
         width: 250,
         height: 50,
-        longtitle: true,
+        longtitle: true
       },
     };
   },
@@ -184,14 +184,14 @@ export default Vue.extend({
       comLogin.classList.add("show-com");
     },
     onSuccess(googleUser:any) {
-      console.log('dfdf');
-      // console.log(JSON.stringify(googleUser));
+      // console.log('dfdf');
+      console.log(JSON.stringify(googleUser));
 
       // This only gets the user information: id, name, imageUrl and email
       // console.log(JSON.stringify(googleUser.getBasicProfile()));
     },
     onFailure(googleUser){
-      console.log(googleUser);
+      console.log('>>>',googleUser);
     },
     async logfacebook(response:any) {
       (window as any).FB.api(
@@ -256,7 +256,9 @@ export default Vue.extend({
     },
 
     async logingoogle() {
-      let res =  await Gatway.postService("/login-gmail", {} as any)
+      // let res =  await Gatway.postService("/login-gmail", {} as any)
+      // console.log(res);
+      let res =  await (this as any).$gAuth.signIn() 
       console.log(res);
       
       // (this as any).$gAuth.signIn().then((res) => {
@@ -349,6 +351,7 @@ export default Vue.extend({
 .socail {
   display: grid;
   grid-gap: 10px;
+  margin-bottom: 20px;
 }
 .input:focus-visible {
   outline: none;

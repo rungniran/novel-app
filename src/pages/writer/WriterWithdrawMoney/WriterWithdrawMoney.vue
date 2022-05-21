@@ -1,38 +1,48 @@
 <template>
   <div>
     <div class="b-mo">
-      ถอนเงิน
+      ข้อมูลนักเขียน
     </div>
     <div class="nv-box-white nv-mt-40 Money">
-        <div>
-          ยอดเงินที่ถอนได้
-          {{ $filter.NumberToString(this.$store.state.auth.dataset.coin_balance )}} บาท
-        </div>
-        <div>
-          <button class="nv-btn-yellow" @click="$refs.Modeal.open();" :disabled="true">ถอนเงิน</button>
-        </div>
+      <div v-for="item, index in getdataWreter" :key="index" class="list-bank">
+        <div> ธนาคาร {{item.bank_type_id}}<br> เลขบัญชี {{item.account_no}} </div> 
+        <div style="display: flex; gap:10px"> รออนุมัส <div @click="del(item.id)">ยกเลิก</div> </div>
+      </div>
     </div>
-    <div class="nv-box-white nv-mt-40">
+    <div>
+      
+    </div>
+    <div :class="form === false ? 'nv-box-white nv-mt-40' : 'close'" >
        <div class="con-from">
         <div class="contor-input">
             1. เพิ่มบัญชีธนาคาร
-            <small>ยอดเงินของคุณจะถูกโอนเข้าไปในบัญชีที่ลงทะเบียนไว้โดยอัตโนมัติ ซึ่งคุณสามารถเปลี่ยนแปลงบัญชีที่ใช้ได้ตลอดเวลา</small>
+           <li> <small>ยอดเงินของคุณจะถูกโอนเข้าไปในบัญชีที่ลงทะเบียนไว้โดยอัตโนมัติทุกสิ้นเดือน และต้องมีมากกว่า 1000 เหรียญ</small></li>
+           <li> <small>ชื่อ-นามสกุล (ต้องตรงกับหน้าสมุดบัญชีเท่านั้น)</small></li>
         </div>
         <div class="from">
           <div class="contor-input">
-            <div class="from-title">ชื่อ-นามสกุล (ต้องตรงกับหน้าสมุดบัญชีเท่านั้น)</div>
-            <input type="text" placeholder="ชื่อ-นามสกุล" />
+            <div class="from-title">อัปโหลด รูปหน้าสมุดบัญชีธนาคาร</div>
+            <input type="file" id="file" ref="myFiles" @change="previewFiles" multiple>
+          </div>
+          <div class="col-2-grid">
+            <div class="contor-input">
+              <div class="from-title">ชื่อ</div>
+              <input type="text" v-model="dataObj.first_name" id="first_name" placeholder="ชื่อ" />
+            </div>
+            <div class="contor-input">
+            <div class="from-title">นามสกุล</div>
+            <input type="text" v-model="dataObj.last_name" id="last_name" placeholder="นามสกุล" />
+          </div>
           </div>
           <div class="col-2-grid">
             <div class="contor-input">
               <div class="from-title">เลขบัญชี</div>
-              <input type="text" placeholder="xxx-x-xxxxx-x-xx"  @keydown="autoTab($event, 'xxx-x-xxxxx-x-xx')"/>
+              <input type="text" placeholder="xxx-x-xxxxx-x-xx" id="account_no" v-model="dataObj.account_no"  @keydown="autoTab($event, 'xxx-x-xxxxx-x-xx')"/>
             </div>
             <div class="contor-input">
               <div class="from-title">ธนาคาร</div>
-              <select name="cars" id="cars">
-                  <option value="volvo">กรุงเทพ</option>
-                  <option value="saab">กรุงไทย</option>
+              <select name="cars"  v-model="dataObj.bank_type_id" id="bank_type_id">
+                  <option v-for="item,index in Banking" :key="index" :value="item.id">{{item.name_preview}}</option>
                 </select>
             </div>
            </div>
@@ -43,7 +53,7 @@
         </div>
         <div class="from">
            <div class="contor-input">
-            <div class="from-title">อัปโหลดไฟล์ JPG,JPEG,PNG ขนาดไม่เกิน 2MB</div>
+            <div class="from-title">แนบสำเนาบัตรประชาชน</div>
             <input type="file" style=""/>
           </div>
           <div class="contor-input">
@@ -52,7 +62,7 @@
           </div>
           <div class="contor-input">
             <div class="from-title">ที่อยู่ตามบัตรประชาชน</div>
-            <input type="text" />
+            <textarea style="resize:none; height: 100px;"></textarea>
           </div>
         </div>
            <div class="contor-input">
@@ -62,20 +72,32 @@
            <div class="from">
               <div class="contor-input">
                 <div class="from-title">เพิ่มที่อยู่ปัจจุบัน</div>
-                <input type="text" />
+                <textarea style="resize:none; height: 100px;"></textarea>
               </div>
               <div class="contor-input">
                 <div class="from-title">เบอร์โทรศัพท์</div>
-                <input type="text" placeholder="xxx-xxxx-xxxx" v-model="test" @keydown="autoTab($event, 'xxx-xxxx-xxxx')"/>
+                <input type="text" placeholder="xxx-xxxx-xxxx" @keydown="autoTab($event, 'xxx-xxxx-xxxx')"/>
               </div>
-              <div><button class="nv-btn-yellow">ลงทะเบียน</button></div>
+              <div class="contor-input">
+                <div class="from-title">อีเมล</div>
+                <input type="email" placeholder="name@example.com"/>
+              </div>
+              <div><button class="nv-btn-yellow" @click="submit()">ลงทะเบียน</button></div>
               
            </div>
       </div>
     </div>
-    <NovelModal2 ID="WriterWithdrawMoney" ref="Modeal">
+    <div  :class="form === true ? 'nv-box-white nv-mt-40' :'close'">
+       <div>รายการโอนเงิน</div>
+       <div class="report">
+          ไม่มีข้อมูล
+       </div>
+    </div>
+    <NovelModal2 ID="WriterWithdrawMoney" IDCrad="WriterWithdrawMoneyCrad" ref="Modeal" :Close="true">
       <template v-slot:body>
-        ท่านต้องเพิ่มข้อมูลนักเขียนก่อน
+        <div style="font-size:25px">ลงทะเบียนเรียบร้อย</div>
+        เราได้รับคำขอของคุณเรียบร้อยแล้ว ทางเราจะใช้เวลาตรวจความถูกต้อง <br>ภายใน 3-4 วัน<br><br>
+        <button class="nv-btn-yellow" style="width: 100%;" @click="$refs.Modeal.close()">ตกลง</button>
       </template>
     </NovelModal2>
   </div>
@@ -83,22 +105,37 @@
 <script lang="ts">
 import Vue from 'vue'
 import {Gatway} from '@/shares/services'
+import { Validation } from "@/shares/modules/validation";
 export default Vue.extend({
   data(){
     return{
-     test:'' as any
+     test:'' as any,
+     Banking:[] as any,
+     dataObj:{
+       account_no:'',
+       bank_type_id:'',
+       first_name:'',
+       last_name:'',
+       user_id: (this as any).profile.id,
+     },
+     getdataWreter: null,
+     form:false,
+     fileAccount:'' as any
     }
   },
   components:{
      NovelModal2: () => import("@/components/widget/NovelModal2.vue"),
   },
   async mounted(){
-    const ress = await Gatway.getService('/customers/profile-data/index/'+(this as any).profile.id)
-    console.log(ress);
+    this.getlist()
+    this.getBanking()
     
     window.scrollTo({ top: 0, behavior: 'smooth' })
   },
   methods:{
+    previewFiles(e) {
+      this.fileAccount = e.target.files[0]
+    },
     autoTab(obj, fm){
         if(obj.key !=='Backspace'){
         console.log(obj.key);  
@@ -118,6 +155,42 @@ export default Vue.extend({
         } 
         return  obj.target.value
         }
+    },
+    async getBanking(){
+     let res = await Gatway.getService('/miscellaneous/fetch/bank_datas/bank_type_id')
+     console.log(res.data.data);
+     this.Banking =res.data.data
+     
+    },
+    async submit(){
+      let arrvalidate = ["first_name", "last_name", "file","account_no","bank_type_id"] as any;
+      if (Validation(arrvalidate) === true) {
+        let res = await Gatway.postService('/customers/bank-datas', this.dataObj as any) 
+        if(res.data.code === 200){
+          let formData = new FormData();
+          formData.append('file',this.fileAccount as any)
+          formData.append('novel_data_id',  res.data.data.id)
+          await Gatway.postService("/upload/image/novel-data", formData as any);
+          (this as any).$refs.Modeal.open()
+          this.getlist()
+        }
+      }
+      
+      
+    },
+    async getlist(){
+      let res = await Gatway.getService('/customers/bank-datas')
+      console.log(res);
+      res.data.data.length !== 0 
+      ? this.form = true
+      : this.form = false
+      this.getdataWreter = res.data.data
+      
+    },
+    async del(id){
+      let res = await Gatway.DelService('/customers/bank-datas/'+ id)
+      console.log(res.data.data);
+      this.getlist()
     }
   }
 })
@@ -127,7 +200,7 @@ export default Vue.extend({
   background: url(\https://fictionlog.co/a/images/bannerPatterns/cash_out.svg) left 50px / 600px repeat #ffd566c7;
   width: 100%;
   height: 80px;
-  margin-top: -2px;
+  margin-top: -3px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -135,12 +208,15 @@ export default Vue.extend({
   font-size: 20px;
   
 }
+.report{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
 .Money{
   margin-top: 0px;
   border-radius: 0px 0px 10px 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 .con-from{
   display: grid;
@@ -153,4 +229,15 @@ export default Vue.extend({
   grid-template-columns: 1fr 1fr;
   gap: 15px;
 }
+// .list-bank{
+//   display: flex;
+//   justify-content: space-between;
+//   padding: 10px;
+
+// }
+.close{
+  display: none;
+
+}
+
 </style>

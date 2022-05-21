@@ -60,6 +60,7 @@
           <div class="round">
             <input
               type="checkbox"
+              :checked="confirm"
               :value="confirm"
               @change="funcConfirm()"
               class="checkbox"
@@ -95,7 +96,7 @@
       </div>
     </div>
     <div class="alert"></div>
-    <Conditions />
+    <Conditions :confirm="confirm" @confirmConditions="confirmConditions"/>
   </div>
 </template>
 <script >
@@ -203,6 +204,9 @@ export default Vue.extend({
       const res = await ListService.listCategory()
       this.dropdownCategory = await res.data.data;
     },
+    confirmConditions(){
+       this.funcConfirm()
+    },
     funcConfirm() {
       this.confirm === false ? (this.confirm = true) : (this.confirm = false);
     },
@@ -240,7 +244,7 @@ export default Vue.extend({
 </script>
 <style lang="scss" scoped>
 .nv-box-white {
-  max-width: 950px;
+  // max-width: 950px;
   position: relative;
   overflow: hidden;
 }

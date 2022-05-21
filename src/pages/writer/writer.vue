@@ -1,5 +1,9 @@
 <template>
   <div>
+    <div  :class="wraning === true ? 'b-mo' : 'close'">
+      <!-- * คุณยังไม่เพิ่มข้อมูลนักเขียน หากมีข้อมูลนักเขียนเราตัดยอดหรียญทุก 30 วัน <router-link c to="/writer/WriterWithdrawMoney">คลิกที่นี้เพิ่มข้อมูลเขียน</router-link> -->
+      * คำแนะนำ ตอนนี้คุณยังไม่มีข้อมูลนักเขียน หากคุณต้องการถอนเหรียญ  &nbsp; &nbsp; <router-link class="blink" to="/writer/WriterWithdrawMoney">"ให้คลิกที่นี่เพิ่มข้อมูลนักเขียน"</router-link>&nbsp; &nbsp;  จึงจะสามารถทำการถอนเหรียญได้
+    </div>
     <div class="nv-box-white nv-mt-40">
       <div class="box-profile">
         <div class="con-profile">
@@ -10,7 +14,7 @@
             "
           ></div>
           <div v-if="profile" class="nv-username">{{ profile.show_name }}</div>
-          <div v-if="profile">{{ profile.dragon }}</div>
+          <!-- <div v-if="profile">{{ profile.username }}</div> -->
         </div>
         <div class="data-info nv-mt-30">
           <div class="box-follow">
@@ -35,8 +39,18 @@
             >
           </div>
         </div>
+        <!-- <div class="dcoin">
+        <div>
+          <small>รายรับคงเหลือ (บาท) </small>
+          <div>{{ $filter.NumberToString(this.$store.state.auth.dataset.coin_balance )}}</div>
+          
+        </div>
+        <div>
+          <router-link to="/writer/WriterWithdrawMoney"><button class="nv-btn-yellow">ถอนเงิน</button></router-link>
+        </div>
+      </div> -->
       </div>
-      <div class="nv-mt-40">
+      <div class="nv-mt-20">
         <div class="tap-writer">
           <router-link
             @click.native="changeComponent('Mywork')"
@@ -70,11 +84,11 @@
                 : 's-writer s-active3'
             "
           >
-            รายได้รวม
+            รายงานการขาย
           </router-link>
         </div>
         <div class="nv-mt-30 component">
-          <component :is="current"></component>
+          <component :is="current" :wraning="wraning"></component>
         </div>
         <ModalCreateNovel />
       </div>
@@ -85,10 +99,12 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
+import { ListService } from "@/shares/services";
 export default Vue.extend({
   data() {
     return {
       current: "Mywork",
+      wraning: false
     };
   },
   components: {
@@ -105,12 +121,19 @@ export default Vue.extend({
     cleckpath(): string {
       return this.$route.hash.slice(1);
     },
+    async listNovel() {
+      let res = await ListService.listNovel();
+      console.log('>>>>>>>>',res.data.data.length);
+      this.wraning = res.data.data.length !== 0 ?  true  : false
+    },
+
     // opanmodal():void{
     // document.getElementsByClassName("create-novel")[0].classList.add("create-novel-show")
     // document.getElementsByClassName("contai-modal")[0].classList.add("show")
     // }
   },
   mounted() {
+    this.listNovel()
     this.cleckpath() === ""
       ? this.changeComponent("Mywork")
       : this.changeComponent(this.$route.hash.slice(1));
@@ -118,6 +141,36 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss" scoped>
+  .b-mo{
+  background:  #f36642;
+  width: 100%;
+  // height: 50px;
+  z-index: 100;
+  padding: 10px;
+  margin-top: -3px;
+   text-align: center;
+  color: #fff;
+font-family: "Sarabun", sans-serif;
+font-size: 14px;
+      top: 56px;
+    position: sticky;
+}
+.blink{
+  text-decoration: underline;
+  color: rgb(0, 0, 0);
+}
+.dcoin{
+  background:#f4bb4036;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 5px;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  
+    align-items: center;
+
+}
 .content {
   top: 0;
   width: 100%;
@@ -196,7 +249,10 @@ $radiustap: 5px;
   font-size: 20px;
 }
 .component{
-  min-height: 450px;
+  min-height: 300px;
+}
+.close{
+  display: none;
 }
 @media (max-width: 1024px){
 	

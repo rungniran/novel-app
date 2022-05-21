@@ -22,8 +22,8 @@
       </router-link>
     </div>
      
-    <div v-else class="con-mywork">
-      ยังไม่มีผลงาน
+    <div v-else class=" not-novel">
+      คุณยังไม่มีนิยาย
     </div>
   
   </div>

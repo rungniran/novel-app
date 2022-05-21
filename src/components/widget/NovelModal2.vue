@@ -1,6 +1,7 @@
 <template>
   <div class="contai-modal" @click="onmouse == false ? close() : null" :id="ID">
     <div class="contai-modal-crad" :id="IDCrad">
+        <i v-if="Close === true" class="fas fa-times-circle" @click="close()" ></i>
       <slot name="body" />
     </div>
   </div>
@@ -22,6 +23,10 @@ export default Vue.extend({
     IDCrad: {
       type: String,
       default: "IDCrad",
+    },
+    Close: {
+      type: Boolean,
+      default: false,
     },
   },
   methods: {
@@ -66,8 +71,24 @@ export default Vue.extend({
   pointer-events: auto;
 }
 .contai-modal-crad {
+   position: relative;
   padding: 30px;
   background: #fff;
   border-radius: 10px;
+}
+#WriterWithdrawMoneyCrad{
+  display: flex;
+      flex-direction: column;
+    align-items: center;
+    width: 300px;
+    padding: 20px;
+    text-align: center;
+    gap: 10px;
+}
+.fa-times-circle{
+  position: absolute;
+  top: 5px ;
+  right: 5px;
+  cursor: pointer;
 }
 </style>

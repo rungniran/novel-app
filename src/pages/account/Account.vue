@@ -129,8 +129,8 @@ $topcover: 280px;
 }
 .tap-writer {
   width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  // grid-template-columns: 1fr 1fr;
 }
 .nv-s1 {
   border-radius: 5px 0px 0px 5px;
