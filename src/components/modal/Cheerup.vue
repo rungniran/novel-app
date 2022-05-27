@@ -81,5 +81,18 @@ export default Vue.extend({
   font-size: 15px;
   text-align: center;
 }
+@media (max-width: 1024px){
+	
+}
+@media (max-width: 768px){
 
+}
+
+@media (max-width: 415px){
+.con-cheerup{
+  
+    grid-template-columns: 1fr 1fr ;
+
+}
+}
 </style>

@@ -6,7 +6,7 @@
                         <div class="nv-profile-small" style="background: url(https://cdn-icons-png.flaticon.com/512/149/149071.png) center center/cover ;">
                         </div>
                         <div class="con-username">
-                            <div v-if="profile">{{profile.username}}</div>
+                            <div v-if="profile">{{ this.$store.state.auth.display_name}}</div>
                             <div v-if="profile">{{profile.dragon}}</div>
                         </div>
                     </div>

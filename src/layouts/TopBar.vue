@@ -4,7 +4,7 @@
 
             <div class="logo">
                 <div class="menu-mobile">
-                    <i class="fas fa-bars"></i>
+                    <i class="fas fa-bars" @click="openLeftmenu()"></i>
                 </div>
                 <router-link class="in-logo" to="/">
                 <img  src="../assets/images/logo-novel.png">
@@ -41,57 +41,17 @@
             <div class="profile-contai-modal"  @click="profile_onmouse == false ? closemenu() : null ;">
                 <div style="position: relative; width: 100%; background: #FFFFFF00;  margin:0px 0px;max-width: 1140px;     height: 100vh;">
                      <div class="profile-menu">
-                       <!-- <router-link to="/profile" class="con-list con-profile" @click.native="closemenu()">
-                            <div class="img-profile" style="background: url(https://cdn-icons-png.flaticon.com/512/149/149071.png) center center/cover ;">
-                            </div>
-                            <div>
-                                <div v-if="profile"> {{profile.username}}</div>
-                                <small v-if="profile">{{profile.dragon}}</small>
-                            </div>
-
-                        </router-link>
-                        <li class="coin gold">
-                            <div class="nv-con-coin"> <img :src="$path.image('coin-gold.png')" width="25px" height="25px"> 400 </div>
-                            <router-link class="btn-gold" to="/wallet" @click.native="closemenu()">เติมเหรียญ</router-link>
-                        </li>
-                        <li class="coin diamond">
-                            <div class="nv-con-coin"> <img :src="$path.image('diamond.png')" width="25px" height="25px"> 400 </div>
-                            <router-link class="btn-diamond" to="/exchange" @click.native="closemenu()">แลกของ</router-link>
-                        </li>
-                        <router-link class="con-list" to="/treasury" @click.native="closemenu()">
-                            <img :src="$path.svg('treasury.svg')" width="20px">
-                            คลังสมบัติ
-                        </router-link>
-                        <router-link class="con-list" to="/writer"  @click.native="closemenu()">
-                            <img :src="$path.image('star.png')" width="20px">
-                            ผลงานของฉัน
-                        </router-link>
-                        <router-link class="con-list" to="/bookshelf"  @click.native="closemenu()">
-                            <img :src="$path.image('list.png')" width="20px">
-                            ชั้นหนังสือ
-                        </router-link>
-                        <router-link class="con-list" to="/history"  @click.native="closemenu()">
-                            <img :src="$path.image('history.png')" width="20px">
-                            ประวัติการใช้งาน
-                        </router-link>
-                        <router-link class="con-list" to="/reportproblem"  @click.native="closemenu()">
-                            <img :src="$path.image('info.png')" width="20px">
-                            แจ้งปัญหา
-                        </router-link>
-                        <router-link class="con-list" to="/account" @click.native="closemenu()">
-                            <img :src="$path.image('setting.png')" width="20px">
-                            ตั้งค่า
-                        </router-link>
-                        <li  class="con-list" @click="logout()">
-                            <img :src="$path.image('logout.png')" width="20px">
-                            ออกจากระบบ
-                        </li>
-                    </div> -->
-                    <!-- <profilemenu/> -->
-                    <!-- <component :is="current"></component> -->
                      </div>
                 </div>
             </div>
+        </div>
+        <div class="leftmenu" id="leftmenu">
+             
+            <router-link class="list-sub-menu-mobile" @click.native="closeLeftmenu()"  to="/" exact><i class="fas fa-home"></i> หน้าหลัก</router-link>
+            <router-link class="list-sub-menu-mobile"   @click.native="closeLeftmenu()" to="/category" exact><i class="fas fa-list-alt"></i> ประเภท</router-link>
+            <router-link class="list-sub-menu-mobile"   @click.native="closeLeftmenu()" to="/bookshelf"  exact><i class="fas fa-book"></i> ชั้นหนังสือ</router-link>
+            <router-link class="list-sub-menu-mobile"   @click.native="closeLeftmenu()" to="/writer" exact><i class="fas fa-user-cog"></i> นักเขียน</router-link>
+                
         </div>
 
     </div>
@@ -149,6 +109,15 @@ export default Vue.extend({
         //   content.style.paddingTop = "0px"
         //   content.style.paddingBottom = "0px"
     
+        }, 
+        openLeftmenu(){
+              let leftmenu = document.getElementById('leftmenu') 
+              leftmenu?.classList.toggle('leftmenu-show')
+              
+        },
+        closeLeftmenu(){
+            let leftmenu = document.getElementById('leftmenu') 
+            leftmenu?.classList.remove('leftmenu-show')
         }
     },
     mounted(){
@@ -431,12 +400,43 @@ $primary-yellow:#f4bb40c9;
 
 
 }
+.leftmenu{
+   width: 250px;
+   padding: 10px;
+   display: flex;
+   display: none;
+   background: #fff;
+   position: fixed;
+//    border-radius: 0px 10px 10px 0px;
+   height: 100vh;
+   margin-left: -250px;
+   transition: 0.3s;
+   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+   flex-direction: column;
+}
+.leftmenu-show{
+   margin-left: 0px;
+}
+.list-sub-menu-mobile{
+    color: #9556fb;
+    font-size: 18px;
+    // background: #241065;
+    display: flex;
+    gap: 15px;
+    margin: 8px 0px;
+    padding: 8px;
+    border-radius: 5px;
+}
 @media (max-width: 1200px){
 	.topbar{
 		padding: 0px 10px;
 	}
 }
 @media (max-width: 768px){
+    
+    .leftmenu{
+        display: flex;
+    }
     .topbar{
 
         transition: .3s;

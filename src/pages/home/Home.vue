@@ -3,10 +3,11 @@
       <!-- style="padding-top: 20px"  -->
     <NovelBaner :item="banner" />
     <div class="nv-box-white nv-mt-20" >
-      <div class="nv-title-item" v-if="profile">
+      <!-- {{this.$store.state.storyread}} v-if="profile"-->
+      <!-- <div class="nv-title-item" v-if="this.$store.state.storyread.story_Read">
         <H1 class="nv-title-left">นิยายอ่านต่อ</H1>
-        <NovelReadNext :opject="nextread" :loop="true" />
-      </div>
+        <NovelReadNext :opject="this.$store.state.storyread.story_Read" :loop="false" />
+      </div> -->
       <!-- <LoadingColouser/> -->
       <div
         class="nv-title-item nv-mt-0"  v-if="recommend"
@@ -135,7 +136,7 @@ export default Vue.extend({
     NovelCarousel:()=>import("@/components/widget/NovelCarousel.vue"),
     NovelCategory:()=>import("@/components/widget/NovelCategory.vue"),
     NovelStar:()=>import("@/components/widget/NovelStar.vue"),
-		NovelReadNext:()=>import("./novelreadnext/NovelReadNext.vue"),
+		// NovelReadNext:()=>import("./novelreadnext/NovelReadNext.vue"),
     LoadingColouser:()=> import("@/components/loader/LoadingColouser.vue"),
     // NovelRecommend:()=> import("./NovelRecommend/NovelRecommend.vue")
   },
@@ -343,20 +344,20 @@ transform: scale(1.0);
     justify-content: space-between;
     flex-direction: column;
   }
-  .box-latest {
-    display: grid;
-    grid-template-columns: 1fr;
-    padding: 20px 5px;
-    // padding-top: 0px;
-    grid-gap: 20px;
-    border-radius: 15px;
-  }
+  // .box-latest {
+  //   display: grid;
+  //   grid-template-columns: 1fr;
+  //   padding: 20px 5px;
+  //   // padding-top: 0px;
+  //   grid-gap: 20px;
+  //   border-radius: 15px;
+  // }
   .detail-top {
     padding: 0px 15px;
   }
-  .box-latest .image-top img {
-    width: 60%;
-  }
+  // .box-latest .image-top img {
+  //   width: 60%;
+  // }
   .nover-top .image-top img {
     width: 100%;
   }

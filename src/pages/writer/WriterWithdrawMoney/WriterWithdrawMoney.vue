@@ -37,7 +37,7 @@
           <div class="col-2-grid">
             <div class="contor-input">
               <div class="from-title">เลขบัญชี</div>
-              <input type="text" placeholder="xxx-x-xxxxx-x-xx" id="account_no" v-model="dataObj.account_no"  @keydown="autoTab($event, 'xxx-x-xxxxx-x-xx')"/>
+              <input type="text" placeholder="xxx-x-xxxxx-x-xx" id="account_no" @input="this.target.value = this.target.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" v-model="dataObj.account_no"  @keydown="autoTab($event, 'xxx-x-xxxxx-x-xx')"/>
             </div>
             <div class="contor-input">
               <div class="from-title">ธนาคาร</div>
@@ -136,9 +136,8 @@ export default Vue.extend({
     previewFiles(e) {
       this.fileAccount = e.target.files[0]
     },
-    autoTab(obj, fm){
+    autoTab(obj:any, fm:string){
         if(obj.key !=='Backspace'){
-        console.log(obj.key);  
         var pattern=new String(fm); // กำหนดรูปแบบในนี้
         var pattern_ex=new String("-"); // กำหนดสัญลักษณ์หรือเครื่องหมายที่ใช้แบ่งในนี้
         var returnText=new String("");

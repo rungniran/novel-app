@@ -106,9 +106,14 @@ export default Vue.extend({
     async updata(){
       this.data.novel_data_id = this.$route.params.id
       this.data = {...this.data, id:this.idEp } as any
+      console.log(this.data);
+      
       let res = await Gatway.PutService("/customers/episode_data", this.idEp , this.data as any) 
+      console.log('sdsdfsdf',res);
+      
       if(res){
         alert(res.data.data, "success")
+         this.getEp()
       }
     },
   },

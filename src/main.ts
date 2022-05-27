@@ -6,35 +6,25 @@ import './assets/theme-novel/app.scss'
 import func from './shares/function/function_filters'
 import base from './shares/function/function_base'
 import { alert } from './shares/modules/alert'
-import GAuth from 'vue-google-oauth2'
+// import GAuth from 'vue-google-oauth2'
 import VueApexCharts from 'vue-apexcharts'
 Vue.use(VueApexCharts)
 Vue.component('apexchart', VueApexCharts)
 Vue.config.productionTip = false
+import { initializeApp } from "firebase/app";
 
-const gauthOption = {
-  clientId: '1002950262285-jft3s7uqb5n9adk5kn8140bn48edpasf.apps.googleusercontent.com',
-  scope: 'profile email',
-  prompt: 'consent',
-  fetch_basic_profile: true
-}
+const firebaseConfig = {
+  apiKey: "AIzaSyDU25BfrbtLAsV9Vwp6jbe5uvhMyRb6ums",
+  authDomain: "novelkingdom-test.firebaseapp.com",
+  projectId: "novelkingdom-test",
+  storageBucket: "novelkingdom-test.appspot.com",
+  messagingSenderId: "818385858123",
+  appId: "1:818385858123:web:a8cd268dc21654097227ce",
+  measurementId: "G-WK3SK41GN7"
+};
+initializeApp(firebaseConfig);
 
 
-Vue.use(GAuth, gauthOption)
-
-// const gauthClientId = "1002950262285-jft3s7uqb5n9adk5kn8140bn48edpasf.apps.googleusercontent.com" 
-
-// const gAuthOptions = { 
-//   clientId: gauthClientId, 
-//   scope: 'profile email', 
-//   prompt: 'consent', 
-//   fetch_basic_profile: true 
-// }
-// Vue.use(GAuth, gAuthOptions)
-// import { LoaderPlugin } from 'vue-google-login';
-// Vue.use(LoaderPlugin, {
-//   client_id:  "1002950262285-jft3s7uqb5n9adk5kn8140bn48edpasf.apps.googleusercontent.com" 
-// });
 Vue.prototype.$alert = alert as any
 Vue.prototype.$filter = func.filters
 Vue.prototype.$base = base as any

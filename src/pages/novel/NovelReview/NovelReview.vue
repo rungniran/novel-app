@@ -25,7 +25,10 @@
                   :style="'background: url(' + img + ') center center/cover'"
                 ></div>
                 <div>
-                  <div class="name-review">{{item.user.user_profile_datas[0].first_name}} {{item.user.user_profile_datas[0].last_name}}</div>
+                  <div class="name-review" v-if="item.user">
+                    <span v-if="item.user.user_profile_datas[0].user_nickname">{{item.user.user_profile_datas[0].user_nickname}}</span>
+                    <span v-else>{{item.user.user_profile_datas[0].first_name}} {{item.user.user_profile_datas[0].last_name}}</span>
+                  </div>
                   <div class="review-date">
                     <NovelStar :rating="item.star" />{{$filter.Ago(item.created_at)}}
                   </div>

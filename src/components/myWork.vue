@@ -1,6 +1,6 @@
 <template>
   <div id="Work">
-    <div v-if="data.length > 1" class="con-mywork">
+    <div v-if="data.length  !== 0" class="con-mywork">
       <router-link :to="'/writer/novelpreview/'+ item.id" v-for=" item, index in data" :key="index">
         <div class="image loading-img">
           <!-- :src="item.image_data.url" -->
@@ -10,6 +10,7 @@
                   alt="novel"
                   class="img-pre"
                   width="100%"
+                  onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
                 >
                 <div  class="type-novel">เผยแพร่</div>
           </div>

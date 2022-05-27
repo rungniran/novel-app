@@ -1,5 +1,6 @@
 <template>
     <div id="app">
+        
         <Login/>
         <TopBar/>
             <div class="content">
@@ -23,6 +24,7 @@ export default Vue.extend({
 
     },
     mounted(){
+        // localStorage.clear()
       this.$store.commit("reset")
     }
 });

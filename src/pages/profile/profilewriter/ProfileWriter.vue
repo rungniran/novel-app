@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="nv-box-white nv-mt-40">
-      <cover />
+      <cover :data="gatitemProfile"/>
 
         <div class="box-follow nv-mt-20">
           <div class="follow">
@@ -21,7 +21,7 @@
       <div>
         <div class="nv-mt-20">
           <div class="con-detail-btn">
-            <router-link :to="'/profile/' + path_profile" class="nv-btn-light-blue msg viewprofile"
+            <router-link :to="'/profile/' + this.$route.params.username" class="nv-btn-light-blue msg viewprofile"
               >ดูโปรไฟล์นักอ่าน</router-link
             >
             <div class="nv-btn-yellow msg">ส่งข้อความ</div>
@@ -30,7 +30,7 @@
           </div>
         </div>
         <div class="nv-mt-30">
-          <div class="title">นิยายของ {{ profile.username }}</div>
+          <div class="title">นิยายของ {{ gatitemProfile.user_nickname }}</div>
           <Work/>
         </div>
       </div>
@@ -40,11 +40,13 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
+import { Gatway } from "@/shares/services"
 export default Vue.extend({
   name: "profilewriter",
   data() {
     return {
       mywork: [...Array(10).keys()],
+      gatitemProfile:{}
     };
   },
   components: {
@@ -53,6 +55,19 @@ export default Vue.extend({
 		Work:()=> import("@/components/myWork.vue")
 
   },
+  methods:{
+    async getdata(){
+
+      
+      let res = await Gatway.getIDService('/customers/profile-data/index', this.$route.params.username)
+      console.log(res);
+      this.gatitemProfile = res.data.data
+      
+    }
+  },
+  mounted(){
+     this.getdata()
+  }
 });
 </script>
 <style lang="scss" scoped>

@@ -10,7 +10,7 @@
             "
           ></div>
           <div>
-            <div v-if="profile">{{ profile.username }}</div>
+            <div v-if="profile">{{ this.$store.state.auth.display_name}}</div>
             <div v-if="profile">{{ profile.dragon }}</div>
           </div>
         </div>
@@ -28,7 +28,8 @@
       
       <div class="item" >
            <div class="box-item" v-for="item,idex in Exchange" :key="idex" >
-             <img src="https://novelkingdom.co/redeem/redeem_202201311143733.png" width="50%">
+             <!-- {{item.image_data.url}} -->
+             <img :src="item.image_data.url" width="50%">
              <div class="detail-item">
                <div class="item-name">{{item.name}}</div>
                <div>ใช้เพชร {{$filter.NumberToString(item.use_diamond)}} ดวงแลก {{item.name}} </div>
@@ -39,6 +40,24 @@
                > 
                <img :src="$path.image('diamond.png')" width="25px" height="25px" /> {{$filter.NumberToString(item.use_diamond)}}</div>
              </div>
+           </div>
+      </div>
+   
+      สติกเกอร์
+      <div class="item" >
+           <div class="box-item" v-for="item,idex in sticker" :key="idex" >
+             <!-- {{item.shop_item_datas[0].image_data.url}} -->
+             <img 
+             :src="item.shop_item_datas[0].image_data ?item.shop_item_datas[0].image_data.url : $path.image('loading.png')" 
+             onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
+             width="50%">
+             <div class="detail-item">
+               <div class="item-name">{{item.name}}</div>
+               <div>ใช้เพชร {{$filter.NumberToString(item.diamond)}} ดวงแลก {{item.name}} </div>
+               <div class="btn-item"
+               > 
+               <img :src="$path.image('diamond.png')" width="25px" height="25px" /> {{$filter.NumberToString(item.diamond)}}</div>
+             </div> 
            </div>
       </div>
     </div>
@@ -74,7 +93,8 @@ export default Vue.extend({
   data() {
     return {
       current: "Coin",
-      Exchange:[]
+      Exchange:[],
+      sticker:[]
 
     };
   },
@@ -83,8 +103,6 @@ export default Vue.extend({
   },
   methods: {
     notDiamond(){
-      console.log('dffd');
-      
       alert('จำนวนเพรชไม่เพียงพอ','error')
     },
     changeComponent(component: string): void {
@@ -97,9 +115,23 @@ export default Vue.extend({
       document.getElementsByClassName("contai-modal")[0].classList.add("show");
     },
     async gitlist(){
-      let res = await Gatway.getService('/admin/shop-data-topic-item')
-      console.log('>>>',res.data.data);
-      this.Exchange =res.data.data
+      let res = await Gatway.postService('/guest/shop-data/lists', {shop_type_data_id:'7dc9abbc-d3b3-4b48-ac77-29d00a70469e'} as any)  
+      this.Exchange =res.data.data[0].shop_item_datas
+      let ressticker = await Gatway.postService('/guest/shop-data/lists', {shop_type_data_id:'9c1c64df-3516-4098-8575-1c3470206710'} as any) 
+
+      let resstickerdata = [] as any
+      ressticker.data.data.filter((res: any)=>{
+        // console.log(parseInt(res.diamond) !== 0);
+         if(!res.diamond){
+          //  resstickerdata.push(res)
+
+         }else if(parseInt(res.diamond) !== 0){
+           resstickerdata.push(res)
+         }
+      })
+      console.log(resstickerdata);
+      
+      this.sticker =await resstickerdata
       
     }
   },
@@ -153,9 +185,9 @@ export default Vue.extend({
   align-items: center;
   gap: 25px;
 }
-.box-item img{
-  border-radius: 100%;
-}
+// .box-item img{
+//   border-radius: 100%;
+// }
 .item-name{
   font-size: 20px;
   text-align: center;

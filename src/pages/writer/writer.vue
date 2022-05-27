@@ -13,7 +13,7 @@
               background: url(https://cdn-icons-png.flaticon.com/512/149/149071.png) center center/cover;
             "
           ></div>
-          <div v-if="profile" class="nv-username">{{ profile.show_name }}</div>
+          <div v-if="profile" class="nv-username">{{ this.$store.state.auth.display_name}}</div>
           <!-- <div v-if="profile">{{ profile.username }}</div> -->
         </div>
         <div class="data-info nv-mt-30">

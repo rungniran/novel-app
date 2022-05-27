@@ -40,7 +40,7 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-, "src/shares/modules/color.js", "src/shares/modules/validation.ts", "src/shares/modules/validation.ts"  ],
+, "src/shares/modules/color.js", "src/shares/modules/validation.ts", "src/shares/modules/validation.ts", "src/shares/services/firebase.js"  ],
   "exclude": [
     "node_modules"
   ]

@@ -2,7 +2,7 @@
   <div class="NovelPreview">
     <div class="nv-box-white nv-mt-40">
       <div class="box-nove">
-        <div class="image-nv loading-img">
+        <div class="image-nv ">
           <img
             :src="
               getNover.image_data
@@ -10,6 +10,7 @@
                 : $path.svg('imgload.svg')
             "
             class="nv-img-novel"
+             onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
             width="100%"
           />
         </div>
@@ -112,7 +113,7 @@
           </div> -->
 
           <div v-for="(item, indexmoment) in moment" :key="indexmoment">
-            <div class="box-price_range" @click="openEp(indexmoment)">
+            <div v-if="item.ep.length" class="box-price_range" @click="openEp(indexmoment)">
               <div>{{ item.moment }}</div>
               <div>
                 <i class="fas fa-chevron-right"></i>
@@ -124,7 +125,7 @@
                 :key="index"
                 :class="'episode episode' + index"
               >
-                <div>#{{ item.ep_no }} {{ item.name }}</div>
+                <div class="line-1">#{{ item.ep_no }} {{ item.name }}</div>
                 <div class="p-con-detail">
                   <div v-if="item.coin != 0.0" class="coin">
                     <img :src="$path.image('coin-gold.png')" width="20px" />
@@ -173,8 +174,10 @@
             v-for="(item, index) in EpisodeData.data"
             :key="index"
             value="volvo"
+            
           >
-            {{ item.name }}
+          <span v-if="item.name.length > 50">  {{ item.name.slice(0, 50) }}...</span>
+          <span v-else>  {{ item.name }}</span>
           </option>
         </select>
       </div>
@@ -398,24 +401,24 @@ export default Vue.extend({
       let arraymoment = [] as any;
       let count = countEp.length / 50;
       let momentCount = count + 0.0;
-      let ep = 0;
-      let eplast = 50;
+       let ep = 0;
+      let [eplast, eplastStas]  = [50,50] as any[];
       if (countEp.length > 0) {
         for (let i = 0; i < ~~momentCount + 1; i++) {
-          if (countEp.length < eplast) {
+          if (countEp.length <= eplast) {
             arraymoment.push({
               moment: `บทที่ ${ep + 1} - ${countEp.length}`,
               ep: countEp.slice(ep, eplast),
             });
-            ep = +50;
-            eplast = eplast + 50;
+              ep = +eplast;
+            eplast = eplast + eplast;
           } else {
             arraymoment.push({
               moment: `บทที่ ${ep + 1} - ${eplast}`,
               ep: countEp.slice(ep, eplast),
             });
-            ep = +50;
-            eplast = eplast + 50;
+            ep =+ eplast;
+            eplast = eplast + eplastStas;
           }
         }
       }
@@ -614,6 +617,9 @@ export default Vue.extend({
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
+// .nv-img-novel{
+//   border-radius: 5px;
+// }
 @media (max-width: 1024px) {
   .box-nove {
     display: grid;

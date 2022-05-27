@@ -1,8 +1,8 @@
 <template>
   <div class="text-editer">
     <div class="option-icon">
-      <i class="fas fa-bookmark" @click="spoler(index)"></i>
-      <i class="fas fa-icons"></i>
+      <!-- <i class="fas fa-bookmark" @click="spoler(index)"></i>
+      <i class="fas fa-icons"></i> -->
       <i class="fas fa-sticky-note" @click="opanstiker(Editer)"></i>
     </div>
     <div
@@ -24,11 +24,20 @@
         ส่ง
       </div>
     </div>
-    <div  id="stiker" @click="close()">
-      <div class="con-stiker">
-        <div v-for="(item, index) in cheerup" :key="index" class="">
-          <div @click="addstikerf(item.icon)">
-            <img :src="$path.cheerup(item.icon)" height="75px" />
+    <div  id="stiker" >
+     
+      <div class="con-stiker"> <i class="fas fa-times-circle" @click="close()" ></i>
+        <div class="con-title-stiker">
+          <div v-for="(item, index) in sticker" :key="index" class="title" @click="filter(item)">
+            {{item.name}}
+          </div>
+        </div>
+        <div class="con-item">
+          <div v-for="(item, index) in stickerss" :key="index">
+    
+                <div @click="addstikerf(item.image_data.url)">
+              <img :src="item.image_data.url" class="stiker-img"/>
+            </div> 
           </div>
         </div>
       </div>
@@ -60,7 +69,9 @@ export default Vue.extend({
         star:'0',
         novel_data_id:''
       },
-      test:''
+      test:'',
+      sticker:[] as any,
+      stickerss:[] as any
     }
   },
   methods:{
@@ -69,16 +80,18 @@ export default Vue.extend({
         "stiker"
       ) as HTMLElement;
       
-      
+      this.filter(this.sticker[0])  
       localStorage.setItem('s',as)
       conModal.style.display = "grid";
     },
      addstikerf(stiker: any) {
       const editer = document.getElementById(localStorage.getItem('s') as any) as any;
       const element = document.createElement("img");
-      element.setAttribute("src", (this as any).$path.cheerup(stiker));
+      element.setAttribute("src", stiker);
+      element.setAttribute("class", 'stiker-img');
       editer.appendChild(element);
       this.onInput()
+      this.close()
     },
      close() {
       let conModal = document.getElementById(
@@ -109,7 +122,34 @@ export default Vue.extend({
     reset(){
        let html = document.getElementById("Editer") as HTMLElement;
        html.innerHTML = '';
+    },
+    async  getListstiger(){
+       let ressticker = await Gatway.postService('/guest/shop-data/lists', {shop_type_data_id:'9c1c64df-3516-4098-8575-1c3470206710'} as any) 
+      console.log(ressticker.data.data);
+      let resstickerdata = [] as any
+      ressticker.data.data.filter((res: any)=>{
+        // console.log(res.diamond);
+         if(res.diamond === null || parseInt(res.diamond) === 0 ){
+           resstickerdata.push(res)
+         }
+      })
+      console.log("resstickerdata,",resstickerdata[0]);
+      this.sticker =await resstickerdata
+    },
+    filter(item){
+      this.sticker.filter((res:any)=>{
+        
+        if(res.id === item.id){
+          // console.log(res.shop_item_datas);
+           this.stickerss = res.shop_item_datas
+          // data.push(res)
+        }
+      })
+      // this.stickerss = data
     }
+  },
+  mounted(){
+   this.getListstiger()
   }
 })
 </script>
@@ -196,14 +236,15 @@ export default Vue.extend({
   display: none;
 }
 .con-stiker {
-  height: 70vh;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  min-height: 60vh;
+  position: relative;
+  // display: grid;
+  // grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   background: #ffffff;
   border-radius: 10px;
-  padding: 20px;
-  justify-items: center;
-  align-items: center;
+  // // padding: 20px;
+  // justify-items: center;
+  // align-items: center;
 }
 .con-submit {
   display: flex;
@@ -233,12 +274,37 @@ export default Vue.extend({
   //  height: 25px;
   align-items: center;
  }
-
+ .title{
+   padding: 10px;
+ }
+.con-item{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  margin: 20px;
+}
+.stiker-img{
+  height: 100px;
+  width: 100px;
+}
+.con-title-stiker{
+  display: flex;
+}
+.fa-times-circle{
+  position: absolute;
+  top: 5px ;
+  right: 5px;
+  cursor: pointer;
+}
 @media (max-width: 415px) {
   .text-review {
     font-size: 17px;
 
     margin-left: 0px;
   }
+  .con-item{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin: 20px;
+}
 }
 </style>

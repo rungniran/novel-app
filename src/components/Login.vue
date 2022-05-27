@@ -12,25 +12,13 @@
             <img src="../assets/images/image 5.png" width="18px" />
             เข้าสู่ระบบด้วย Google
           </div>
-
-              <!-- <GoogleLogin :params="params" :onSuccess="onSuccess($event)" ><div class="google">
-            <img src="../assets/images/image 5.png" width="18px" />
-            เข้าสู่ระบบด้วย Google
-          </div></GoogleLogin> -->
-
-<!-- <GoogleLogin :params="params" :logoutButton="true">Logout</GoogleLogin> -->
-            <GoogleLogin :params="params"  :onSuccess="onSuccess" :onFailure="onFailure">
-
-             <div class="google">
-            <img src="../assets/images/image 5.png" width="18px" />
-            เข้าสู่ระบบด้วย Google
-          </div>
-           </GoogleLogin>
           <div  @click="logInWithFacebook">
-            <div class="imagefacebook-con" v-if="datafacebook">
-              <img :src="imagefacebook" class="imagefacebook" /> {{datafacebook.name}} <div>เข้าสู่ระบบ</div>
-            </div>
-            <div v-else class="facebook">
+            <!-- <div class="imagefacebook-con" v-if="datafacebook">
+              <img :src="imagefacebook" class="imagefacebook" />
+              <span>{{datafacebook.first_name}} {{datafacebook.last_name}}</span>
+              <div>เข้าสู่ระบบ</div>
+            </div> -->
+            <div class="facebook">
                <i class="fab fa-facebook" style="font-size:20px"></i>  เข้าสู่ระบบด้วย Facebook
             </div>
           </div>
@@ -95,44 +83,35 @@
   
 </template>
 
-<script lang="ts">
+<script f>
 import Vue from "vue";
 import { Auth, Gatway } from "../shares/services";
-import { facebook_app_id } from "../shares/constants";
-import GoogleLogin from "vue-google-login";
-// import { alert } from '@/shares/modules/alert'
-
+// import { facebook_app_id } from "../shares/constants";
+import { 
+getAuth, 
+signInWithPopup, 
+GoogleAuthProvider, 
+FacebookAuthProvider, 
+} from "firebase/auth";
+import {alert} from "@/shares/modules/alert"
 
 export default Vue.extend({
   name: "Login",
-  components: {
-    GoogleLogin,
-  },
+
   data() {
     return {
       isLogin: false,
       onmouse: false,
       dataLogin: {
-        username: "mayesterda2y.g@gmail.com",
-        password: "123456789",
+        username: "",
+        password: "",
       },
-      imagefacebook: localStorage.getItem("imagefacebook"),
-      datafacebook: JSON.parse(localStorage.getItem("social_auth") as any),
-      params: {
-        client_id:
-          "1002950262285-jft3s7uqb5n9adk5kn8140bn48edpasf.apps.googleusercontent.com",
-      },
-      renderParams: {
-        width: 250,
-        height: 50,
-        longtitle: true
-      },
+      // imagefacebook: localStorage.getItem("imagefacebook"),
+      // datafacebook: JSON.parse(localStorage.getItem("social_auth")),
     };
   },
   mounted() {
-
-    this.initFacebook()
-    let login = document.getElementsByClassName("login-crad")[0] as HTMLElement; 
+    let login = document.getElementsByClassName("login-crad")[0] 
     login.onmouseover = () => {
       this.onmouse = true;
     };
@@ -153,7 +132,7 @@ export default Vue.extend({
         if (res.data.status === true) {
           this.$store.commit("login", { token, status });
         } else {
-          const alert = document.getElementsByClassName("aret")[0] as HTMLElement;
+          const alert = document.getElementsByClassName("aret")[0] 
           alert.style.transform = "scale(1.0)";
         }
       });
@@ -183,104 +162,67 @@ export default Vue.extend({
       comResgister.classList.remove("show-com");
       comLogin.classList.add("show-com");
     },
-    onSuccess(googleUser:any) {
-      // console.log('dfdf');
-      console.log(JSON.stringify(googleUser));
 
-      // This only gets the user information: id, name, imageUrl and email
-      // console.log(JSON.stringify(googleUser.getBasicProfile()));
-    },
-    onFailure(googleUser){
-      console.log('>>>',googleUser);
-    },
-    async logfacebook(response:any) {
-      (window as any).FB.api(
-        response.authResponse.userID,
-        { fields: "name,email,picture,first_name,last_name" },
-        (res:any) => {
-          console.log(res);
-          var login = {
-            id: res.id,
-            email: `${res.id}@facebook.com`,
-            first_name: res.first_name,
-            last_name: res.last_name,
-            name: res.name,
-          };
-          console.log(res.picture.data.url);
-          localStorage.setItem("imagefacebook", res.picture.data.url);
-          localStorage.setItem("social_auth", JSON.stringify(login));
-          Gatway.postService("/login-facebook", login as any).then((res:any) => {
-            let token = res.data.data.token;
-            let status = true;
-            this.$store.commit("login", { token, status });
-          });
-        }
-      );
-    },
+
+    // Vemail(){}
+  
     async logInWithFacebook() {
+      const provider = new FacebookAuthProvider();
       try{
-        this.loadFacebookSDK(document, "script", "facebook-jssdk");
-        await this.initFacebook();
-        await (window as any).FB.login( async (response:any) => {
-          if (response.authResponse) {
-          await this.logfacebook(response);
-          } else {
-            console.log("close");
-          }
-        });
-      }catch (error){
-        // alert('โปรดลองอีกครั้งลองอีกครั้ง','success')
-        console.log(error);
-      }
-      
-      // return false;
-    },
-    async initFacebook() {
-      try{
-        (window as any).fbAsyncInit =  () => {
-          (window as any).FB.init({
-            // appId: "683954099579149",
-            // cookie: false,
-            // xfbml: true,
-            appId  : facebook_app_id,
-            status : false, // check login status
-            cookie : false, // enable cookies to allow the server to access the session
-            xfbml  : true ,
-            version: "v13.0",
-          });
+        const res = await signInWithPopup(getAuth(),provider)
+        console.log(res.user.providerData[0].email, res.user.providerData[0].uid );
+        let email =  res.user.providerData[0].email 
+        ? res.user.providerData[0].email 
+        : `${res.user.providerData[0].uid}@facebook.com`
+        var login =  {
+          id: res.user.providerData[0].uid,
+          email: email,
+          first_name: res._tokenResponse.firstName ? res._tokenResponse.firstName : '-',
+          last_name: res._tokenResponse.lastName ? res._tokenResponse.lastName : '-',
+          name: email,
         };
-      }catch (error){
-           console.log(error);
+        // console.log(login);
+        this.CleckEmail(login)
+      }catch(error){
+          // alert('Email ถูกใช้งานไปแล้วใน บัญชี ' + error.customData._tokenResponse.verifiedProvider[0],"success")
+          console.log(error);
+          console.log(JSON.parse(error.customData._tokenResponse.rawUserInfo).id);
+          var loginErr = {
+            id: JSON.parse(error.customData._tokenResponse.rawUserInfo).id,
+            email: error.customData.email,
+            first_name: error.customData._tokenResponse.firstName ? error.customData._tokenResponse.firstName : '-',
+            last_name: error.customData._tokenResponse.lastName ? error.customData._tokenResponse.firstName : '-',
+            name: error.customData.email,
+        };
+        console.log(loginErr);
+        // //   localStorage.setItem("social_auth",JSON.parse(error.customData._tokenResponse.rawUserInfo));
+        // // localStorage.setItem("imagefacebook", error.customData._tokenResponse.photoUrl);
+          this.CleckEmail(loginErr)
       }
-      
+
+  
+    },
+    async CleckEmail(item){
+        const resfacebook = await Gatway.postService("/login-facebook", item )
+        let token = resfacebook.data.data.token;
+        let status = true;
+        this.$store.commit("login", { token, status });
     },
 
     async logingoogle() {
-      // let res =  await Gatway.postService("/login-gmail", {} as any)
-      // console.log(res);
-      let res =  await (this as any).$gAuth.signIn() 
-      console.log(res);
-      
-      // (this as any).$gAuth.signIn().then((res) => {
-      //   console.log(res);
-        
-      // });
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
+      const res = await signInWithPopup(getAuth(),provider)
+      const data = {
+        ...res.user.providerData[0], 
+        first_name: res._tokenResponse.firstName ? res._tokenResponse.firstName : '-', 
+        last_name:res._tokenResponse.lastName ? res._tokenResponse.lastName : '-'}
+      const resgmail = await Gatway.postService("/login-gmail", data) 
+      let token = resgmail.data.data.token;
+      let status = true;
+      this.$store.commit("login", { token, status });
+     
     },
-    loadFacebookSDK(d:any, s:string, id:string) {
-      var js,fjs = d.getElementsByTagName(s)[0];
-      console.log(d.getElementById(id));
-      
-      if (!d.getElementById(id)) {
-        // return;
-        setTimeout(() => {
-           this.logInWithFacebook()
-        }, 500);
-      }
-      js = d.createElement(s);
-      js.id = id;
-      js.src = "https://connect.facebook.net/en_US/all.js";
-      fjs.parentNode.insertBefore(js, fjs);
-    }
   },
 });
 </script>

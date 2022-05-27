@@ -12,7 +12,9 @@
               :style="'background: url(' + img + ') center center/cover'"
             ></div>
             <div>
-              <div class="name-review">{{item.user.user_profile_datas[0].first_name}}  {{item.user.user_profile_datas[0].last_name}} &nbsp;  
+              <div class="name-review" v-if="item.user">
+                <span v-if="item.user.user_profile_datas[0].user_nickname" >{{item.user.user_profile_datas[0].user_nickname}} </span>
+                <span v-else>{{item.user.user_profile_datas[0].first_name}}  {{item.user.user_profile_datas[0].last_name}} &nbsp; </span> 
                 <small v-if="item.novel_episode_data"> #ตอนที่ {{item.novel_episode_data.ep_no}}</small>
               </div>
               <div class="review-date">{{ $filter.Ago(item.created_at)}}</div>
@@ -90,6 +92,9 @@
           <i class="fas fa-reply r"></i>
         </div>
         <div class="input-comment">
+        <NovelEditterComment :htmt="resettext"  :Editer="'htmlreply'+item.id"   @click="submit(item.id,  $event)"/>
+        </div>
+        <!-- <div class="input-comment">
           <div class="text-editer">
             <div class="option-icon">
               <i class="fas fa-bookmark"  
@@ -115,7 +120,7 @@
             </div>
           </div>
           <i class="fas fa-reply r"></i>
-        </div>
+        </div> -->
       </div>
     </div>
     <div class="con-modal" @click="close()">
@@ -156,7 +161,8 @@ export default Vue.extend({
         comment_data_id: '',
         html:''
       },
-      mode:'read'
+      mode:'read',
+      resettext:  ''
     };
   },
   methods: {
@@ -213,17 +219,20 @@ export default Vue.extend({
 
     },
     
-    async submit(uuid:string, index:any){
-      this.obj.html = this.onInput(index)
+    async submit(uuid:string, html:any){
+      console.log(uuid);
+      
+      this.obj.html = html
       this.obj.comment_data_id = uuid
       await this.comment(this.obj)
-      this.$emit('fetch', this.obj, index)
-      this.reset(index)
-      // this.fetchComment(uuid)
+      this.$emit('fetch', this.obj)
+      this.reset(uuid)
+      // this.resettext = await ''
+      this.fetchComment(uuid)
     },
 
-    reset(i:any){
-      let html = document.getElementsByClassName("editer")[i] as HTMLElement;
+    reset(uuid:any){
+      let html = document.getElementById('htmlreply'+uuid) as HTMLElement;
       html.innerHTML = '';
     },
     

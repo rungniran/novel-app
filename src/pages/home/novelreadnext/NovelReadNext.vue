@@ -11,22 +11,25 @@
       :dots="false"
       :responsive="responsive"
     >
-      <div
-        v-for="(items) in opject"
-        :key="items.id"
-        :to="'/novel/' + items"
+    <!-- {{opject}} -->
+      <router-link
+        v-for="items, index in opject.reverse()"
+        :key="index"
+        :to="'/read/' + items.item.id"
         class="NovelRead-box-carousel  NovelReadNext"
       >
+      <!-- {{items}} -->
         <img
           class="item-banner"
-          src="https://s3.ap-southeast-1.amazonaws.com/media.fictionlog/books/61d58aa01353ba001c779a4d/61dc081cUzBPUw7w.jpeg"
+          :src="items.image_data ? items.image_data.url  : $path.image('loading.png')"
+           onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
           alt
         />
         <div class="grod-detail">
-          <div class="name">เพียงรักข้ามพบ</div>
-          <div>บทที่ 11 เริ่มต้นใหม่</div>
+          <div class="name line-1"> {{items.title}}</div>
+          <div class="line-1">{{items.item.name}}</div>
         </div>
-      </div>
+      </router-link>
     </carousel>
   </div>
 </template>

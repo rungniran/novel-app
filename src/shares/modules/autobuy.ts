@@ -3,7 +3,7 @@
 export function setAutoBuy(key: string):boolean {
   if(localStorage.getItem("setAutoBuy")) {
     const setArrayBuy = JSON.parse(localStorage.getItem("setAutoBuy") as string)
-    console.log(setArrayBuy.includes(key) ,setArrayBuy);
+    // console.log(setArrayBuy.includes(key) ,setArrayBuy);
     if(setArrayBuy.includes(key) === true){
       const index = setArrayBuy.indexOf(key)
       setArrayBuy.splice(index, 1 )
@@ -20,7 +20,7 @@ export function setAutoBuy(key: string):boolean {
     const setArrayBuy = [] as string[];
     setArrayBuy.push(key)
     localStorage.setItem("setAutoBuy", JSON.stringify(setArrayBuy))
-    console.log(setArrayBuy);
+    // console.log(setArrayBuy);
     return true
   }
 }

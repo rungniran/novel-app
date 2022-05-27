@@ -20,7 +20,6 @@ export default Vue.extend({
   methods: {
     async listNovel() {
       let res = await ListService.listNovel();
-      console.log('>>>>>>>>',res);
       this.mywork = res.data.data;
     },
   },

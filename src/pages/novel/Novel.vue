@@ -9,12 +9,13 @@
             :src=" resGetNovel.image_data ? resGetNovel.image_data.url : $path.image('loading.png')"
             class="nv-img-novel"
             width="100%"
+            onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
           />
         </div>
         <div class="detail">
 					<div>
 						<div class="nv-title line-1">{{resGetNovel.title}}</div>
-						<router-link style="color: #e4803a;" :to="'/profile/'+resGetNovel.publisher_novel_data_id">{{resGetNovel.novelist}}</router-link>
+						<router-link style="color: #e4803a;" :to="'/profile/'+resGetNovel.user_id+'/writer'">{{resGetNovel.user_id}}</router-link>
 						<div class="con-review">
                 <NovelStar :rating="Math.round (resGetNovel.avg_star)" /> 
                 <!-- <span> ({{dataReview.length}}) </span> -->
@@ -239,13 +240,13 @@
         <div >
         <div class="nv-title">เผยแพร่โดย</div>
         <div class="writer-sarabun">
-          <div class="writer-profile">
+          <router-link class="writer-profile" :to="'/profile/'+resGetNovel.user_id+'/writer'">
             <div class="img-profile"></div>
             <div>
-              <div>{{resGetNovel.publisher_novel_data_id}}</div>
+              <div>{{resGetNovel.user_id}}</div>
               <small>ไม่มีข้อมูล</small>
             </div>
-          </div>
+          </router-link>
           <div class="writer-detail">
             <div>ไม่มีข้อมูล</div>
             <button
@@ -303,6 +304,7 @@ import { setAutoBuy, getAutoBuy }  from '@/shares/modules/autobuy'
 import "highlight.js/styles/tomorrow.css";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
+import { profile } from "@/router/profile";
 export default Vue.extend({
   name: "Novel",
   components: {
@@ -367,7 +369,12 @@ export default Vue.extend({
      
     },
     async openmenuBuy(item:any):Promise<void>{
-      if(item.coin === '0.00'){
+      // console.log(this.resGetNovel.user_id === (this as any).profile.id);
+      
+      if(item.coin === '0.00' || this.resGetNovel.user_id === (this as any).profile.id){
+        console.log(item);
+        let dataitem = {...this.resGetNovel, item}
+        this.$store.commit("setRead", dataitem)
         this.$router.push(`/read/${item.id}`)
       }else{
         (this as any).cleck === "true"
@@ -403,6 +410,8 @@ export default Vue.extend({
       } as any)
       if (res.data.code !== 402) {
         this.$store.commit("reset")
+        let dataitem = {...this.resGetNovel, item:res.data.data}
+        this.$store.commit("setRead", dataitem)
         alert('คุณในซื้อนิยาย ' +  res.data.data.current.coin + ' เหรียญ' , 'success')
         this.$router.push(`/read/${this.EpID}`)    
       }else{

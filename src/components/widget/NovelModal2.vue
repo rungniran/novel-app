@@ -1,5 +1,6 @@
 <template>
   <div class="contai-modal" @click="onmouse == false ? close() : null" :id="ID">
+    <!-- {{onmouse}} -->
     <div class="contai-modal-crad" :id="IDCrad">
         <i v-if="Close === true" class="fas fa-times-circle" @click="close()" ></i>
       <slot name="body" />
@@ -12,7 +13,7 @@ export default Vue.extend({
   name: "NovelModal2",
   data() {
     return {
-      onmouse: false,
+      onmouse: true,
     };
   },
   props: {
@@ -34,16 +35,22 @@ export default Vue.extend({
       document.getElementById(this.$props.ID)?.classList.remove("show");
     },
     open(): void {
+      console.log(this.$props.ID);
+      
       let id = document.getElementById(this.$props.ID) as HTMLElement;
       id?.classList.add("show");
     },
   },
   mounted() {
     let elememt = document.getElementById(this.$props.IDCrad) as HTMLElement;
+    
+    
     elememt.onmouseover = (): void => {
+      // console.log(this.onmouse );
       this.onmouse = true;
     };
     elememt.onmouseout = (): void => {
+      //  console.log(this.onmouse );
       this.onmouse = false;
     };
   },
@@ -85,6 +92,7 @@ export default Vue.extend({
     text-align: center;
     gap: 10px;
 }
+
 .fa-times-circle{
   position: absolute;
   top: 5px ;

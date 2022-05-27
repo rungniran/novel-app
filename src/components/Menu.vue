@@ -2,9 +2,9 @@
   <div class="profile-menu">
     <router-link
       v-if="profile"
-      :to="'/profile/' + path_profile"
+      :to="'/profile/' +profile.id + '/writer'"
       class="con-list con-profile"
-      @click.native="closemenu()"
+      
     >
       <div
         class="img-profile"
@@ -13,8 +13,8 @@
         "
       ></div>
       <div>
-        <div v-if="profile">{{ this.$store.state.auth.dataset.user_profile_datas[0].first_name}}  {{ this.$store.state.auth.dataset.user_profile_datas[0].last_name}}</div>
-        <small v-if="profile">{{ profile.username }}</small>
+        <div v-if="profile" class="line-1">{{ this.$store.state.auth.display_name}} </div>
+        <small v-if="profile">#นักรบมังกร</small>
       </div>
     </router-link>
     <li class="coin gold">
@@ -26,7 +26,7 @@
           )
         }}
       </div>
-      <router-link class="btn-gold" to="/wallet" @click.native="closemenu()"
+      <router-link class="btn-gold" to="/wallet" 
         >เติมเหรียญ</router-link
       >
     </li>
@@ -38,7 +38,7 @@
       <router-link
         class="btn-diamond"
         to="/exchange"
-        @click.native="closemenu()"
+      
         >แลกของ</router-link
       >
     </li>
@@ -46,7 +46,7 @@
       class="con-list"
       active-class="active-submenu"
       to="/treasury"
-      @click.native="closemenu()"
+   
     >
       <img :src="$path.svg('treasury.svg')" width="20px" />
       คลังสมบัติ
@@ -55,7 +55,7 @@
       class="con-list"
       to="/writer"
       active-class="active-submenu"
-      @click.native="closemenu()"
+    
     >
       <img :src="$path.image('star.png')" width="20px" />
       ผลงานของฉัน
@@ -64,7 +64,7 @@
       class="con-list"
       to="/bookshelf"
       active-class="active-submenu"
-      @click.native="closemenu()"
+ 
     >
       <img :src="$path.image('list.png')" width="20px" />
       ชั้นหนังสือ
@@ -73,7 +73,7 @@
       class="con-list"
       to="/history"
       active-class="active-submenu"
-      @click.native="closemenu()"
+   
     >
       <img :src="$path.image('history.png')" width="20px" />
       ประวัติการใช้งาน
@@ -82,7 +82,7 @@
       class="con-list"
       active-class="active-submenu"
       to="/reportproblem"
-      @click.native="closemenu()"
+   
     >
       <img :src="$path.image('info.png')" width="20px" />
       แจ้งปัญหา
@@ -91,7 +91,7 @@
       class="con-list"
       active-class="active-submenu"
       to="/account"
-      @click.native="closemenu()"
+
     >
       <img :src="$path.image('setting.png')" width="20px" />
       ตั้งค่า

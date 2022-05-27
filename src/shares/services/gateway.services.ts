@@ -50,6 +50,12 @@ export const Gatway = {
             alertSystem(error) 
         });  
     },
+    PutOBJService(url:string, obj:any[]):any{
+        return api.put(url , obj, Authorization )
+        .catch(error =>{
+            alertSystem(error) 
+        });  
+    },
 }
 
 

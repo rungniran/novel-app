@@ -1,19 +1,18 @@
 <template>
-  <div id="Carousel">
-    <!-- {{opject}}  :lazyLoad="false"-->
-    <!-- <div @click="reface()">spoijhdi</div> -->
-    <Carousel
+  
+ 
+    <carousel 
       :items="1"
-      :loop="loop"
+      :loop="true"
       :margin="10"
       :center="false"
-      :lazyLoad="true"
+      :lazyLoad="false"
       :autoplay="false"
       :singleItem="false"
       :nav="false"
       :dots="false"
       :responsive="responsive"
-      v-if="opject"
+     
     >
     <template>
       <router-link
@@ -52,13 +51,13 @@
         </div>
       </router-link>
       </template>
-    </Carousel>
-  </div>
+    </carousel >
+
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import Carousel from "vue-owl-carousel";
+import carousel  from "vue-owl-carousel";
 import NovelStar from "@/components/widget/NovelStar.vue";
 
 export default Vue.extend({
@@ -70,8 +69,9 @@ export default Vue.extend({
   },
 
   components: {
-    Carousel,
+    // carousel:()=> import('../../../node_modules/vue-owl-carousel') ,
     NovelStar,
+    carousel
   },
   data() {
     return {
@@ -94,14 +94,14 @@ export default Vue.extend({
       },
     };
   },
-  methods:{
-    reface(){
-    var container = document.getElementById("Carousel") as HTMLElement;
-    console.log( container.innerHTML);
-    var content = container.innerHTML;
-    container.innerHTML= content; 
-    }
-  }
+  // methods:{
+  //   reface(){
+  //   var container = document.getElementById("Carousel") as HTMLElement;
+  //   console.log( container.innerHTML);
+  //   var content = container.innerHTML;
+  //   container.innerHTML= content; 
+  //   }
+  // }
 });
 </script>
 <style lang="scss" scoped>

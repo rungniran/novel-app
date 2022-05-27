@@ -2,7 +2,7 @@
   <div class="Sarabun">
     <div class="in-sarabun">
       <div v-for="item, index in data" :key="index" class="box-sarabun" :id="'box'+item.id" @click="$emit('sarabun-buy', item) ">
-        <div>#{{item.ep_no}} {{item.name}}</div>
+        <div class="line-1">#{{item.ep_no}} {{item.name}}</div>
         <div v-if="item.coin !== '0.00'" >
              <div v-if="item.bought === false" class="buy-coin">
                 <img :src="$path.image('coin-gold.png')" height="20px" >

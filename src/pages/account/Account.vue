@@ -14,7 +14,7 @@
       <div class="contant">
         <div class="box-username">
           <div v-if="profile" class="nv-username">
-            {{ this.$store.state.auth.dataset.user_profile_datas[0].first_name}}  {{ this.$store.state.auth.dataset.user_profile_datas[0].last_name}}
+           {{ this.$store.state.auth.display_name}}
           </div>
           <div v-if="profile">{{ profile.email }}</div>
         </div>
@@ -28,7 +28,7 @@
         >
           ข้อมูลผู้ใช้
         </router-link>
-        <router-link
+        <!-- <router-link
           @click.native="changeComponent('writerinfo')"
           to="#writerinfo"
           :class="
@@ -36,7 +36,7 @@
           "
         >
           ข้อมูลนักเขียน
-        </router-link>
+        </router-link> -->
       </div>
       <div class="nv-mt-30">
         <component :is="current"></component>

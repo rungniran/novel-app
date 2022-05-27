@@ -12,13 +12,16 @@
     </div>
     <div class="contant">
         <div class="box-username">
-            <div v-if="profile" class="nv-username">{{profile.username}}</div>
-            <div v-if="profile" >#{{profile.dragon}}</div>
+            <div v-if="profile" class="nv-username">
+               <span v-if="data.user_profile_datas[0].user_nickname">    {{ data.user_profile_datas[0].user_nickname}} </span>
+               <span v-else>{{ data.user_profile_datas[0].first_name}} {{ data.user_profile_datas[0].last_name}}</span>
+            </div>
+            <div v-if="profile" >#นักรบมังกร</div>
             <div class="level">
                 <div class="teb-level"></div>
             </div>
             <div class="nv-mt-10">
-                Exp {{lv}} / 100
+                Exp 1/ 100
             </div>
         </div>
     </div>
@@ -28,6 +31,9 @@
 import Vue from 'vue'
 export default Vue.extend({
 	name:"cover",
+    props:{
+       data:{}
+    },
     data() {
         return {
             lv: 65
@@ -37,7 +43,7 @@ export default Vue.extend({
         lev():void{
             setTimeout(()=>{
                 const l = document.getElementsByClassName("teb-level")[0] as HTMLElement
-                l.style.width = this.lv + "%"
+                l.style.width = (this as any).data.user_profile_datas[0].user_level + "%"
             }, 600)
         }
     },

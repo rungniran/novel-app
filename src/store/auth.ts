@@ -2,14 +2,28 @@
 import {Auth, Gatway} from "../shares/services";
 export type statetype = {
     dataset:any,
-    username?:string,
+    display_name?:string| null,
     coin?:string | null,
     loggedIn?:boolean | null
     token?:string
 }
+
+
+const disployName = ()=>{
+    if (JSON.parse(localStorage.getItem("dataset") as any)){
+        if(JSON.parse(localStorage.getItem("dataset") as any).user_profile_datas[0].user_nickname ){
+           return JSON.parse(localStorage.getItem("dataset") as any).user_profile_datas[0].user_nickname 
+        }else{
+            return JSON.parse(localStorage.getItem("dataset") as any).user_profile_datas[0].first_name +' '+  JSON.parse(localStorage.getItem("dataset") as any).user_profile_datas[0].last_name
+        }
+    }else{
+        return null
+    }
+}
+
 const state:statetype = {
     dataset: localStorage.getItem("dataset") ? JSON.parse(localStorage.getItem("dataset") as string) : null, 
-    username:'',
+    display_name: disployName(),
     coin: localStorage.getItem("coin") ? JSON.parse(localStorage.getItem("coin") as string ) as string : null,
     loggedIn: localStorage.getItem("loggedIn") ? localStorage.getItem("loggedIn") as boolean | null : null,
     token:localStorage.getItem("token") as string
@@ -31,21 +45,11 @@ const mutations = {
     async login(state:statetype,{token,status}:{token:string,status:string }):Promise<void>{
             const res = await Auth.customer(token)
             const resProfile = await Auth.profile(token, res.data.id)
-
-            console.log(resProfile);
-            
-            // console.log(res.data);
             localStorage.setItem("loggedIn", status);
             localStorage.setItem("token", token);
-            
-            const object = {...resProfile.data.data , show_name: `${resProfile.data.data.user_profile_datas[0].first_name}  ${resProfile.data.data.user_profile_datas[0].last_name}`}
+            const object = {...resProfile.data.data , show_name: `${resProfile.data.data.user_profile_datas[0]?.first_name}  ${resProfile.data.data.user_profile_datas[0]?.last_name}`}
             state.dataset = object
-            // const object = {
-            //     "user_uuid": res.data.id,
-            //     "username":res.data.username,
-            //     "dragon": res.data.email,
-            //     "writer": false,
-            // }
+
             localStorage.setItem("dataset", JSON.stringify(object));
             
        

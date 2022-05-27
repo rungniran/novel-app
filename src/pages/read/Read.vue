@@ -1,5 +1,6 @@
 <template>
   <div class="read">
+    
 		<!-- <div class="sticky" :style="'width:'+ Percen +'%'"></div> -->
     <!-- {{read}}  v-if="code !== 401"-->
 		<div class="con-read nv-box-white  nv-mt-40"  v-if="read">
@@ -9,7 +10,7 @@
              <!-- <ReadSarabun  /> -->
              <component :is="current" v-on:sarabun-buy="Sarabunbuy" :uuid="read.novel_data_id"></component>
           </div>
-					<div class="box-name line-1"> {{read.name}}</div>
+					<div class=" line-1"> {{read.name}}</div>
         </div>
         <div class="box-percen">
 					<!-- <div class="Percen">{{Percen}}%</div> -->
@@ -55,7 +56,7 @@
       <NovelCarousel :opject="recommend" />
     </div> -->
     <div class="nv-box-white nv-mt-40">
-      <NovelCarousel :opject="recommend" :loop="true"/>
+      <NovelCarousel v-if="recommend" :opject="recommend" :loop="false"/>
     </div>
     <div class=" nv-box-white nv-mt-40 NovelEditterComment" v-if="profile">
       <NovelEditterComment @click="ClickPost"/>
@@ -90,6 +91,7 @@ import { Gatway } from '@/shares/services'
 import { alert } from '@/shares/modules/alert'
 import { setAutoBuy, getAutoBuy }  from '@/shares/modules/autobuy'
 import { setThreme} from './ReadCustomize'
+
 import Vue from "vue";
 export default Vue.extend({
   name: "Read",
@@ -121,7 +123,7 @@ export default Vue.extend({
     };
   },
   components: {
-    NovelCarousel: () => import("@/components/widget/NovelCarousel.vue"),
+    NovelCarousel:()=>import("@/components/widget/NovelCarousel.vue"),
 		Customize:() => import('./customize/Customize.vue'),
     NovelModal: () => import("@/components/widget/NovelModal.vue"),
     ReadSarabun:() => import('./readsarabun/ReadSarabun.vue'),
@@ -154,6 +156,14 @@ export default Vue.extend({
         this.next = await Ojb.data.data.next
         this.previous = await Ojb.data.data.previous
         setThreme()
+       let res = await Gatway.getIDService('/guest/fetch-novel-header', Ojb.data.data.current.novel_data_id)
+       console.log('>>>>',res.data.data);
+     
+ 
+        let dataitem = {...res.data.data, item:Ojb.data.data.current}
+        console.log(dataitem);
+        
+        this.$store.commit("setRead", dataitem)
        
       }   
     },
@@ -170,7 +180,7 @@ export default Vue.extend({
       this.tets() 
     },
     switchsell(key:string){
-      this.cleckAuten = setAutoBuy(key) 
+     this.cleckAuten = setAutoBuy(key) 
     },
     async buy(item:any, paymentConfirma:boolean){
       let res = await Gatway.postService('/reader/novel-episode/read', 
@@ -178,9 +188,14 @@ export default Vue.extend({
         "novel_episode_datas":[item.id],
         "payment_confirmation":paymentConfirma
       } as any)
-      if( res.data.data==="please pay"){
-        this.cleckAuten === true ? this.AutoBuy(item) : (this as any).$base.openmodal('buy-novel-ep-auto', 'buy-novel-ep-auto-amination', 0)
-      }else{
+  
+      
+      if( res.data.code===402){
+        alert('เหรียญของคุณมีไม่เพียงพอ' , 'error')
+      }else if(res.data.data==="please pay"){
+          this.cleckAuten === true ? this.AutoBuy(item) : (this as any).$base.openmodal('buy-novel-ep-auto', 'buy-novel-ep-auto-amination', 0)
+      }
+      else{
         await this.getread(res);
         await this.$router.push('/read/' + item.id);
         this.tets()
@@ -219,11 +234,17 @@ export default Vue.extend({
         "novel_episode_datas":[item.id],
         "payment_confirmation": true
       } as any)
-      await this.getread(res);
-      await this.$router.push('/read/' + item.id);
-      this.tets()
-      this.$store.commit("reset");
-      alert('คุณในซื้อนิยาย ' +  item.coin + ' เหรียญ','success')
+      console.log('AutoBuy', res);
+      if(res.data.code=== 402){
+         alert('เหรียญของคุณมีไม่เพียงพอ' , 'error')
+      }else{
+        await this.getread(res);
+        await this.$router.push('/read/' + item.id);
+        this.tets()
+        this.$store.commit("reset");
+        alert('คุณในซื้อนิยาย ' +  item.coin + ' เหรียญ','success')
+      }
+      
     },
 
     Sarabunbuy(item:any){
@@ -242,6 +263,8 @@ export default Vue.extend({
       
     },
     async cleckAutoBuy(item:any){
+      console.log(item);
+      
       if(item.coin === '0.00'){
         await this.buy(item, true)
       }else{
@@ -285,7 +308,7 @@ export default Vue.extend({
 
     },
      async  tets(){
-      let res = await Gatway.postService('/customers/comments/comment-episode', { action: 'fetch-comment-episode', novel_episode_data_id: this.$route.params.slug} as any) 
+      let res = await Gatway.postService('/guest/comments/comment-episode', { action: 'fetch-comment-episode', novel_episode_data_id: this.$route.params.slug} as any) 
       console.log('saaaaa>>>', res);
       this.DataComment = res.data.data
       
@@ -294,6 +317,7 @@ export default Vue.extend({
       let res = await Gatway.getService('/guest/recommended-novel')
       const data = [] as any
       res.data.data.forEach((element:any) => {
+        console.log(element.novel_data);
         if(element.novel_data){
           data.push(element.novel_data)
         }
@@ -305,11 +329,12 @@ export default Vue.extend({
 
   },
   mounted() {
+    // setTimeout(()=>, 5000);
     this.getRecommend()
-    this.tets()
+    // this.tets()
     this.cleckNovel()
-		window.scrollTo({ top: 0, behavior: 'smooth' })
-		window.addEventListener("scroll", this.onScroll)
+		// window.scrollTo({ top: 0, behavior: 'smooth' })
+		// window.addEventListener("scroll", this.onScroll)
   },
 });
 </script>

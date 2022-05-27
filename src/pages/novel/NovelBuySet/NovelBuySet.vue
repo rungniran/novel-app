@@ -1,5 +1,5 @@
 <template>
-  <NovelModal2 ID="buyset" ref="Modeal">
+  <NovelModal2 ID="buyset" IDCrad="buysetCrad" ref="Modeal">
     <template v-slot:body>
       <div class="form-buyset-con">
         <div class="form-buyset mobeil">

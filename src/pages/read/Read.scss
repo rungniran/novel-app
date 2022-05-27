@@ -121,11 +121,14 @@ $radius: 5px;
 }
 .grod-1 {
   display: flex;
-  grid-gap: 5px;
+  grid-gap: 5px;    
+  align-items: center;
+
 }
 
 .name-story {
   font-size: 25px;
+  margin: 0px 20px;
   text-align: center;
   color: #1e2046;
   font-weight: 600;

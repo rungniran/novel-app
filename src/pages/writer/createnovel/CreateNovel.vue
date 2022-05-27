@@ -52,9 +52,12 @@
           <div class="title">เรื่องย่อ <span class="is-valid">*</span></div>
 					<NovelEditor @Editor="func_Editor" :valueWay="this.data.description"/>
         </div>
-        <div class="nv-mt-40">
+        <div class="nv-mt-30">
           <div class="title">แท็ก</div>
-          <input @keydown.enter='addTag'/>
+          <input  @keydown.enter='addTag'/>
+           <div class="con-tag">  
+             <div v-for="item,index in data.tag" :key="index" class="tag" @click="del(index)">#{{item}}<i class="fas fa-times-circle" @click="del(index)"></i></div>
+            </div>
         </div>
         <div v-if="!checkupdate" class="contai-checkbox">
           <div class="round">
@@ -129,9 +132,11 @@ export default Vue.extend({
         description: "",
         detail: "",
         publisher: "",
-				translated_by:""
+				translated_by:"",
+        tag:[]
       },
-      file:{}
+      file:{},
+      tag:[]
     };
   },
   methods: {
@@ -229,7 +234,13 @@ export default Vue.extend({
 		},
 		addTag(event){
 			console.log(event.target.value);
-		}
+      
+      this.data.tag.push(event.target.value)
+      event.target.value = ''
+		},
+    del(index){
+      this.data.tag.splice(index, 1)
+      }
   },
   mounted() {
     this.novelRatingDataId();
@@ -371,5 +382,32 @@ textarea:focus-visible {
 }
 .texterr{
   color: red;
+}
+.con-tag{
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.tag{
+  margin-top: 10px;
+  padding: 5px;
+  border-radius: 10px;
+  background: #cecece;
+  position: relative;
+  
+}
+.fa-times-circle{
+  position: absolute;
+  top: -3px;
+  cursor: pointer;
+  transform: scale(0.0);
+  transition: 0.3s;
+  
+}
+.tag:hover{
+  cursor: pointer;
+}
+.tag:hover .fa-times-circle {
+  transform: scale(1.0);
 }
 </style>

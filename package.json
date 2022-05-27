@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve ",
-    "test": "vue-cli-service serve --https true --port 8080",
+    "serve": "vue-cli-service serve --https true ",
+    "test": "vue-cli-service serve --https true ",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
@@ -12,6 +12,7 @@
     "axios": "^0.25.0",
     "core-js": "^3.6.5",
     "dedent": "^0.7.0",
+    "firebase": "^9.8.1",
     "jquery": "^3.6.0",
     "jw-vue-pagination": "^1.0.3",
     "universal-social-auth": "^0.2.6",
@@ -19,8 +20,6 @@
     "vue-advanced-cropper": "^1.10.0",
     "vue-apexcharts": "^1.6.2",
     "vue-class-component": "^7.2.6",
-    "vue-google-login": "^2.0.5",
-    "vue-google-oauth2": "^1.5.8",
     "vue-owl-carousel": "^2.0.3",
     "vue-quill-editor": "^3.0.6",
     "vue-router": "^3.2.0",
