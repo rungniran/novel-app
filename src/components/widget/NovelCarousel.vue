@@ -1,19 +1,16 @@
 <template>
-  
- 
-    <carousel 
-      :items="1"
-      :loop="true"
-      :margin="10"
-      :center="false"
-      :lazyLoad="false"
-      :autoplay="false"
-      :singleItem="false"
-      :nav="false"
-      :dots="false"
-      :responsive="responsive"
-     
-    >
+  <carousel
+    :items="1"
+    :loop="true"
+    :margin="10"
+    :center="false"
+    :lazyLoad="false"
+    :autoplay="false"
+    :singleItem="false"
+    :nav="false"
+    :dots="false"
+    :responsive="responsive"
+  >
     <template>
       <router-link
         v-for="(items, index) in opject"
@@ -22,17 +19,16 @@
         class="nv-box-carousel carousel"
       >
         <img
-        
           class="item-banner"
           :src="items.image_data ? items.image_data.url  : $path.image('loading.png')"
-           onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
+           onerror="this.onerror=null;this.src='https://novelkingdom-test.web.app/img/loading.a7cb0bda.png';"
            :alt="items.title"
           
         />
         <div class="grod-detail">
-          <div class="name line-1">{{items.title}}</div>
+          <div class="name line-1">{{ items.title }}</div>
           <div class="subname">แฟนตาซี</div>
-          <div><NovelStar :rating="Math.round (items.avg_star)" /></div>
+          <div><NovelStar :rating="Math.round(items.avg_star)" /></div>
           <div class="view-list">
             <div class="view">
               <i class="far fa-eye"></i>
@@ -43,35 +39,34 @@
             <div class="list">
               <i class="fas fa-list"></i>
               <div class="count-numble-view">
-                {{items.novel_episode_data_total}}
+                {{ items.novel_episode_data_total }}
                 {{ $filter.NumbertoText(items.novel_episode_data_total) }}
               </div>
             </div>
           </div>
         </div>
       </router-link>
-      </template>
-    </carousel >
-
+    </template>
+  </carousel>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import carousel  from "vue-owl-carousel";
+import carousel from "vue-owl-carousel";
 import NovelStar from "@/components/widget/NovelStar.vue";
 
 export default Vue.extend({
   name: "NovelCarousel",
   props: {
-    loop:Boolean,
-    opject:[],
+    loop: Boolean,
+    opject: [],
     // eslint-disable-next-line no-undef
   },
 
   components: {
     // carousel:()=> import('../../../node_modules/vue-owl-carousel') ,
     NovelStar,
-    carousel
+    carousel,
   },
   data() {
     return {
@@ -99,13 +94,12 @@ export default Vue.extend({
   //   var container = document.getElementById("Carousel") as HTMLElement;
   //   console.log( container.innerHTML);
   //   var content = container.innerHTML;
-  //   container.innerHTML= content; 
+  //   container.innerHTML= content;
   //   }
   // }
 });
 </script>
 <style lang="scss" scoped>
-
 $second-blue: #1e2046;
 $second-gray: #444349;
 $second-grayLight: #cfd4d9;
@@ -134,6 +128,13 @@ $second-grayLight: #cfd4d9;
   font-size: 15px;
   color: rgb(182, 182, 182);
 }
+img::before{
+  content: '';
+  width: 1000px;
+  height: 1000px;
+  z-index: 100;
+  background: #1e2046;
+}
 // .owl-stage-outer {
 //   padding: 15px 0px;
 // }
@@ -144,4 +145,20 @@ $second-grayLight: #cfd4d9;
 //   transform: scale(1.07);
 // 	-webkit-transform: scale(1.07);
 // }
+@media (max-width: 768px) {
+  .nv-box-carousel .grod-detail .name {
+    font-size: 20px;
+  }
+  .subname {
+    font-size: 17px;
+  }
+  @media (max-width: 415px) {
+    .nv-box-carousel .grod-detail .name {
+      font-size: 18px;
+    }
+    .subname {
+      font-size: 15px;
+    }
+  }
+}
 </style>

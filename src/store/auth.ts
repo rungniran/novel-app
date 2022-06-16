@@ -1,5 +1,5 @@
 
-import {Auth, Gatway} from "../shares/services";
+import {Auth} from "../shares/services";
 export type statetype = {
     dataset:any,
     display_name?:string| null,
@@ -43,23 +43,31 @@ const getters ={
 }
 const mutations = {
     async login(state:statetype,{token,status}:{token:string,status:string }):Promise<void>{
-            const res = await Auth.customer(token)
-            const resProfile = await Auth.profile(token, res.data.id)
-            localStorage.setItem("loggedIn", status);
-            localStorage.setItem("token", token);
-            const object = {...resProfile.data.data , show_name: `${resProfile.data.data.user_profile_datas[0]?.first_name}  ${resProfile.data.data.user_profile_datas[0]?.last_name}`}
-            state.dataset = object
-
-            localStorage.setItem("dataset", JSON.stringify(object));
-            
-       
+        const res = await Auth.customer(token)
+        const resProfile = await Auth.profile(token, res.data.id)
+        const resFetchcookie = await Auth.fetchcookie(token)
+        console.log(resFetchcookie.data.data);
+        
+        if(resFetchcookie.data.data !== 'Success'){
+            const cookie = resFetchcookie.data.data.cookie?.item !== undefined
+            ? resFetchcookie.data.data.cookie?.item 
+            : JSON.parse(resFetchcookie.data.data.cookie)?.item
+            localStorage.setItem("StoryRead", JSON.stringify(cookie));
+        }
+        localStorage.setItem("loggedIn", status);
+        localStorage.setItem("token", token);
+        const object = {...resProfile.data.data , show_name: `${resProfile.data.data.user_profile_datas[0]?.first_name}  ${resProfile.data.data.user_profile_datas[0]?.last_name}`}
+        state.dataset = object
+        state.display_name = disployName()
+        localStorage.setItem("dataset", JSON.stringify(object));
         window.location.reload() 
         
     },
     logout(state:statetype):void{
-        localStorage.removeItem("loggedIn")
-        localStorage.removeItem("token")
+        localStorage.removeItem("loggedIn");
+        localStorage.removeItem("token");
         localStorage.removeItem("dataset");
+        localStorage.removeItem("StoryRead");
         state.loggedIn = false
     },
     countCoin(state:statetype,{buy}:{buy:any}):void{
@@ -78,6 +86,7 @@ const mutations = {
                 state.coin = resProfile.data.data.coin_balance_sandbox
                 const object = {...resProfile.data.data , show_name: `${resProfile.data.data.user_profile_datas[0].first_name}  ${resProfile.data.data.user_profile_datas[0].last_name}`} 
                 state.dataset = object
+                state.display_name = disployName()
                 localStorage.setItem("dataset", JSON.stringify(object));
             
         }

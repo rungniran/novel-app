@@ -23,5 +23,10 @@ export const Auth = {
     return api.get('/customers/profile-data/index/'+id, { headers: {"Authorization" : `Bearer ${tokenStr}`} }).catch(error =>{
       alertSystem(error)       
     });
+  },
+  fetchcookie(tokenStr:string):any{
+    return api.get('/customers/cookie/fetch', { headers: {"Authorization" : `Bearer ${tokenStr}`} }).catch(error =>{
+      alertSystem(error)       
+    });
   }
 }

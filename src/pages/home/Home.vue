@@ -1,28 +1,29 @@
 <template>
   <div class="home">
-      <!-- style="padding-top: 20px"  -->
+    <!-- style="padding-top: 20px"  -->
     <NovelBaner :item="banner" />
-    <div class="nv-box-white nv-mt-20" >
+    <div class="nv-box-white nv-mt-20">
       <!-- {{this.$store.state.storyread}} v-if="profile"-->
-      <!-- <div class="nv-title-item" v-if="this.$store.state.storyread.story_Read">
+      <div class="nv-title-item" v-if="nextread === true">
         <H1 class="nv-title-left">นิยายอ่านต่อ</H1>
-        <NovelReadNext :opject="this.$store.state.storyread.story_Read" :loop="false" />
-      </div> -->
+        <NovelReadNext :loop="false" />
+      </div>
       <!-- <LoadingColouser/> -->
       <div
-        class="nv-title-item nv-mt-0"  v-if="recommend"
-        :class="profile ? 'nv-mt-70' : 'nv-mt-10'"
+        class="nv-title-item nv-mt-0"
+        v-if="recommend"
+        :class="nextread === true ? 'nv-mt-70' : 'nv-mt-10'"
       >
         <H1 class="nv-title-left">นิยายแนะนำ</H1>
-        <NovelCarousel :opject="recommend"  :loop="false" />
+        <NovelCarousel :opject="recommend" :loop="false" />
       </div>
-      <LoadingColouser v-else :className="profile ? 'nv-mt-70' : 'nv-mt-10'"/>
+      <LoadingColouser v-else :className="profile ? 'nv-mt-70' : 'nv-mt-10'" />
       <div class="nv-title-item nv-mt-70" v-if="hot">
         <H1 class="nv-title-left">นิยายมาแรง</H1>
         <NovelCarousel :opject="hot" :loop="false" />
       </div>
       <!--  -->
-      <LoadingColouser v-else/>
+      <LoadingColouser v-else />
       <div class="nv-title-item nv-mt-70">
         <H1 class="nv-title-left">Banner</H1>
         <NovelCategory :opject="2" :loop="true" />
@@ -31,19 +32,22 @@
         <H1 class="nv-title-left">นิยายติดอันดับ</H1>
         <div class="nover-top">
           <div v-for="(items, index) in maximum" :key="index" class="top-card">
+            <div class="lv">{{ index + 1 }}</div>
             <router-link class="image-top" :to="'/novel/' + items.id">
               <img
                 :src="items.image_data ? items.image_data.url : $path.image('loading.png')"
                 class="nv-img-novel "
-                onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
+                @error="$event.target.src= $path.image('loading.png');"
                 width="100%"
               />
             </router-link>
             <div class="detail">
-              <router-link  class="name line-1" :to="'/novel/' + items.id">{{items.title}}</router-link>
+              <router-link class="name line-1" :to="'/novel/' + items.id">{{
+                items.title
+              }}</router-link>
               <div class="gray">แฟนตาซี</div>
               <div>
-                <NovelStar :rating="Math.round (items.avg_star)"/>
+                <NovelStar :rating="Math.round(items.avg_star)" />
               </div>
               <div class="view-list">
                 <div class="view">
@@ -77,44 +81,52 @@
               <img
                 :src="item.image_data ? item.image_data.url : $path.image('loading.png')"
                 class="nv-img-novel "
-                onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
+                @error="$event.target.src= $path.image('loading.png');"
                 width="100%"
               />
             </div>
             <div class="detail-top">
               <div class="con-name-view-list">
-                <div class="name-view-list">
-                  <div class="name-top line-1">{{item.title}}</div>
-                  <div class="view-list">
-                    <div class="view">
-                      <i class="far fa-eye"></i>
-                      <div class="count-numble-view">
-                        {{ $filter.NumbertoText(item.total_view) }}
-                      </div>
+                <div class="view-list">
+                  <div class="view">
+                    <i class="far fa-eye"></i>
+                    <div class="count-numble-view">
+                      {{ $filter.NumbertoText(item.total_view) }}
                     </div>
-                    <div class="list">
-                      <i class="fas fa-list"></i>
-                      <div class="count-numble-view">
-                        {{ $filter.NumbertoText(item.novel_episode_data_total) }}
-                      </div>
+                  </div>
+                  <div class="list">
+                    <i class="fas fa-list"></i>
+                    <div class="count-numble-view">
+                      {{ $filter.NumbertoText(item.novel_episode_data_total) }}
                     </div>
                   </div>
                 </div>
+                <div class="name-view-list">
+                  <div class="name-top line-1">{{ item.title }}</div>
+                </div>
                 <p class="line-5 story">
-                  {{item.detail}}
+                  {{ item.detail }}
                 </p>
               </div>
 
               <div class="detail-ep">
                 <hr class="line-ep" />
-                <div class="ep-con line-1"  v-if="item.novel_episode_datas[0]" >
-                  <div class="line-1">{{item.novel_episode_datas[0].name}}</div>
-                  <div class="ew">{{ $filter.Ago(item.novel_episode_datas[0].created_at)}}</div>
+                <div class="ep-con line-1" v-if="item.novel_episode_datas[0]">
+                  <div class="line-1">
+                    {{ item.novel_episode_datas[0].name }}
+                  </div>
+                  <div class="ew">
+                    {{ $filter.Ago(item.novel_episode_datas[0].created_at) }}
+                  </div>
                   <!-- 1 วันที่แล้ว -->
                 </div>
                 <div class="ep-con" v-if="item.novel_episode_datas[1]">
-                  <div class="line-1">{{item.novel_episode_datas[1].name}}</div>
-                  <div class="ew">{{ $filter.Ago(item.novel_episode_datas[1].created_at)}}</div>
+                  <div class="line-1">
+                    {{ item.novel_episode_datas[1].name }}
+                  </div>
+                  <div class="ew">
+                    {{ $filter.Ago(item.novel_episode_datas[1].created_at) }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -127,65 +139,79 @@
 
 <script lang="ts">
 import Vue from "vue";
-import {Gatway} from "@/shares/services"
+import { Gatway } from "@/shares/services";
 
 export default Vue.extend({
   name: "Home",
   components: {
-    NovelBaner:()=> import("@/components/widget/NovelBaner.vue"),
-    NovelCarousel:()=>import("@/components/widget/NovelCarousel.vue"),
-    NovelCategory:()=>import("@/components/widget/NovelCategory.vue"),
-    NovelStar:()=>import("@/components/widget/NovelStar.vue"),
-		// NovelReadNext:()=>import("./novelreadnext/NovelReadNext.vue"),
-    LoadingColouser:()=> import("@/components/loader/LoadingColouser.vue"),
+    NovelBaner: () => import("@/components/widget/NovelBaner.vue"),
+    NovelCarousel: () => import("@/components/widget/NovelCarousel.vue"),
+    NovelCategory: () => import("@/components/widget/NovelCategory.vue"),
+    NovelStar: () => import("@/components/widget/NovelStar.vue"),
+    NovelReadNext: () => import("./novelreadnext/NovelReadNext.vue"),
+    LoadingColouser: () => import("@/components/loader/LoadingColouser.vue"),
     // NovelRecommend:()=> import("./NovelRecommend/NovelRecommend.vue")
   },
   data() {
     return {
-      nextread: [...Array(6).keys()],
+      nextread:
+        this.$store.state.storyread.story_Read && (this as any).profile
+          ? true
+          : false,
       recommend: null,
       banner: [...Array(5).keys()],
       top: [...Array(6).keys()],
       latest: [...Array(10).keys()],
-      hot:null,
-      update:null,
-      maximum:null
+      hot: null,
+      update: null,
+      maximum: null,
     };
   },
   methods:{
     async getlasthot(){
       let res = await Gatway.getService('/guest/index/novel-hot')
-      this.hot = res.data.data
-      
-      
-    },
-    async getlastUpdate(){
-      let res = await Gatway.getService('/guest/index/novel-last-update')
-      this.update = res.data.data
-    },
-    async getNextread(){
-      let res = await Gatway.getService('/guest/index/novel-maximum-read')
-      this.maximum = res.data.data.splice(0,6)      
-    },
-    async getRecommend(){
-      let res = await Gatway.getService('/guest/recommended-novel')
+      this.hot = await res.data.data
+      let getlastUpdate = await Gatway.getService('/guest/index/novel-last-update')
+      this.update = await getlastUpdate.data.data 
+      let getNextread = await Gatway.getService('/guest/index/novel-maximum-read')
+      this.maximum = await getNextread.data.data.splice(0,6) 
+       let getRecommend = await Gatway.getService('/guest/recommended-novel')
       const data = [] as any
-      res.data.data.forEach((element:any) => {
-        console.log(element.novel_data);
+      getRecommend.data.data.forEach((element:any) => {
         if(element.novel_data){
           data.push(element.novel_data)
         }
       });
       this.recommend = data.splice(0,12)      
 
-    }
+    
+      
+      
+    },
+    // async getlastUpdate(){
+      
+    // },
+    // async getNextread(){
+        
+    // },
+    // async getRecommend(){
+    //   let res = await Gatway.getService('/guest/recommended-novel')
+    //   const data = [] as any
+    //   res.data.data.forEach((element:any) => {
+    //     if(element.novel_data){
+    //       data.push(element.novel_data)
+    //     }
+    //   });
+    //   this.recommend = data.splice(0,12)      
+
+    // }
   },
 
   mounted(){
     this.getlasthot()
-    this.getlastUpdate()
-    this.getNextread()
-    this.getRecommend()
+    // this.getlastUpdate()
+    // this.getNextread()
+    // this.getRecommend()
   }
 });
 </script>
@@ -200,10 +226,10 @@ $primary-lightBlue: #61bcbe;
   grid-gap: 30px 0px;
   grid-template-columns: 1fr 1fr;
   grid-gap: 35px 90px;
-
 }
 .top-card {
   width: 100%;
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 2fr;
   // grid-gap: 15px;
@@ -241,11 +267,6 @@ $primary-lightBlue: #61bcbe;
   transition: 0.3s;
   background: #fff;
 }
-.name-view-list {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
 .name-top {
   font-size: 22px;
   color: $second-gray;
@@ -261,9 +282,31 @@ $primary-lightBlue: #61bcbe;
   grid-gap: 10px;
 }
 .ep-con {
-      display: grid;
-    justify-content: space-between;
-    grid-template-columns: 1fr 1fr;
+  display: grid;
+  justify-content: space-between;
+  grid-template-columns: 1fr 1fr;
+}
+
+.view-list {
+  justify-content: end;
+}
+
+.lv {
+  border: 1px solid;
+  position: absolute;
+  z-index: 10;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  left: -10px;
+  top: -10px;
+
+  background: #ffffff;
+
+  // text-align: center;
 }
 .line-ep {
   border: 0px solid;
@@ -272,7 +315,7 @@ $primary-lightBlue: #61bcbe;
   margin: 15px 0px;
 }
 .story {
-  font-size: 14px;
+  font-size: 16px;
   font-family: "Sarabun", sans-serif;
 }
 .box-latest:hover {
@@ -283,7 +326,7 @@ $primary-lightBlue: #61bcbe;
 .detail-ep {
   font-size: 13px;
 }
-.ew{
+.ew {
   text-align: right;
 }
 
@@ -295,16 +338,16 @@ $primary-lightBlue: #61bcbe;
   }
   .box-latest {
     padding: 10px 10px;
-		grid-template-columns: 1fr 2fr;
+    grid-template-columns: 1fr 2fr;
   }
   .detail-top {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-}
-.box-latest:hover{
-transform: scale(1.0);
-}
+  }
+  .box-latest:hover {
+    transform: scale(1);
+  }
 }
 @media (max-width: 768px) {
   .nover-latest {
@@ -312,15 +355,38 @@ transform: scale(1.0);
     grid-template-columns: 1fr;
     grid-gap: 20px;
   }
-	.box-latest {
+  .detail-ep {
+    font-size: 20px;
+  }
+
+  .name {
+    font-size: 30px;
+  }
+  .gray {
+    font-size: 20px;
+  }
+
+  .nover-top {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 20px;
+  }
+  .story {
+    font-size: 20px;
+  }
+  .box-latest {
     padding: 10px 10px;
-		grid-template-columns: 1fr 2.8fr;
+    grid-template-columns: 1fr 2.8fr;
   }
   .detail-top {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-}
+  }
+  .name-top {
+    font-size: 30px;
+    color: $second-gray;
+  }
 }
 @media (max-width: 415px) {
   .nv-box-white {
@@ -328,16 +394,24 @@ transform: scale(1.0);
     border-radius: 0px;
     padding: 50px 15px;
   }
+
+  .name {
+    font-size: 22px;
+  }
+  .gray {
+    font-size: 14px;
+  }
+
+  .story {
+    font-size: 14px;
+  }
+
   .nover-latest {
     display: grid;
     grid-template-columns: 1fr;
     grid-gap: 20px;
   }
-  .nover-top {
-    display: grid;
-    grid-template-columns: 1fr ;
-    grid-gap: 20px;
-  }
+
   .name-view-list {
     display: flex;
     // align-items: flex-start;
@@ -361,14 +435,25 @@ transform: scale(1.0);
   .nover-top .image-top img {
     width: 100%;
   }
+  .name-top {
+    font-size: 22px;
+    color: $second-gray;
+  }
   .top-card {
     grid-gap: 15px;
   }
   .cate-datail {
     grid-gap: 5px;
   }
-	.nv-box-white{
-		    padding: 50px 10px;
-	}
+  .nv-box-white {
+    padding: 50px 10px;
+  }
+  .detail-ep {
+    font-size: 13px;
+  }
+    .box-latest {
+    padding: 10px 10px;
+    grid-template-columns: 1.5fr 2.8fr;
+  }
 }
 </style>

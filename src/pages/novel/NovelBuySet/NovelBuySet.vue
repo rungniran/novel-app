@@ -1,5 +1,6 @@
 <template>
-  <NovelModal2 ID="buyset" IDCrad="buysetCrad" ref="Modeal">
+      
+  <NovelModal2 ID="buyset" IDCrad="buysetCrad" ref="Modeal" :Close="true">
     <template v-slot:body>
       <div class="form-buyset-con">
         <div class="form-buyset mobeil">
@@ -76,5 +77,13 @@ export default Vue.extend({
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+@media (max-width: 415px){
+.form-buyset {
+  display: grid;
+  align-items: center;
+  gap: 10px;
+}
 }
 </style>

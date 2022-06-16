@@ -19,9 +19,9 @@
         <div class="from-title">ชื่อผู้ใช้</div>
         <input :value="profile.username"/>
       </div>-->
-      <div class="con-save">
+      <!-- <div class="con-save">
         <div class="nv-btn-light-blue btn" @click="submit()">บันทึกข้อมูลส่วนตัว</div>
-      </div>
+      </div> -->
     </div>
     <div class="from nv-mt-30">
         <div class="contor-input">
@@ -56,7 +56,7 @@
 import Vue from "vue";
 import { Gatway } from "@/shares/services";
 import { alert } from "@/shares/modules/alert";
-import { profile } from "@/router/profile";
+import { sms_alert_Change_Password, sms_alert_Update_UserInformation } from "@/shares/constants/smsalert"
 export default Vue.extend({
   name: "userinfo",
   data(){
@@ -84,15 +84,17 @@ export default Vue.extend({
     async submit(){
       console.log(this.Obj);
       let res = await Gatway.PutService('/customers/profile-data', (this as any).profile.user_profile_datas[0].id , this.Obj as any )
-      if( res.data.code === 200){
-        alert(res.data.data,'success')
-        this.$store.commit('reset') 
-      }
+      // if( res.data.code === 200){
+      //   alert(sms_alert_Update_UserInformation.successful ,'success')
+      //   this.$store.commit('reset') 
+      // }
     },
     async ChangeUsername(){
       let res = await Gatway.postService('/customers/user-info/change-username', this.ObjUsername as any)
-       console.log(res);
-       res.data.code === 200 ? alert(res.data.data, 'success') : alert('ชื่อผู้ใช้นี้ถูกนำไปใช้แล้ว','error')
+      res.data.code === 200 
+      ? alert(sms_alert_Update_UserInformation.successful, 'success') 
+      : null
+       await  this.submit()
        this.$store.commit('reset')
        
     },
@@ -107,7 +109,7 @@ export default Vue.extend({
           }
           let res = await Gatway.postService('/customers/user-info/change-password', data as any)
           let test = JSON.stringify(res.data.data)
-          res.data.code === 200 ? alert(res.data.data, 'success') : alert(test,'error')
+          res.data.code === 200 ? alert(sms_alert_Change_Password.successful, 'success') : alert(test,'error')
         }else{
           alert('Password ไม่ตรงกัน','error')
         }

@@ -15,24 +15,24 @@
                         <img :src="$path.image('coin-gold.png')" width="25px" height="25px">
                         {{$filter.NumberToString($store.state.auth.coin)}}
                     </div>
-                    <button class="nv-btn-yellow" @click="$base.openmodal('walllet-modal', 'create-novel-show', 0)">เติมเหรียญ</button>
+                    <button class="nv-btn-yellow" @click="$refs.walletModal.open()">เติมเหรียญ</button>
                 </div>
             </div>
         </div>
-        <div class="nv-box-white nv-mt-40" >
-            <div class="tap-writer" >
+        <div class="nv-box-white Coin nv-mt-40" >
+            <!-- <div class="tap-writer" >
                 <router-link @click.native="changeComponent('Coin')" to="#Coin" :class="current === 'Coin' ? 'nv-s nv-s1 nv-s-active' : 'nv-s nv-s1'">
                     ประวัติการเติมเหรียญ
                 </router-link>
                 <router-link @click.native="changeComponent('Exchange')" to="#Exchange"  :class="current === 'Exchange' ? 'nv-s nv-s2 nv-s-active' : 'nv-s nv-s2'">
                     ประวัติการแลกของ
                 </router-link>
-            </div>
-            <div class="nv-mt-20">
-                <component :is="current"></component>
-            </div>
+            </div> -->
+         
+            <Coin></Coin>
+            
         </div>
-       <WalletMOdal/>
+       <WalletMOdal ref="walletModal"/>
     </div>
 </template>
 <script lang="ts">
@@ -47,7 +47,7 @@ export default Vue.extend({
     },
     components:{
         Coin:()=> import('./components/WalletCoin.vue'),
-        Exchange:()=> import('./components/WalletExchange.vue'),
+        // Exchange:()=> import('./components/WalletExchange.vue'),
         // NovelModal:()=> import('@/components/widget/NovelModal.vue')
         WalletMOdal:()=> import('./WalletModal/walletmodal.vue')
     },
@@ -83,6 +83,10 @@ export default Vue.extend({
    justify-content: space-between;
    align-items: center;
 
+}
+.Coin{
+    padding: 0;
+    background: #ffffff00;
 }
 .box-coin{
 

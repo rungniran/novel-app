@@ -1,11 +1,11 @@
 <template>
-
    <div>
+<ReviewModal ref="ReviewModal" @ResetReviwe="ResetReviwe"/>
      <div class="nv-col-2">
           <div class="nv-title">รีวิวผู้อ่าน ({{dataReview.length }})</div>
           <button
             class="nv-btn-yellow"
-            @click="cleck ? $base.openmodal('review-modal', 'review-modal-amination', 1) : $base.openlogin()"
+            @click="cleck ? $refs.ReviewModal.open() : $base.openlogin()"
           >
             เขียนรีวิว
           </button>
@@ -66,6 +66,7 @@ import {Gatway} from '@/shares/services'
 export default Vue.extend({
   name:"NovelReview",
   components:{
+    ReviewModal:()=>import("../reviewmodal/ReviewModal.vue"),
     NovelStar:()=> import("@/components/widget/NovelStar.vue"),
   },
   props:{
@@ -124,6 +125,9 @@ export default Vue.extend({
       this.dataReview = res.data.data
       
     },
+    ResetReviwe(){
+      this.getReviewAll()
+    }
   },
   mounted(){
     this.getReviewAll()

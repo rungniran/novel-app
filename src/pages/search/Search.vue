@@ -116,8 +116,8 @@ h1{
 
 
 .input-searct{
-       border: 0px solid #cacaca;
-    background: rgba(227, 227, 227, 0.843);
+       border: 0px solid #ffffff;
+    background: rgba(255, 255, 255, 0.843);
     max-width: 561px;
     border-radius: 100px;
 }
@@ -147,7 +147,7 @@ h1{
       background: linear-gradient(rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 5%, rgba(255, 255, 255, 0.6) 5%, rgb(255, 255, 255) 65%);
 }
 .b-mo{
-  background:  #ffd566c7;
+  background:  #f6c334c7;
   width: 100%;
   height: 80px;
   margin-top: -2px;

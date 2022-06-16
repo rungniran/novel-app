@@ -1,7 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Kodchasan:wght@200;300;400;500&display=swap");
 
 $radius: 5px;
-
+.Read{
+  -webkit-user-select: none;
+-khtml-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+-o-user-select: none;
+user-select: none;
+}
 // dark_____________________________________________________
 .dark .box-read {
   background: #1c1c1e;
@@ -103,7 +110,7 @@ $radius: 5px;
   justify-content: space-between;
   padding: 10px;
 	transition: 0.3s;
-  border-radius: $radius;
+  // border-radius: $radius;
 	border-bottom-left-radius: 0px;
 	border-bottom-right-radius: 0px;
 	
@@ -284,6 +291,13 @@ div.sticky {
   margin-block-start: 1em;
   margin-block-end: 1em;
   line-height: 1.9 ;
+}
+.Comments{
+  padding: 0px;
+  margin-top: 5px;
+  background: #ffffff00;
+  border-radius: 10px;
+  padding-bottom: 50px;
 }
 @media (max-width: 1024px) {
 	.story{

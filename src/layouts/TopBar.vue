@@ -33,7 +33,7 @@
                     <li class="user-active" ><i class="far fa-bell"></i></li>
                     <li class="user-active" v-if="profile" @click="cleck ? $refs.profilemenu.opanmenu() : $base.openlogin()" 
 					style=" background: url(https://cdn-icons-png.flaticon.com/512/149/149071.png) center center/cover;">
-                    <profilemenu ref="profilemenu"/>
+                    <profilemenu ref="profilemenu" @closedLeft="closeLeftmenu"/>
                     </li>
 					<li class="user-active" v-else   @click="cleck ? $refs.profilemenu.opanmenu() : $base.openlogin()"><i class="far fa-user"></i> </li>
                 </ul>
@@ -45,7 +45,7 @@
                 </div>
             </div>
         </div>
-        <div class="leftmenu" id="leftmenu">
+        <div class="leftmenu list-sub-menu" id="leftmenu">
              
             <router-link class="list-sub-menu-mobile" @click.native="closeLeftmenu()"  to="/" exact><i class="fas fa-home"></i> หน้าหลัก</router-link>
             <router-link class="list-sub-menu-mobile"   @click.native="closeLeftmenu()" to="/category" exact><i class="fas fa-list-alt"></i> ประเภท</router-link>
@@ -112,13 +112,14 @@ export default Vue.extend({
         }, 
         openLeftmenu(){
               let leftmenu = document.getElementById('leftmenu') 
-              leftmenu?.classList.toggle('leftmenu-show')
+              leftmenu?.classList.toggle('leftmenu-show');
               
         },
         closeLeftmenu(){
             let leftmenu = document.getElementById('leftmenu') 
             leftmenu?.classList.remove('leftmenu-show')
-        }
+            
+        },
     },
     mounted(){
         if(this.$route.path === '/search'){
@@ -168,6 +169,7 @@ $primary-yellow:#f4bb40c9;
 .text{
     color: $second-blue;
 }
+
 .in-logo{
     display: flex;
    align-items: center;
@@ -219,6 +221,7 @@ $primary-yellow:#f4bb40c9;
     margin: 6px 0px;
 
 }
+
 .list-sub-menu{
    padding: 10px 20px;
    border-radius: 6px;
@@ -256,6 +259,7 @@ $primary-yellow:#f4bb40c9;
         align-items: flex-start;
     grid-gap: 0px 10px;
     color:#1C1140;;
+
 }
 
 .logo img{
@@ -263,6 +267,7 @@ $primary-yellow:#f4bb40c9;
 }
 .menu-mobile{
  display: none;
+ margin-bottom: 5px;
 }
 .user-active{
         // background: #eae6f1;
@@ -401,7 +406,7 @@ $primary-yellow:#f4bb40c9;
 
 }
 .leftmenu{
-   width: 250px;
+   width: 205px;
    padding: 10px;
    display: flex;
    display: none;
@@ -419,13 +424,17 @@ $primary-yellow:#f4bb40c9;
 }
 .list-sub-menu-mobile{
     color: #9556fb;
-    font-size: 18px;
+    font-size: 15px;
     // background: #241065;
     display: flex;
     gap: 15px;
     margin: 8px 0px;
     padding: 8px;
     border-radius: 5px;
+}
+
+list-sub-menu-mobile,i,list-sub-menu{
+    padding-top: 3px;
 }
 @media (max-width: 1200px){
 	.topbar{
@@ -458,7 +467,7 @@ $primary-yellow:#f4bb40c9;
         margin-left: 10px;
     }
     .logo .text{
-        font-size: 13px;
+        font-size: 17px;
     }
     .logo img{
         width: 25px;

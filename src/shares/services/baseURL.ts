@@ -9,37 +9,20 @@ const instance = axios.create({
     headers: {
         "Content-Type": "application/json",
         'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': "referer, range, accept-encoding, x-requested-with"
         
     }
 })
 instance.interceptors.response.use(response => {
-    // console.log("debug",response);
-    // debugger
-
-    
-    // if (!response.data.status) {
-    // //   codeError(response.data)
-      
-    //   return Promise.reject(response)
-    // }
-  
+    // console.log(response);
     return Promise.resolve(response)
-//   }, error => {
-//     if (error.response.status === 401) {
-//       localStorage.removeItem('accessToken')
-//       localStorage.removeItem('refreshToken')
-//       localStorage.removeItem('userData')
-//       location.reload()
-//     } else if (error.response.status === 403) {
-//       const spUrl = (document.URL).split('/')
-//       if (spUrl[spUrl.length - 1] != 'emailVerifyNoti') {
-//         const url = "localhost:8082"//process.env.VUE_APP_API_BASEURL
-//         console.log(${url}/emailVerifyNoti)
-//         window.location.href = /emailVerifyNoti
-//       }
-       // return Promise.resolve(error)
-  
-//     }
-//     return Promise.reject(error)
+    
+
+  },  (error) => {
+    console.log();
+    if(error.message === "Network Error"){
+        window.open("https://119.59.97.111/api/guest/index/novel-hot");
+    }
+    return Promise.reject(error);
   })
 export default instance

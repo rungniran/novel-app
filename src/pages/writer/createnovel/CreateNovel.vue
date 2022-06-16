@@ -89,6 +89,7 @@
                 ? submit()
                 : submitMy()
             "
+            :disabled="disabled"
           >
             ยืนยัน
           </button>
@@ -136,7 +137,8 @@ export default Vue.extend({
         tag:[]
       },
       file:{},
-      tag:[]
+      tag:[],
+      disabled:false
     };
   },
   methods: {
@@ -188,8 +190,10 @@ export default Vue.extend({
     async createnovel() {
       let formData = new FormData();
       this.data = {...this.data,  formData } 
+      this.disabled = true
       let res = this.data.detail.length < 500 ? await  Gatway.postService("/customers/novel", this.data) : null
       if(res.data.code === 200){
+        this.disabled = false
         formData.append('file', this.data.img);
         formData.append('novel_data_id',  res.data.data.id)
         await Gatway.postService("/upload/image/novel-data", formData)

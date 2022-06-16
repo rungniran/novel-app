@@ -123,7 +123,7 @@
         </div> -->
       </div>
     </div>
-    <div class="con-modal" @click="close()">
+    <!-- <div class="con-modal" @click="close()">
       <div class="con-stiker">
         <div v-for="(item, index) in cheerup" :key="index" class="">
           <div @click="addstiker(item.icon)">
@@ -131,12 +131,11 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
-// import { Picker } from 'emoji-mart-vue'
 import { Cheerup } from "@/shares/constants";
 import { Gatway } from '@/shares/services'
 export default Vue.extend({

@@ -150,4 +150,18 @@ export default Vue.extend({
     font-size: 18px;
     color: #1e2046;
 }
+
+@media (max-width: 1024px) {
+
+}
+@media (max-width: 768px) {
+.series{
+ grid-template-columns: 1fr ;
+}
+}
+@media (max-width: 415px) {
+.series{
+ grid-template-columns: 1fr ;
+}
+}
 </style>

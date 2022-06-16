@@ -1,10 +1,8 @@
 <template>
   <div id="Work">
-    <div v-if="data.length  !== 0" class="con-mywork">
+    <div v-if="data" class="con-mywork">
       <router-link :to="'/writer/novelpreview/'+ item.id" v-for=" item, index in data" :key="index">
         <div class="image loading-img">
-          <!-- :src="item.image_data.url" -->
-          <!-- {{item.image_data.url}} -->
                 <img
                   :src=" item.image_data ? item.image_data.url : $path.image('loading.png')"
                   alt="novel"

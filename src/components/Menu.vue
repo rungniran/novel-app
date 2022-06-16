@@ -115,10 +115,10 @@ export default Vue.extend({
       window.location.href = "/";
     },
     opanmenu(){
-      console.log('>>>>>>>>>>>');
       document
         .getElementsByClassName("profile-menu")[0]
         .classList.toggle("profile-show");
+        this.$emit("closedLeft",{})
     },
     closemenu() {
       document

@@ -1,15 +1,17 @@
 <template>
   <div>
     <div class="nv-box-white nv-mt-40">
-      <cover />
-      <div class="btn-c">ภารกิจประจำวัน!</div>
-      <div class="nv-mt-30">
-
+      <!-- <cover /> -->
+      <!-- <div class="btn-c">ภารกิจประจำวัน!</div> -->
+      <div class="">
+<!-- <pre>{{JSON.parse(treasury[0].system_note)}}</pre> -->
         <div class="title">คลังสมบัติ</div>
         <div class="con-tsry nv-mt-10">
+          
           <div v-for="item,index in treasury" :key="index" class="box-tsry">
+            <!-- {{item}} -->
               <div class="title-tsry">
-                  Common
+                <pre>  {{item.name}}</pre>
               </div>
               <img src="https://novelkingdom.co/images/dragon/dragon-level-3.png"  width="90%">
               <div class="cover">
@@ -32,13 +34,18 @@ export default Vue.extend({
     };
   },
   components: {
-    cover: () => import("@/components/Cover.vue"),
+    // cover: () => import("@/components/Cover.vue"),
   },
   methods:{
     async get(){
       let res = await Gatway.getService('/customers/treasure-box-data/index')
-      // console.log('>>>',res);
-      this.treasury = res.data.data
+      let data = [] as any
+      res.data.data.filter((item:any)=>{
+        console.log(JSON.parse(item.system_note));
+        
+        data.push(JSON.parse(item.system_note))
+      })
+      this.treasury = data
       
     }
     
@@ -60,7 +67,7 @@ export default Vue.extend({
 }
 .con-tsry {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr ;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr ;
   grid-gap: 25px 30px;
 }
 .box-tsry{
@@ -69,7 +76,7 @@ export default Vue.extend({
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     padding: 60px 0px;
     position: relative;
-    overflow: hidden;
+    // overflow: hidden;
     border-radius: 10px;
 }
 .title-tsry{

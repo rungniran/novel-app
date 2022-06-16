@@ -97,6 +97,12 @@ const routes: Array<RouteConfig> = [
     meta:{ requiresAuth: true }
   },
   {
+    path:'/exchange/story',
+    name:'exchangestory',
+    component: () => import('../pages/Exchange/exchangeStatus/exchangeStatus.vue'),
+    meta:{ requiresAuth: true }
+  },
+  {
     path:'/test',
     name:'test',
     component: () => import('../pages/test.vue'),
@@ -130,7 +136,6 @@ const routes: Array<RouteConfig> = [
     path:'/search',
     name:'Search',
     component: () => import('../pages/search/Search.vue'),
-    meta:{ requiresAuth: true }
   },
   {
     path:'/wallet/walletconfirm/:id',
@@ -172,9 +177,11 @@ router.beforeEach( async (to, from, next)=>{
       login.classList.add("show")
     }else{
       await  next()
-      // if(to.hash === ""){
-      //   window.scrollTo(0, 0);
-      // }
+      console.log(to.hash);
+      
+      if(to.hash === ""){
+        window.scrollTo(0, 0);
+      }
       
     }
   }else{

@@ -2,7 +2,7 @@
   <div>
     <div  :class="wraning === true ? 'b-mo' : 'close'">
       <!-- * คุณยังไม่เพิ่มข้อมูลนักเขียน หากมีข้อมูลนักเขียนเราตัดยอดหรียญทุก 30 วัน <router-link c to="/writer/WriterWithdrawMoney">คลิกที่นี้เพิ่มข้อมูลเขียน</router-link> -->
-      * คำแนะนำ ตอนนี้คุณยังไม่มีข้อมูลนักเขียน หากคุณต้องการถอนเหรียญ  &nbsp; &nbsp; <router-link class="blink" to="/writer/WriterWithdrawMoney">"ให้คลิกที่นี่เพิ่มข้อมูลนักเขียน"</router-link>&nbsp; &nbsp;  จึงจะสามารถทำการถอนเหรียญได้
+      * คำแนะนำ หากคุณต้องการถอนเหรียญ  &nbsp; &nbsp; <router-link class="blink" to="/writer/WriterWithdrawMoney">"ให้คลิกที่นี่เพิ่มข้อมูลนักเขียน"</router-link>&nbsp; &nbsp;  จึงจะสามารถทำการถอนเหรียญได้
     </div>
     <div class="nv-box-white nv-mt-40">
       <div class="box-profile">
@@ -123,7 +123,6 @@ export default Vue.extend({
     },
     async listNovel() {
       let res = await ListService.listNovel();
-      console.log('>>>>>>>>',res.data.data.length);
       this.wraning = res.data.data.length !== 0 ?  true  : false
     },
 
@@ -142,7 +141,7 @@ export default Vue.extend({
 </script>
 <style lang="scss" scoped>
   .b-mo{
-  background:  #f36642;
+  background:  #f4ba40;
   width: 100%;
   // height: 50px;
   z-index: 100;
@@ -171,6 +170,7 @@ font-size: 14px;
     align-items: center;
 
 }
+
 .content {
   top: 0;
   width: 100%;
@@ -236,7 +236,7 @@ $radiustap: 5px;
 }
 .s-active2 {
   // border-radius: 5px 0px 0px 5px;
-  border-right: 0px solid;
+  // border-right: 0px solid;
   border-left: 0px solid;
 }
 .s-active3 {
@@ -263,8 +263,18 @@ $radiustap: 5px;
 
 @media (max-width: 415px){
 	.tap-writer{
-
     grid-template-columns: 1fr;
+}
+.s-active2 {
+  border-left: 1px solid;
+}
+.s-active3 {
+  border-left: 1px solid;
+}
+.s-writer{
+  border-radius: $radiustap;
+  border: 1px solid rgb(220, 220, 220);
+  margin: 2px;
 }
 }
 </style>

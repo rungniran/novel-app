@@ -79,7 +79,7 @@ export default Vue.extend({
 }
 .contai-modal-crad {
    position: relative;
-  padding: 30px;
+  padding: 20px;
   background: #fff;
   border-radius: 10px;
 }
@@ -98,5 +98,25 @@ export default Vue.extend({
   top: 5px ;
   right: 5px;
   cursor: pointer;
+}
+#NovelConfirmCead{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width:300px ;
+}
+#buyNovelEpAutoCard{
+  background: #ffffff;
+	display: flex;
+    grid-gap: 10px;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    padding: 20px 40px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+    border-radius: 10px;
+    max-width: 470px;
+    transition: .1s; 
 }
 </style>

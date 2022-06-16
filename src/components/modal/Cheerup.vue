@@ -7,10 +7,10 @@
                 <div class="con-cheerup nv-mt-20">
                     <div v-for="item, index in cheerup" :key="index" class="box-cheerup">
                         <!-- {{item.icon}} -->
-                        <img :src="$path.cheerup(item.icon)" height="75px">
+                        <img v-lazy="$path.cheerup(item.icon)" height="75px">
                         <div class="name">{{item.label}}</div>
                         <div class="sell-cheerup">
-                            <img :src="$path.image('coin-gold.png')" width="20%">
+                            <img v-lazy="$path.image('coin-gold.png')" width="20%">
                             10
                         </div>
                     </div>

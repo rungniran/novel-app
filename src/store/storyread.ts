@@ -1,7 +1,18 @@
 
-import { Gatway } from '@/shares/services'
+import { Gatway} from "../shares/services";
+export type story_Read = {
 
-const state:any = {
+  story_Read?: any[]| null,
+
+}
+
+export type EPopj = {
+
+  id:string,
+  id_ep:string
+
+}
+const state:story_Read = {
   story_Read:  localStorage.getItem("StoryRead") ? JSON.parse(localStorage.getItem("StoryRead") as string) : null
 }
 const getters = {
@@ -14,8 +25,7 @@ const actions = {
 }
 
 const mutations = {
-  async setRead(state:any, EPopj):Promise<void>{
-    console.log(EPopj);
+  async setRead(state:story_Read, EPopj:EPopj):Promise<void>{
     
     const item =  localStorage.getItem("StoryRead") ? JSON.parse(localStorage.getItem("StoryRead") as string) : [] as any;
     
@@ -28,22 +38,25 @@ const mutations = {
       console.log(index);
       if(index !== -1){
          item.splice(index, 1)
-         item.push(EPopj)
+         item.unshift(EPopj)
          localStorage.setItem("StoryRead", JSON.stringify(item));
          state.story_Read = item
       }else{
-        item.push(EPopj)
+        item.unshift(EPopj)
         localStorage.setItem("StoryRead", JSON.stringify(item));
         state.story_Read = item
       }
      
       
     }else{
-      item.push(EPopj)
+      item.unshift(EPopj)
       state.story_Read = item
       localStorage.setItem("StoryRead", JSON.stringify(item));
       
     }
+    const res = await Gatway.postService('/customers/cookie', {item} as any) 
+    // console.log('dffffffffffffff', res);
+     
     
   }
 }

@@ -1,6 +1,7 @@
 <template>
   <div class="NovelReadNext">
     <carousel
+      v-if="dataitem"
       :items="1"
       :loop="loop"
       :margin="10"
@@ -11,23 +12,23 @@
       :dots="false"
       :responsive="responsive"
     >
-    <!-- {{opject}} -->
       <router-link
-        v-for="items, index in opject.reverse()"
+        v-for="items, index in dataitem"
         :key="index"
-        :to="'/read/' + items.item.id"
+        :to="'/read/'+ items.id_ep"
         class="NovelRead-box-carousel  NovelReadNext"
       >
       <!-- {{items}} -->
-        <img
+      <!-- {{'https://119.59.97.111/storage/'+items.id +'.png'}} -->
+       <img
           class="item-banner"
-          :src="items.image_data ? items.image_data.url  : $path.image('loading.png')"
-           onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
+          :src="'https://119.59.97.111/storage/novel_image/'+ items.id+ '.png'"
+          @error="$event.target.src= $path.image('loading.png');"
           alt
         />
-        <div class="grod-detail">
-          <div class="name line-1"> {{items.title}}</div>
-          <div class="line-1">{{items.item.name}}</div>
+         <div class="grod-detail">
+          <div class="name line-1">{{items.datail.title}}</div>
+          <div  class="line-1">{{items.id_ep}}</div>
         </div>
       </router-link>
     </carousel>
@@ -37,7 +38,7 @@
 <script lang="ts">
 import Vue from "vue";
 import carousel from "vue-owl-carousel";
-
+import { Gatway } from "@/shares/services"
 export default Vue.extend({
   name: "NovelReadNext",
   props: {
@@ -53,10 +54,10 @@ export default Vue.extend({
     return {
       responsive: {
         0: {
-          items: 2.5,
+          items: 2,
         },
         415: {
-          items: 2.5,
+          items: 2,
         },
         768: {
           items: 4,
@@ -68,8 +69,28 @@ export default Vue.extend({
           items: 6,
         },
       },
+      dataitem:null
     };
   },
+  methods:{
+    async NovelReadNext(){
+      let res = await Gatway.postService('/customers/remembers/novel-data', this.$store.state.storyread.story_Read as any)
+      let data = [] as any
+      this.$store.state.storyread.story_Read.forEach((element:any) => {
+        res.data.data.forEach((elementres:any)=>{
+          if(elementres.id === element.id){
+            data.push({...element, datail:elementres})
+          }
+        })
+      });
+      console.log(data); 
+      this.dataitem = data
+      
+    }
+  },
+  mounted(){
+    this.NovelReadNext()
+  }
 });
 </script>
 <style lang="scss" scoped>

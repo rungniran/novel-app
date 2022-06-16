@@ -620,6 +620,7 @@ export default Vue.extend({
 // .nv-img-novel{
 //   border-radius: 5px;
 // }
+
 @media (max-width: 1024px) {
   .box-nove {
     display: grid;
@@ -649,5 +650,8 @@ export default Vue.extend({
   .image-nv img {
     width: 70%;
   }
+  .series{
+ grid-template-columns: 1fr ;
+}
 }
 </style>

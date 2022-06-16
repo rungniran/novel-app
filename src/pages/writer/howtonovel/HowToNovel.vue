@@ -109,7 +109,7 @@
           <div class="title7">7. วิธีการเพิ่มตอนนิยาย</div>
           <div class="detail7">
                 หลังจากเพิ่มนิยายสำเร็จเสร็จสิ้น จะเป็นวิธีเพิ่มตอนของนิยาย
-                ให้ผู้ใช้งานดูเมนูหลักของเว็บไซต์คลิกปุ่มเมนู "นักเขียน"
+                ให้ผู้ใช้งานดูเมนูหลักของเว็บไซต์คลิกปุ่มเมนู "นักเขียน"หลังจากนั้นจะพบนิยายที่เราได้เพิ่ม ในเมนู "ผลงานของฉัน" ให้ผู้ใช้งานคลิกนิยายเรื่องที่ต้องการจะเพิ่มตอน
           </div>
           </div>
           <div class="image7">
@@ -125,19 +125,25 @@
           </div>
           </div>
           <div class="image8">
-            <img src="https://scontent.xx.fbcdn.net/v/t1.15752-9/279655098_428632125376610_8788841875059205415_n.png?stp=dst-png_p206x206&_nc_cat=104&ccb=1-7&_nc_sid=aee45a&_nc_eui2=AeHUyC8vOcwwv3iguG1m2hkAw9MI_84xHA3D0wj_zjEcDdgZPz_-aR5o_tF-z8-2ofgW7Kt6ObW0uXz6HrMPnOI1&_nc_ohc=zmlrUCpck-YAX9R9zwB&_nc_oc=AQnnCbPBO5etHCMFbLGqMu3eiL6mGI9LLXs9pSHA0FjEeFKUG2m3fXqlqr5KMpT2VuiYS8TGZnr2dTbei-tO-74W&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&oh=03_AVITYrJ5_aLRCwxHRF98ENK4ITWByjtD1Tt-ZqAB5ldBRg&oe=62B49A29" alt="">
+            <img src="https://scontent.xx.fbcdn.net/v/t1.15752-9/287566126_5515656815112748_5060935252704734030_n.png?stp=dst-png_s320x320&_nc_cat=102&ccb=1-7&_nc_sid=aee45a&_nc_eui2=AeGG56JqsJeV_k3FvLEr4x-oQ-rS1n1MT1lD6tLWfUxPWRxjMBcQKF2YptjB6UnX_EYxqminmwvD9DLa9zUVFtjk&_nc_ohc=lZ1DHBvgPsUAX8HBmq2&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&oh=03_AVIQFoPTnpNP9euenBXE9GFQQqSauLsiF8I3EuDyTkDLVQ&oe=62CCDADB" alt="">
           </div>
       </div>
 
             <div class="box-content9">
         <div class="text9">
-          <div class="title9">9. วิธีการเพิ่มตอนนิยาย</div>
+          <div class="title9">9. เพิ่มข้อมูลตอนนิยาย</div>
           <div class="detail9">
-                 หลังจากเลือกเรื่องนิยายที่ต้องการเพิ่มตอนเเล้ว ให้คลิกปุ่ม "เพิ่มตอนใหม่" ในหน้ารายละเอียดนิยาย
+               เพิ่มข้อมูลตอนนิยายมีรายละเอียดของตอนนิยายที่ต้องการเพิ่ม ดังนี้
+                <br>- ชื่อตอน<br>
+                - วันที่เผยเเพร่<br>
+                - เมนูสำหรับขาย<br>
+                - เนื้อเรื่อง<br>
+                หลังจากเพิ่มข้อมูลสำเร็จ
+                คลิกปุ่ม "ยืนยัน" สำหรับบันทึกนิยายตอนใหม่
           </div>
           </div>
           <div class="image9">
-            <img src="https://scontent.xx.fbcdn.net/v/t1.15752-9/280326845_718324916158697_5545455162944535985_n.png?stp=dst-png_p206x206&_nc_cat=104&ccb=1-7&_nc_sid=aee45a&_nc_eui2=AeEgRGnGIJ9v409Nn1aDA5wm44FSoqyysgzjgVKirLKyDA0HOZa1P8bz-QCiIE0Mc2naOyu25qqDmhQpSOSlmNvV&_nc_ohc=TybdiTXUBnYAX-WlEO9&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&oh=03_AVIxl3hxLE91IWHfqlNJMmdGi9Eqjx-ZOBFkEtnOeEPtsA&oe=62B42792" alt="">
+            <img src="https://scontent.xx.fbcdn.net/v/t1.15752-9/280326845_718324916158697_5545455162944535985_n.png?stp=dst-png_p206x206&_nc_cat=104&ccb=1-7&_nc_sid=aee45a&_nc_eui2=AeEgRGnGIJ9v409Nn1aDA5wm44FSoqyysgzjgVKirLKyDA0HOZa1P8bz-QCiIE0Mc2naOyu25qqDmhQpSOSlmNvV&_nc_ohc=50vhU5q42xQAX-MlQj_&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&oh=03_AVJBrmhAqbHxgECCGokudVkiC5-lUBEFXrrP8CFqzLqbtw&oe=62CBE292" alt="">
           </div>
       </div>
 
@@ -155,7 +161,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .b-mo{
   background: url(https://fictionlog.co/a/images/bannerPatterns/writer_guidelines.svg) left 50px / 600px repeat #9556fb;
-  width: 100%;
+  width: auto;
   height: 80px;
   margin-top: -2px;
   display: flex;
@@ -202,6 +208,9 @@ export default Vue.extend({
   font-weight: 600;
 }
 .title8 {
+  width: max-content;
+  font-weight: 600;
+}.title9 {
   width: max-content;
   font-weight: 600;
 }
@@ -374,5 +383,269 @@ export default Vue.extend({
 }
 .box-content9 {
   margin: 1970px 5px;
+}
+@media (max-width: 820px){
+  .b-mo {
+    width: 1180px;
+    
+  }
+}
+
+@media (max-width: 768px) {
+  .b-mo {
+    margin: 40px -26%;
+    width: 1038px;
+  }
+  .text1{
+    font-size: 14px;
+    width: 200px;
+    margin:60px 20px
+  }
+  .text2{
+    font-size: 14px;
+    width: 200px;
+    margin:60px 20px
+  }
+  .text3{
+    font-size: 14px;
+    width: 200px;
+    margin:600px 30px
+  }
+  .text4{
+    font-size: 14px;
+    width: 200px;
+    margin:600px 30px
+  }
+  .text5{
+    font-size: 14px;
+    width: 200px;
+    margin:600px 30px
+  }
+  .text6{
+    font-size: 14px;
+    width: 200px;
+    margin:600px -110px
+  }
+  .text7{
+    font-size: 14px;
+    width: 200px;
+    margin:600px 30px
+  }
+  .text8{
+    font-size: 14px;
+    width: 200px;
+    margin:450px -60px
+  }
+  .text9{
+    font-size: 14px;
+    width: 200px;
+    margin:400px 40px
+  }
+  .detail{
+    width: 200px;
+  }
+  .detail2{
+    width: 200px;
+  }
+  .detail3{
+    width: 200px;
+  }
+  .detail4{
+    width: 200px;
+  }
+  .detail5{
+    width: 250px;
+  }
+  .detail6{
+    width: 250px;
+  }
+  .detail7{
+    width: 235px;
+  }
+  .detail8{
+    width: 235px;
+  }
+  .detail9{
+    width: 235px;
+  }
+  .image img{
+    width: 280px;
+  }
+  .image2 img{
+    width: 300px;
+    height: 150px;
+  }
+  .image3 img{
+    width: 300px;
+    height: 150px;
+  }
+  .image4 img{
+    width: 290px;
+    height: 150px;
+  }
+  .image5 img{
+    width: 200px;
+    height: 280px;
+  }
+  .image6 img{
+    width: 200px;
+    height: 280px;
+  }
+  .image7 img{
+    width: 250px;
+    height: 145px;
+  }
+  .image8 img{
+    width: 250px;
+    height: 145px;
+  }
+  .image9 img{
+    width: 250px;
+    height: 145px;
+  }
+  .image {
+    margin: -180px 250px;
+  }
+  .image2 {
+    margin: -200px 250px;
+  }
+  .image3 {
+    margin: -700px 250px;
+  }
+  .image4 {
+    margin: -770px 250px;
+  }
+  .image5 {
+    margin: -890px 320px;
+  }
+  .image6 {
+    margin: -890px 180px;
+  }
+  .image7 {
+    margin: -750px 290px;
+  }
+  .image8 {
+    margin: -550px 200px;
+  }
+  .image9 {
+    margin: -580px 300px;
+  }
+}
+
+
+
+
+@media (max-width: 415px){
+  .con-layout{
+  height: 450vh;
+
+    
+  }
+  .b-mo {
+    width: auto;
+    
+  }
+  .text1 {
+    font-size: 12px;
+    width: 200px;
+    margin:60px 20px
+  }
+  .text2 {
+    font-size: 12px;
+    width: 200px;
+    margin:120px 483px
+  }
+  .text3 {
+    font-size: 12px;
+    width: 200px;
+    margin:680px -5px
+  }
+  .text4 {
+    font-size: 12px;
+    width: 200px;
+    margin:750px 480px
+  }
+  .text5 {
+    font-size: 12px;
+    width: 200px;
+    margin:850px 20px
+  }
+  .text6 {
+    font-size: 12px;
+    width: 200px;
+    margin:1000px 340px
+  }
+  .text7 {
+    font-size: 12px;
+    width: 200px;
+    margin:1200px 150px
+  }
+  .text8 {
+    font-size: 12px;
+    width: 200px;
+    margin:1200px 350px
+  }
+  .text9 {
+    font-size: 12px;
+    width: 200px;
+    margin:1270px 150px
+  }
+  .detail {
+    width: 360px;
+  }
+  .detail2 {
+    width: 360px;
+  }
+  .detail3 {
+    width: 360px;
+  }
+  .detail4 {
+    width: 360px;
+  }
+  .detail5 {
+    width: 360px;
+  }
+  .detail6 {
+    width: 360px;
+  }
+  .detail7 {
+    width: 360px;
+  }
+  .detail8 {
+    width: 360px;
+  }
+  .detail9 {
+    width: 360px;
+  }
+  .image {
+    margin: -40px -15px;
+  }
+  .image img{
+    width: 290px;
+  }
+  .image2 {
+    margin: -80px 495px;
+  }
+  .image3 {
+    margin: -650px 10px;
+  }
+  .image4 {
+    margin: -720px 450px;
+  }
+  .image5 {
+    margin: -820px 90px;
+  }
+  .image6 {
+    margin: -950px 280px;
+  }
+  .image7 {
+     margin: -1170px 100px;
+  }
+  .image8 {
+     margin: -1170px 300px;
+  }
+  .image9 {
+     margin: -1250px 190px;
+  }
 }
 </style>

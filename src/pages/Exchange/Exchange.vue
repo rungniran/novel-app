@@ -6,104 +6,196 @@
           <div
             class="nv-profile-small"
             style="
-              background: url(https://cdn-icons-png.flaticon.com/512/149/149071.png) center center/cover;
+              background: url(https://cdn-icons-png.flaticon.com/512/149/149071.png)
+                center center/cover;
             "
           ></div>
           <div>
-            <div v-if="profile">{{ this.$store.state.auth.display_name}}</div>
+            <div v-if="profile">{{ this.$store.state.auth.display_name }}</div>
             <div v-if="profile">{{ profile.dragon }}</div>
           </div>
         </div>
         <div class="box-coin">
           <div class="nv-con-coin">
             <img :src="$path.image('diamond.png')" width="25px" height="25px" />
-            {{$filter.NumberToString(profile.diamond_balance)}}
+            {{
+              $filter.NumberToString(
+                this.$store.state.auth.dataset.diamond_balance
+              )
+            }}
           </div>
-          <button class="nv-btn-yellow" >ดูประวัติ</button>
+          <router-link to="exchange/story"
+            ><button class="nv-btn-yellow">ดูประวัติ</button></router-link
+          >
         </div>
       </div>
     </div>
     <div class="nv-box-white nv-mt-40 item-Exchange">
       <!-- <div class="nv-title history-title" style="al"> แลกของรางวัล</div> -->
-      
-      <div class="item" >
-           <div class="box-item" v-for="item,idex in Exchange" :key="idex" >
-             <!-- {{item.image_data.url}} -->
-             <img :src="item.image_data.url" width="50%">
-             <div class="detail-item">
-               <div class="item-name">{{item.name}}</div>
-               <div>ใช้เพชร {{$filter.NumberToString(item.use_diamond)}} ดวงแลก {{item.name}} </div>
-               <div class="btn-item" @click="
-               profile.diamond_balance > item.use_diamond 
-               ? $base.openmodal('ExchangeModal', 'ExchangeModal-animetion', 0) 
-               : notDiamond()"
-               > 
-               <img :src="$path.image('diamond.png')" width="25px" height="25px" /> {{$filter.NumberToString(item.use_diamond)}}</div>
-             </div>
-           </div>
+      <div class="item">
+        <div class="box-item" v-for="(item, idex) in Exchange" :key="idex">
+          <!-- {{item.image_data.url}} -->
+
+          <div
+            class="limit-items-s"
+            v-if="item.limit_items > 0 && item.limit_items"
+          >
+            {{ item.limit_items }}
+          </div>
+          <div class="limit-items" v-else>สินค้าหมด</div>
+
+          <div :class="item.limit_items !== 0 ? 'box-pd' : 'box-pd not-full'">
+            <img :src="item.image_data.url" width="50%" />
+            <div class="detail-item">
+              <div class="item-name line-1">{{ item.name }}</div>
+              <small class="color line-1" v-if="item.diamond"
+                >ใช้เพชร {{ $filter.NumberToString(item.diamond) }} ดวงแลก
+                {{ item.name }}
+              </small>
+              <div
+                class="btn-item"
+                @click="
+                  profile.diamond_balance >= item.diamond
+                    ? Address(item)
+                    : notDiamond()
+                "
+              >
+                <img
+                  :src="$path.image('diamond.png')"
+                  width="25px"
+                  height="25px"
+                />
+                <span v-if="item.diamond">{{
+                  $filter.NumberToString(item.diamond)
+                }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-   
-      สติกเกอร์
-      <div class="item" >
-           <div class="box-item" v-for="item,idex in sticker" :key="idex" >
-             <!-- {{item.shop_item_datas[0].image_data.url}} -->
-             <img 
-             :src="item.shop_item_datas[0].image_data ?item.shop_item_datas[0].image_data.url : $path.image('loading.png')" 
-             onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
-             width="50%">
-             <div class="detail-item">
-               <div class="item-name">{{item.name}}</div>
-               <div>ใช้เพชร {{$filter.NumberToString(item.diamond)}} ดวงแลก {{item.name}} </div>
-               <div class="btn-item"
-               > 
-               <img :src="$path.image('diamond.png')" width="25px" height="25px" /> {{$filter.NumberToString(item.diamond)}}</div>
-             </div> 
-           </div>
+      <h1 class="text-sticker"><i class="fa fa-puzzle-piece"></i> สติกเกอร์</h1>
+      <div class="item">
+        <div
+          class="box-item"
+          v-for="(item, idex) in sticker"
+          :key="idex"
+          @click="sell(item)"
+        >
+          <!-- {{item.shop_item_datas[0].image_data.url}} -->
+          <img
+            :src="
+              item.shop_item_datas[0]
+                ? item.shop_item_datas[0].image_data.url
+                : $path.image('loading.png')
+            "
+            onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
+            width="50%"
+          />
+          <div class="detail-item">
+            <div class="item-name">{{ item.name }}</div>
+            <div class="line-1">
+              ใช้เพชร {{ $filter.NumberToString(item.diamond) }} ดวงแลก
+              {{ item.name }}
+            </div>
+            <div class="btn-item">
+              <img
+                :src="$path.image('diamond.png')"
+                width="25px"
+                height="25px"
+              />
+              {{ $filter.NumberToString(item.diamond) }}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <NovelModal classlist="ExchangeModal" animation="ExchangeModal-animetion">
+    <NovelModal2
+      ID="wallletModal"
+      IDCrad="ExchangeModalCard"
+      ref="Modal"
+      :Close="true"
+    >
       <template v-slot:body>
-        <div>กรุณากรองข็อมูลที่อยู่เพิ่มจัดส่ง</div>
-        <div class="from nv-mt-30"  >
+        <div>กรุณากรอกข้อมูลที่อยู่เพื่อจัดส่ง</div>
+        <div class="from nv-mt-30">
           <div class="contor-input">
             <div class="title">ชื่อ-นามสกุล</div>
-            <input id="title" required />
+            <input id="title" v-model="data.name" required />
           </div>
           <div class="contor-input">
             <div class="title">ที่อยู่</div>
-            <textarea></textarea>
+            <textarea v-model="data.address"></textarea>
           </div>
           <div class="contor-input">
             <div class="title">เบอร์โทรศัพท์</div>
-            <input id="title" required />
+            <input id="title" v-model="data.phoneNumber" required />
           </div>
         </div>
-        <button class="nv-mt-20 nv-btn-yellow">ยืนยัน</button>
+        <button class="nv-mt-20 nv-btn-yellow" @click="submitAddress()">
+          ยืนยัน
+        </button>
       </template>
-
-    </NovelModal>
+    </NovelModal2>
+    <NovelModal2 ref="popup" :IDCrad="ExchangeCrad">
+      <template v-slot:body>
+        <div v-if="stickerr">
+          <div class="name-st">{{ stickerr.name }}</div>
+          <div class="con-st">
+            <div v-for="(item, index) in stickerr.shop_item_datas" :key="index">
+              <img :src="item.image_data.url" width="100%" />
+            </div>
+          </div>
+          <div
+            style="
+              margin-top: 20px;
+              display: flex;
+              gap: 10px;
+              justify-content: flex-end;
+            "
+          >
+            <button class="nv-btn-yellow" @click="$refs.popup.close()">
+              ยกเลิก</button
+            ><button class="nv-btn-orange" @click="sellST(stickerr)">
+              ซื้อเลย
+            </button>
+          </div>
+        </div>
+      </template>
+    </NovelModal2>
+    <ConfirmDialogue @close="close()" ref="confirmDialogue">
+      <!-- <template v-slot:body></template> -->
+    </ConfirmDialogue>
   </div>
 </template>
 <script lang="ts">
 import { Gatway } from "@/shares/services";
 import Vue from "vue";
-import { alert } from '@/shares/modules/alert'
+import { alert } from "@/shares/modules/alert";
+import NovelModal2 from "@/components/widget/NovelModal2.vue";
 export default Vue.extend({
   name: "Exchange",
   data() {
     return {
       current: "Coin",
-      Exchange:[],
-      sticker:[]
-
+      Exchange: [],
+      sticker: [],
+      stickerr: null,
+      data: {
+        name: "",
+        address: "",
+        phoneNumber: "",
+        shop_type_data_id: "",
+      },
+      itempd: {} as any,
     };
   },
   components: {
-    NovelModal:()=> import('@/components/widget/NovelModal.vue')
+    // ConfirmDialogue:()=> import('@/components/widget/NovelConfirm2.vue'),
+    NovelModal2: () => import("@/components/widget/NovelModal2.vue"),
   },
   methods: {
-    notDiamond(){
-      alert('จำนวนเพรชไม่เพียงพอ','error')
+    notDiamond() {
+      alert("จำนวนเพรชไม่เพียงพอ", "error");
     },
     changeComponent(component: string): void {
       this.current = component;
@@ -114,29 +206,92 @@ export default Vue.extend({
     opanmodal(): void {
       document.getElementsByClassName("contai-modal")[0].classList.add("show");
     },
-    async gitlist(){
-      let res = await Gatway.postService('/guest/shop-data/lists', {shop_type_data_id:'7dc9abbc-d3b3-4b48-ac77-29d00a70469e'} as any)  
-      this.Exchange =res.data.data[0].shop_item_datas
-      let ressticker = await Gatway.postService('/guest/shop-data/lists', {shop_type_data_id:'9c1c64df-3516-4098-8575-1c3470206710'} as any) 
+    async gitlist() {
+      let res = await Gatway.postService("/guest/shop-data/lists", {
+        shop_type_data_id: "7dc9abbc-d3b3-4b48-ac77-29d00a70469e",
+      } as any);
+      console.log(res);
+      this.Exchange = this.AllProduct(res.data.data);
+      let ressticker = await Gatway.postService("/guest/shop-data/lists", {
+        shop_type_data_id: "9c1c64df-3516-4098-8575-1c3470206710",
+      } as any);
+      let resstickerdata = [] as any;
+      ressticker.data.data.filter((res: any) => {
+        if (!res.diamond) {
+          null;
+        } else if (parseInt(res.diamond) !== 0) {
+          resstickerdata.push(res);
+        }
+      });
+      this.sticker = await resstickerdata;
+    },
+    Address(item: any) {
+      this.itempd = item;
+      (this as any).$refs.Modal.open();
+    },
+    async submitAddress() {
+      console.log(this.itempd);
 
-      let resstickerdata = [] as any
-      ressticker.data.data.filter((res: any)=>{
-        // console.log(parseInt(res.diamond) !== 0);
-         if(!res.diamond){
-          //  resstickerdata.push(res)
+      let res = await Gatway.postService("/customers/shop-data/buy", {
+        shop_topic_data_id: this.itempd.shop_topic_data_id,
+        shop_type_data_id: "7dc9abbc-d3b3-4b48-ac77-29d00a70469e",
+        shop_item_data_id: this.itempd.id,
+        address: this.data,
+      } as any);
+      alert("สำเร็จ", "success");
+      this.$store.commit("reset");
+      (this as any).$refs.Modal.close();
+    },
+    AllProduct(item: any) {
+      let Product = [] as any;
+      item.forEach((element: any) => {
+        Product.push(...element.shop_item_datas);
+      });
+      return Product;
+    },
+    async sell(item: any) {
+      let res = await Gatway.getIDService("admin/shop-data-topic", item.id);
+      console.log(item);
 
-         }else if(parseInt(res.diamond) !== 0){
-           resstickerdata.push(res)
-         }
-      })
-      console.log(resstickerdata);
-      
-      this.sticker =await resstickerdata
-      
-    }
+      // console.log(res.data.data.shop_item_datas);
+      this.stickerr = await res.data.data;
+      (this as any).$refs.popup.open();
+
+      // let confirm = await (this as any).$refs.confirmDialogue.show({
+      //     title: item.name,
+      //     okButton: 'ยืนยัน',
+      // })
+      // if (confirm === true){
+      //   let res = await Gatway.postService('/customers/shop-data/buy', {shop_topic_data_id:item.id,shop_type_data_id:item.id} as any)
+      //   console.log(res.data.data);
+      //   if(res.data.code === 200){
+      //     alert( 'ซื้อสำเร็จ','success')
+      //     this.$store.commit("reset");
+      //      this.gitlist()
+      //   }
+
+      // }
+    },
+
+    async sellST(item: any) {
+      console.log(item);
+
+      let res = await Gatway.postService("/customers/shop-data/buy", {
+        shop_topic_data_id: item.id,
+        shop_type_data_id: item.shop_type_data_id,
+        shop_item_data_id: item.shop_type_data_id,
+      } as any);
+      console.log(res.data.data);
+      if (res.data.code === 200) {
+        alert("ซื้อสำเร็จ", "success");
+        this.$store.commit("reset");
+        this.gitlist();
+        (this as any).$refs.popup.close();
+      }
+    },
   },
   mounted() {
-    this.gitlist()
+    this.gitlist();
     this.cleckpath() === ""
       ? this.changeComponent("Coin")
       : this.changeComponent(this.$route.hash.slice(1));
@@ -144,6 +299,13 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss" scoped>
+.text-sticker {
+  text-align: center;
+  font-size: 25px;
+  padding: 20px;
+  color: #8663ba;
+}
+
 .add-coin {
   display: flex;
   justify-content: space-between;
@@ -171,28 +333,33 @@ export default Vue.extend({
 .history-title {
   text-align: center;
 }
-.item{
+.item {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 20px;
 }
-.box-item{
-  background:#f7f8f9;
-  padding: 20px;
+.name-st {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+.box-item {
+  background: #f7f8f9;
+  padding: 25px;
   border-radius: 10px;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 25px;
 }
-// .box-item img{
-//   border-radius: 100%;
-// }
-.item-name{
+.box-item img {
+  border-radius: 7px;
+}
+.item-name {
   font-size: 20px;
   text-align: center;
 }
-.btn-item{
+.btn-item {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -203,30 +370,79 @@ export default Vue.extend({
   width: 100%;
   border-radius: 50px;
 }
-.detail-item{
+.detail-item {
   display: flex;
-      align-items: center;
+  align-items: center;
   flex-direction: column;
+  width: 100%;
   gap: 10px;
 }
-.from{
-      width: 300px;
+.from {
+  width: 300px;
+}
+.box-pd {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+.color {
+  color: #adadad;
+}
+.limit-items,
+.limit-items-s {
+  border-radius: 5px 0px 0px 0px;
+  position: absolute;
+  position: absolute;
+  color: #ffffff;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  padding: 0px 20px;
+  background: #fc7c7c;
+  border-radius: 0px 0px 5px 0px;
+}
+.limit-items-s {
+  background: #8663ba;
+  border-radius: 0px 0px 5px 0px;
+}
+.not-full {
+  opacity: 0.3;
+
+  transition: 0.3s;
+  pointer-events: none;
+}
+.con-st {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+  width: 550px;
+  background: #ffffff;
 }
 @media (max-width: 768px) {
-.item {
-
+  .item {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 15px;
+  }
 }
-}
-@media (max-width: 415px){
-.item {
-
+@media (max-width: 415px) {
+  .item {
     grid-template-columns: 1fr 1fr;
     gap: 15px;
-}
-.item-Exchange{
-  padding: 20px 0px;
-}
+  }
+  .item-Exchange {
+    padding: 20px 10px;
+  }
+  .con-st {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+    width: 320px;
+    background: #ffffff;
+  }
 }
 </style>

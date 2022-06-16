@@ -1,5 +1,5 @@
 <template>
-  <NovelModal classlist="review-modal" animation="review-modal-amination"  :index="1" ref="Modeal">
+ <NovelModal2 ID="reviewModal" IDCrad="reviewModalCard" ref="Modeal" :Close="true">
       <template v-slot:body>
         <div class="Review">
           <h2 class="Review-title">ความคิดเห็น</h2>
@@ -40,7 +40,7 @@
           <button class="nv-btn-yellow" @click="comment('create-comment-review')">ยืนยัน</button>
         </div>
       </template>
-  </NovelModal>
+  </NovelModal2>
 </template>
 <script lang="ts">
 import Vue from 'vue'
@@ -48,7 +48,7 @@ import {Gatway} from '@/shares/services'
 export default Vue.extend({
   name:"ReviewModal",
   components:{
-    NovelModal: () => import("@/components/widget/NovelModal.vue"),
+    NovelModal2: () => import("@/components/widget/NovelModal2.vue"),
   },
   data(){
     return{
@@ -74,6 +74,11 @@ export default Vue.extend({
       // (this as any).$base.closemodal('review-modal', 'review-modal-amination', 1)
 
     },
+
+    open(){
+      (this as any).$refs.Modeal.open();
+    },
+
     stars(value:any){
       console.log(value);
       this.Obj.star = value

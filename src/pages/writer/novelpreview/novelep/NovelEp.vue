@@ -32,7 +32,7 @@
           <NovelEditor @Editor="func_Editor" :valueWay="this.data.detail" height="30"/>
         </div>
         <div>
-          <button class="nv-btn-orange" @click="!idEp ? submit() : updata()">ยืนยัน</button>
+          <button type="submit" class="nv-btn-orange" :disabled="disabledSubmit" @click="!idEp ? submit() : updata()">ยืนยัน</button>
         </div>
       </div>
     </div>
@@ -43,7 +43,7 @@ import Vue from 'vue'
 import { Gatway } from '@/shares/services'
 import { alert } from '@/shares/modules/alert'
 import { Validation } from '@/shares/modules/validation'
-import {  datatime } from '@/shares/modules/datatime'
+import { datatime } from '@/shares/modules/datatime'
 
 // interface typeEp {
 //   novel_data_id:string;
@@ -70,8 +70,9 @@ export default Vue.extend({
         detail:"",
         publisher_episode_data : {
           date_time: datatime(new Date()) ,
-        } ,
-      } 
+        }
+      } ,
+        disabledSubmit: false
     }
   },
   methods:{
@@ -79,8 +80,10 @@ export default Vue.extend({
       this.data.novel_data_id = this.$route.params.id
       const arrvalidate = ["TitleEp", "DateTime"];
       if( Validation(arrvalidate as any) === true){
+        this.disabledSubmit = true
         let res = await Gatway.postService("/customers/episode_data", this.data as any)
         if(res.data.status === true){
+          this.disabledSubmit = false
           alert(res.data.data, "success")
           history.back()
         }else{
@@ -97,7 +100,6 @@ export default Vue.extend({
 		},
     async getEp(){
       let res = await Gatway.getIDService("/customers/episode_data", this.idEp )
-      console.log(res);
       this.data.novel_data_id = res.data.data.novel_data_id
       this.data.name = res.data.data.name
       this.data.detail = res.data.data.detail
@@ -106,11 +108,7 @@ export default Vue.extend({
     async updata(){
       this.data.novel_data_id = this.$route.params.id
       this.data = {...this.data, id:this.idEp } as any
-      console.log(this.data);
-      
       let res = await Gatway.PutService("/customers/episode_data", this.idEp , this.data as any) 
-      console.log('sdsdfsdf',res);
-      
       if(res){
         alert(res.data.data, "success")
          this.getEp()
@@ -118,7 +116,6 @@ export default Vue.extend({
     },
   },
   mounted(){
-    console.log(datatime(new Date()));
     this.idEp ? this.getEp() : null
   }
   

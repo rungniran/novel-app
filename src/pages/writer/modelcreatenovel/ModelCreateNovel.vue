@@ -38,14 +38,7 @@ export default Vue.extend({
   },
   methods:{
     novel_data_type_id(){
-      // ListService.listNoveltype().then((res:any) =>{
-      //   this.item = res.data.data
-      //   console.log(res.data.data);
-        
-      // })
         Gatway.getService('/miscellaneous/fetch/novel_data/novel_data_type_id').then((res:any) =>{
-        console.log(res.data.data);
-        
         this.item = res.data.data
       })
     }

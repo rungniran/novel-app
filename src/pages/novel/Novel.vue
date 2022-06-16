@@ -3,10 +3,15 @@
     <!-- <pre>  {{resGetNovel}}</pre> -->
     <div class="nv-box-white cover-novel nv-mt-40" v-if="resGetNovel">
       <div class="box-nove">
+
         <div class="image-nv">
+          <!-- {{readNext()}} -->
 					<!-- <canvas id="canvas"></canvas> -->
-          <img
-            :src=" resGetNovel.image_data ? resGetNovel.image_data.url : $path.image('loading.png')"
+          <div class="bg-gradients">
+
+          </div>
+          <img 
+            :src="resGetNovel.image_data ? resGetNovel.image_data.url : $path.image('loading.png')"
             class="nv-img-novel"
             width="100%"
             onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
@@ -15,7 +20,7 @@
         <div class="detail">
 					<div>
 						<div class="nv-title line-1">{{resGetNovel.title}}</div>
-						<router-link style="color: #e4803a;" :to="'/profile/'+resGetNovel.user_id+'/writer'">{{resGetNovel.user_id}}</router-link>
+						<router-link class="line-1" style="color: #e4803a;" :to="'/profile/'+resGetNovel.user_id+'/writer'">{{resGetNovel.user_id}}</router-link>
 						<div class="con-review">
                 <NovelStar :rating="Math.round (resGetNovel.avg_star)" /> 
                 <!-- <span> ({{dataReview.length}}) </span> -->
@@ -38,11 +43,13 @@
           </div>
 					</div>
   
-         
+         <!-- {{readNext()}} -->
           <div class="grud-btn">
-            <router-link :to="'/read/' + this.$route.params.id + '/sdhiouhs'">
-            <button  class="nv-btn-orange Novel-mobile">อ่าน</button>
-            </router-link>
+            <!-- <router-link :to="'/read/' + readNext() "> -->
+            <button @click="Next()" class="nv-btn-orange Novel-mobile">
+              อ่านต่อ
+            </button>
+            <!-- </router-link> -->
             <button
               class="nv-btn-yellow Novel-mobile"
               @click="cleck ? addBookshelf(resGetNovel.id) : $base.openlogin()"
@@ -180,6 +187,13 @@
                   <span v-else>{{itemep.name}}</span>
                 </div>
                 <div class="detail-ed">
+                  <!-- {{readNext()}} -->
+                   <div v-if="readNext() === itemep.id" style="  width: 45px;  color: #556080;">
+                    อ่านอยู่
+                  </div>
+                  <div v-else style="     width: 45px;">
+                   
+                  </div>
                   <div class="con-coin" v-if="itemep.coin !== '0.00'">
                     <div class="con-coin" v-if="itemep.bought === false">
                       <img :src="$path.image('coin-gold.png')" width="20px" />
@@ -192,7 +206,7 @@
                   </div>
                   <div class="con-coin" v-else>
                     <img width="20px" />
-                    <!-- <span class="count-coin">{{itemep.coin}}</span> -->
+                    <span class="count-coin"></span>
                   </div>
                   <div class="date">{{itemep.timestamp}}</div>
                   <div><i class="far fa-eye"></i> {{$filter.NumbertoText(itemep.count_view) }}</div>
@@ -243,7 +257,7 @@
           <router-link class="writer-profile" :to="'/profile/'+resGetNovel.user_id+'/writer'">
             <div class="img-profile"></div>
             <div>
-              <div>{{resGetNovel.user_id}}</div>
+              <div class="line-1">{{resGetNovel.user_id}}</div>
               <small>ไม่มีข้อมูล</small>
             </div>
           </router-link>
@@ -276,12 +290,12 @@
     <div class=" nv-box-white nv-mt-40 Comments" v-if="datacomment.length !== 0" >
       <Comments :DataComment="datacomment" @fetch="fetch"/>
     </div>
-     <NovelModal classlist="buy-novel-ep-auto" animation="buy-novel-ep-auto-amination">
+     <NovelModal2 ID="buyNovelEpAuto" IDCrad="buyNovelEpAutoCard" ref="buyNovelEpAuto" :Close='true'>
       <template v-slot:body>
         <div style="font-size: 23px;">เปิดรายตอน</div>
         <div id="epName" class="line-1"></div>
-        <img class="dagod" :src="$path.image('removebg-preview.png')" width="50%" >
-        <div class="buy-ep--coin" ><span id="epCoin"></span> <img :src="$path.image('coin-gold.png')" width="20%" ></div>
+        <img class="dagod" v-lazy="$path.image('removebg-preview.png')" width="50%" >
+        <div class="buy-ep--coin" ><span id="epCoin"></span> <img v-lazy="$path.image('coin-gold.png')" width="20%" ></div>
         <div style="display: flex;    align-items: center;grid-gap: 10px;">
           <!-- @click="cleck ? null : $base.openlogin()" -->
             <input type="checkbox"  :checked="cleckAuten" @change="switchsell" id="switch" />
@@ -289,30 +303,30 @@
           </div> 
         <div class="buy" id="" @click="buy">ซื้อนิยาย</div>
       </template>
-    </NovelModal>
-    <ReviewModal @ResetReviwe="reviewFetch"/>
+    </NovelModal2>
+    <!-- <ReviewModal @ResetReviwe="reviewFetch"/> -->
     <NovelBuySet ref="NovelBuySet"/>
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
 
-// import { getRGB } from "@/shares/modules/color"
+import { getRGB } from "@/shares/modules/color"
 import { Gatway } from "@/shares/services"
 import { alert } from '@/shares/modules/alert'
+import {sms_alert_BuyEpisode} from '@/shares/constants/smsalert'
 import { setAutoBuy, getAutoBuy }  from '@/shares/modules/autobuy'
 import "highlight.js/styles/tomorrow.css";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
-import { profile } from "@/router/profile";
 export default Vue.extend({
   name: "Novel",
   components: {
     NovelStar:()=> import("@/components/widget/NovelStar.vue"),
 		DragonHouse:()=> import("./dragonhouse/DragonHouse.vue"),
     LoadingNovel:()=> import("@/components/loader/LoadingNovel.vue"),
-    NovelModal: () => import("@/components/widget/NovelModal.vue"),
-    ReviewModal: ()=> import("./reviewmodal/ReviewModal.vue"),
+    NovelModal2: () => import("@/components/widget/NovelModal2.vue"),
+    // ReviewModal: ()=> import("./reviewmodal/ReviewModal.vue"),
     Comments:() => import('@/components/Comments.vue'),
     NovelReview:()=> import('./NovelReview/NovelReview.vue'),
     NovelEditterComment:()=> import('@/components/widget/NovelEditterComment.vue'),
@@ -336,6 +350,10 @@ export default Vue.extend({
     };
   },
   methods: {
+    async Next(){
+     this.EpID = await this.readNext()
+     await this.buy()
+    },
     openEp(key: number): void {
       const con_ep = document.getElementsByClassName("container-ep")[
         key
@@ -353,31 +371,23 @@ export default Vue.extend({
     },
      async getnNovel() {
       const resGetNovel = await Gatway.getIDService((this as any).cleck === "true" ? '/novel/novel-data' : '/guest/novel/novel-data',this.$route.params.id);
-      console.log('asdsd',resGetNovel);
       this.Eplist  = resGetNovel.data.data.novel_episode_datas.length
-      // if(resGetNovel.data.status === true){
+
         this.momentEp(resGetNovel.data.data.novel_episode_datas)
-      // }else{
-      //   this.resGetNovel = null
-      // }
+   
     },
 
     async getEp(){
      let res = await Gatway.getIDService('/guest/fetch-novel-header', this.$route.params.id)
-     console.log('>>>>',res.data.data);
-      this.resGetNovel = await res.data.data
+    this.resGetNovel = await res.data.data
      
     },
     async openmenuBuy(item:any):Promise<void>{
-      // console.log(this.resGetNovel.user_id === (this as any).profile.id);
-      
-      if(item.coin === '0.00' || this.resGetNovel.user_id === (this as any).profile.id){
-        console.log(item);
-        let dataitem = {...this.resGetNovel, item}
-        this.$store.commit("setRead", dataitem)
+      if(item.coin === '0.00' || this.resGetNovel.user_id === (this as any).profile?.id){
         this.$router.push(`/read/${item.id}`)
       }else{
-        (this as any).cleck === "true"
+        
+        (this as any).profile
         ? this.bought(item)
         : (this as any).$base.openlogin()
       }
@@ -391,15 +401,32 @@ export default Vue.extend({
           this.EpID = await item.id,
           this.buy()
         }else{
+          console.log('sd');
           const epName = document.getElementById('epName') as HTMLElement
           const epCoin = document.getElementById('epCoin') as HTMLElement
           epName.innerHTML = item.name
           epCoin.innerHTML = item.coin
           this.EpID = item.id;
-          console.log();
           
-          (this as any).$base.openmodal('buy-novel-ep-auto', 'buy-novel-ep-auto-amination', 0)
+          
+          (this as any).$refs.buyNovelEpAuto.open()
+          // (this as any).$base.openmodal('buy-novel-ep-auto', 'buy-novel-ep-auto-amination', 0)
         }
+      }
+    },
+    readNext(){
+      let item = (this as any).$store.state.storyread.story_Read
+      if( (this as any).$store.state.storyread.story_Read){
+        console.log('dffd');
+        
+        const index = item.findIndex(object => {
+          return object.id === this.$route.params.id;
+         });
+         return index !== -1 ?item[index]?.id_ep : (this as any).dataMomentEp[0].ep[0].id
+         
+
+      }else{
+        return (this as any).dataMomentEp[0].ep[0].id
       }
     },
     async buy(){
@@ -412,7 +439,7 @@ export default Vue.extend({
         this.$store.commit("reset")
         let dataitem = {...this.resGetNovel, item:res.data.data}
         this.$store.commit("setRead", dataitem)
-        alert('คุณในซื้อนิยาย ' +  res.data.data.current.coin + ' เหรียญ' , 'success')
+        alert(sms_alert_BuyEpisode ("เหรียญเพิ่ม",""), 'success')
         this.$router.push(`/read/${this.EpID}`)    
       }else{
         alert('เหรียญของคุณมีไม่เพียงพอ' , 'error')
@@ -424,7 +451,7 @@ export default Vue.extend({
     async momentEp(countEp: any) {
       let ep = 0;
       let [eplast, eplastStas]  = [50,50] as any[];
-      let arraymoment = [] as any;
+      let arraymoment = await [] as any;
       let count = countEp.length / eplast;
       let momentCount = count + 0.00; 
       if(countEp.length > 0){
@@ -451,8 +478,8 @@ export default Vue.extend({
         }
       }
       this.dataMomentEp = await arraymoment
-      setTimeout(() => {
-        // this.openEp(0)
+      setTimeout(async () => {
+       await this.openEp(0)
       }, 100);
       
     },
@@ -504,21 +531,14 @@ export default Vue.extend({
         action:'fetch-preview', 
         novel_data_id:this.$route.params.id
       } as any) 
-      console.log( res.data.data);
-      
       this.dataReview = res.data.data
-      this.countReview(res.data.data)
+      // this.countReview(res.data.data)
       
     },
     more(){
       let story = document.getElementsByClassName('story')[0] as HTMLElement
       let more = document.getElementsByClassName('more')[0] as HTMLElement
       let ade = document.getElementsByClassName('ade')[0] as HTMLElement
-      // story.style.height = story.scrollHeight +'px'
-      // console.log(story);
-      
-      // // story.classList
-      console.log(story.style.height);
       if(story.style.height == '200px'){
         story.style.height = story.scrollHeight +'px'
         more.innerHTML = 'ย่อลง'
@@ -531,37 +551,42 @@ export default Vue.extend({
       }
       
     },
-    countReview(data:any){
-      console.log(data);
-      for(let i= 1; i < data.length; i++){
-        console.log(data[i]);
+    // countReview(data:any){
+    //   console.log(data);
+    //   for(let i= 1; i < data.length; i++){
+    //     console.log(data[i]);
         
-      }
+    //   }
       
-    }
+    // }
     
  
   },
   
 	mounted(){
+
+
     this.getEp()
     this.getCommentAll()
     this.getReviewAll()
     this.getnNovel()
     
-		// let img = document.getElementsByClassName('nv-img-novel')[0] as HTMLImageElement
+		
+		    let img = document.getElementsByClassName('nv-img-novel')[0] as HTMLImageElement
 		// let image_nv = document.getElementsByClassName('image-nv')[0] as HTMLElement
     // // let shadow = document.getElementsByClassName('nv-shadow')[0] as HTMLImageElement
 		// setTimeout(()=>{
-		// 	let  {r,g,b} = getRGB(img)
+			let  {r,g,b} = getRGB(img)
 		// image_nv.style.background = `rgb(${r},${g},${b})`
-    // // shadow.style.boxShadow = `rgb(${r},${g},${b}) 0px 7px 29px 0px`
+    // shadow.style.boxShadow = `rgb(${r},${g},${b}) 0px 7px 29px 0px`
  
 		// },1000)
-		
-		// console.log(R.r);
+		// console.log("rgb",r,g,b);
+    console.log("test")
 		
 	}
 });
 </script>
-<style  lang="scss" scoped src="./Novel.scss"></style>
+<style  lang="scss" scoped src="./Novel.scss">
+
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="read">
+  <div class="read" id="Read">
     
 		<!-- <div class="sticky" :style="'width:'+ Percen +'%'"></div> -->
     <!-- {{read}}  v-if="code !== 401"-->
@@ -23,7 +23,7 @@
       <!-- {{read}}  v-if="code !== 401"-->
     <div class="nv-box-white box-read" v-if="read">
       <div class="nv-mt-30">
-        <div class="name-story" >{{read.name}}</div>
+        <div class="name-story line-1" >{{read.name}}</div>
         <div class="nv-mt-20 story" v-html="read.detail" :style="'font-size:' + fonrsize + 'px'">
          
         </div>
@@ -61,7 +61,7 @@
     <div class=" nv-box-white nv-mt-40 NovelEditterComment" v-if="profile">
       <NovelEditterComment @click="ClickPost"/>
     </div>
-    <div class="nv-box-white nv-mt-40">
+    <div class="nv-box-white nv-mt-40 Comments" v-if="profile">
       <!-- <div class="comment-textarea">
         <textarea rows="10" v-model="commentObj.html"></textarea>
         <button class="nv-btn-yellow" @click="comment('click-post')">ส่ง</button>
@@ -88,6 +88,7 @@
 
 <script lang="ts">
 import { Gatway } from '@/shares/services'
+import {sms_alert_BuyEpisoderead } from '@/shares/constants/smsalert'
 import { alert } from '@/shares/modules/alert'
 import { setAutoBuy, getAutoBuy }  from '@/shares/modules/autobuy'
 import { setThreme} from './ReadCustomize'
@@ -156,11 +157,16 @@ export default Vue.extend({
         this.next = await Ojb.data.data.next
         this.previous = await Ojb.data.data.previous
         setThreme()
-       let res = await Gatway.getIDService('/guest/fetch-novel-header', Ojb.data.data.current.novel_data_id)
-       console.log('>>>>',res.data.data);
      
  
-        let dataitem = {...res.data.data, item:Ojb.data.data.current}
+        let dataitem = {
+          id:Ojb.data.data.current.novel_data_id,
+          id_ep:Ojb.data.data.current.id,
+          // image_data:res.data.data.image_data.url,
+          // title:res.data.data.title,
+          // name:Ojb.data.data.current.name
+          // img: res.data.data.
+        }
         console.log(dataitem);
         
         this.$store.commit("setRead", dataitem)
@@ -168,16 +174,25 @@ export default Vue.extend({
       }   
     },
     async cleckNovel(){
-      let resguest = await Gatway.getIDService('/guest/novel-episode/read', this.$route.params.slug)
-      let resreader = await Gatway.postService('/reader/novel-episode/read', 
-      { novel_episode_datas: [this.$route.params.slug], payment_confirmation: resguest.data.code !== 401 ? true : false } as any); 
-      let res = await (this as any).cleck === 'true' ? resreader : resguest
-      if( res.data.data==="please pay"){
-        (this as any).$base.openmodal('buy-novel-ep-auto', 'buy-novel-ep-auto-amination', 0)
+      // console.log('fgfggfgf',(this as any).profile);
+      
+      if((this as any).profile){
+        let resguest = await Gatway.getIDService('/guest/novel-episode/read', this.$route.params.slug)
+        let resreader = await Gatway.postService('/reader/novel-episode/read', 
+        { novel_episode_datas: [this.$route.params.slug], payment_confirmation: resguest.data.code !== 401 ? true : false } as any); 
+        let res = await (this as any).cleck === 'true' ? resreader : resguest
+        if( res.data.data==="please pay"){
+          (this as any).$base.openmodal('buy-novel-ep-auto', 'buy-novel-ep-auto-amination', 0)
+        }
+        this.cleckAuten = getAutoBuy(res.data.data.current.novel_data_id)
+        this.getread(await res) 
+        this.tets() 
+      }else{
+        let resguest = await Gatway.getIDService('/guest/novel-episode/read', this.$route.params.slug)
+        this.getread(await resguest) 
+        // this.tets() 
       }
-      this.cleckAuten = getAutoBuy(res.data.data.current.novel_data_id)
-      this.getread(await res) 
-      this.tets() 
+      
     },
     switchsell(key:string){
      this.cleckAuten = setAutoBuy(key) 
@@ -205,6 +220,7 @@ export default Vue.extend({
           if(item.coin !== '0.00'){
             if(item.bought != true){ 
               alert('คุณในซื้อนิยาย ' +  item.coin + ' เหรียญ','success')
+              // alert(sms_alert_BuyEpisoderead("",""),'success')
             }
           }
         }
@@ -280,7 +296,6 @@ export default Vue.extend({
       }
     },
     async comment(action:any){
-      console.log();
       this.commentObj.action = action
       this.commentObj.novel_data_id = this.read.novel_data_id
       this.commentObj.novel_episode_data_id = this.$route.params.slug
@@ -308,8 +323,7 @@ export default Vue.extend({
 
     },
      async  tets(){
-      let res = await Gatway.postService('/guest/comments/comment-episode', { action: 'fetch-comment-episode', novel_episode_data_id: this.$route.params.slug} as any) 
-      console.log('saaaaa>>>', res);
+      let res = await Gatway.postService('/customers/comments/comment-episode', { action: 'fetch-comment-episode', novel_episode_data_id: this.$route.params.slug} as any) 
       this.DataComment = res.data.data
       
     },
@@ -317,7 +331,6 @@ export default Vue.extend({
       let res = await Gatway.getService('/guest/recommended-novel')
       const data = [] as any
       res.data.data.forEach((element:any) => {
-        console.log(element.novel_data);
         if(element.novel_data){
           data.push(element.novel_data)
         }
@@ -333,6 +346,8 @@ export default Vue.extend({
     this.getRecommend()
     // this.tets()
     this.cleckNovel()
+    
+    
 		// window.scrollTo({ top: 0, behavior: 'smooth' })
 		// window.addEventListener("scroll", this.onScroll)
   },

@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function alertSystem(error: any):void {
-  status(error.response.status)
+  // status(error.response.status)
   const err = document.getElementsByClassName("con-aler-system")[0] as any;
   const element = document.createElement("div");
   element.setAttribute('class', 'aler-system');
@@ -12,13 +12,19 @@ export function alertSystem(error: any):void {
   console.log(error);
 }
 
-const status = (key:any) => {
-  if(key === 401){
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const status = (error:any) => {
+  if(error.response.status === 401){
       const login_crad = document.getElementsByClassName("login-crad")[0] as HTMLElement
       const login = document.getElementsByClassName("login")[0] as HTMLElement
       login_crad.classList.add("login-crad-show")
       login.classList.add("show")
-  }  
+  }else if(error.response.status === 429){
+    // window.open(window.location.href,'_blank');
+  } 
+  else{
+    alertSystem(error)
+  } 
 }
 
 export function alert(messenger:string, typeclass:string):void {

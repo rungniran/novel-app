@@ -238,5 +238,18 @@ export default Vue.extend({
   display: none;
 
 }
+@media (max-width: 1024px) {
+
+}
+@media (max-width: 768px) {
+.series{
+ grid-template-columns: 1fr ;
+}
+}
+@media (max-width: 415px) {
+.con-from{
+ grid-template-columns: 1fr ;
+}
+}
 
 </style>
