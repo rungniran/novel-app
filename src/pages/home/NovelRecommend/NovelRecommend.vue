@@ -30,7 +30,7 @@
         />
         <div class="grod-detail">
           <div class="name line-1">{{items.novel_data.title}}</div>
-          <div class="subname">แฟนตาซี</div>
+          <div class="subname">{{items.novel_category_data_preview}}</div>
           <div><NovelStar :rating="4" /></div>
           <div class="view-list">
             <div class="view">

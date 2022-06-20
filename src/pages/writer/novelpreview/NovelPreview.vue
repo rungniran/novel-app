@@ -165,8 +165,7 @@
         </div>
       </div>
     </div>
-    <div class="nv-box-white nv-mt-40" id="series">
-      <!-- {{EpisodeData}} -->
+    <!-- <div class="nv-box-white nv-mt-40" id="series">
       <div class="series">
         <select name="cars" id="cars" @change="test">
           <option value="volvo">รวมทุกตอน</option>
@@ -220,7 +219,7 @@
           ></apexchart>
         </div>
       </div>
-    </div>
+    </div> -->
     <NovelConfirm
       color="#ffb900"
       title="ยืนยันการลบนิยาย"
@@ -342,11 +341,11 @@ export default Vue.extend({
       const resEpisodeData = await Gatway.getService(
         `/customers/episode_data/index/${this.$route.params.id}`
       );
-      console.log(resEpisodeData.data.data);
+      console.log('sdsd',resEpisodeData.data);
       
-      this.EpisodeData = await resEpisodeData.data.data;
-      this.eplength = resEpisodeData.data.data.data.length;
-      this.momentEp(resEpisodeData.data.data.data);
+      this.EpisodeData = await resEpisodeData.data;
+      this.eplength = resEpisodeData.data.length;
+      this.momentEp(resEpisodeData.data.data);
     },
     confirmDelete() {
       this.confirm === "ลบนิยาย"

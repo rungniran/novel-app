@@ -25,14 +25,14 @@
               class="line-1"
               style="color: #e4803a"
               :to="'/profile/' + resGetNovel.user_id + '/writer'"
-              >{{ resGetNovel.user_id }}</router-link
+              >{{ resGetNovel.penname_preview }}</router-link
             >
             <div class="con-review">
               <NovelStar :rating="Math.round(resGetNovel.avg_star)" />
               <!-- <span> ({{dataReview.length}}) </span> -->
             </div>
             <div class="nv-mt-10">
-              <router-link to="#" class="nv-tag">ยังไม่มีข้อมูล</router-link>
+              <router-link to="#" class="nv-tag">{{resGetNovel.novel_category_data_preview}}</router-link>
             </div>
             <div
               class="story-sub line-5"
@@ -50,7 +50,7 @@
               <div class="list">
                 <i class="fas fa-list"></i>
                 <div class="count-numble-view">
-                  {{ $filter.NumbertoText(Eplist) }}
+                  {{ $filter.NumbertoText(resGetNovel.ep_total_preview) }}
                 </div>
               </div>
             </div>
@@ -246,7 +246,7 @@
                     <div class="date">{{ itemep.timestamp }}</div>
                     <div>
                       <i class="far fa-eye"></i>
-                      {{ $filter.NumbertoText(itemep.count_view) }}
+                      {{ $filter.NumbertoText(itemep.total_view) }}
                     </div>
                     <div><i class="far fa-comment"></i> 8</div>
                   </div>

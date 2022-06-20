@@ -28,7 +28,8 @@
         />
          <div class="grod-detail">
           <div class="name line-1">{{items.datail.title}}</div>
-          <div  class="line-1">{{items.id_ep}}</div>
+          <div class="name line-1">{{items.datail.penname_preview}}</div>
+
         </div>
       </router-link>
     </carousel>

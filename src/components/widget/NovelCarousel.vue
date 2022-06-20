@@ -31,7 +31,7 @@
         />
         <div class="grod-detail">
           <div class="name line-1">{{items.title}}</div>
-          <div class="subname">แฟนตาซี</div>
+          <div class="subname">{{items.novel_category_data_preview}}</div>
           <div><NovelStar :rating="Math.round (items.avg_star)" /></div>
           <div class="view-list">
             <div class="view">
@@ -43,8 +43,8 @@
             <div class="list">
               <i class="fas fa-list"></i>
               <div class="count-numble-view">
-                {{items.novel_episode_data_total}}
-                {{ $filter.NumbertoText(items.novel_episode_data_total) }}
+                <!-- {{items.ep_total_preview}} -->
+                {{ $filter.NumbertoText(items.ep_total_preview) }}
               </div>
             </div>
           </div>

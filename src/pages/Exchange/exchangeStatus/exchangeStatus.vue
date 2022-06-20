@@ -40,7 +40,10 @@
         </tr>
       </table> -->
       <div class="card">
-        <div v-for="(item, index) in list" :key="index" class="card-content">
+        <div v-for="(item, index) in list.reverse()" :key="index" class="card-content">
+          <div>
+            {{ $filter.toThaiDateString(item.created_at)}}
+          </div>
           <div class="detail-content-name">
             <p class="mobile">ชื่อสินค้า:</p>
             <p>{{ item.system_note.name }}</p>
@@ -83,10 +86,10 @@ export default Vue.extend({
       let data = [] as any;
       res.data.data.filter((res) => {
         let note = JSON.parse(res.system_note);
-        if (res.address) {
+        // if (res.address) {
           // console.log(note);
           data.push({ ...res, system_note: note });
-        }
+        // }
       });
       console.log(data);
 
@@ -111,7 +114,7 @@ export default Vue.extend({
 .card-content {
   width: auto;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   border: 1px solid rgba(224, 175, 243, 0.977);
   margin: 7px;
   padding: 15px 20px;

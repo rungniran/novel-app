@@ -192,7 +192,10 @@ export default Vue.extend({
     novelAll(ojb: any) {
       let NovelAll = [] as any;
       ojb.forEach((element: any) => {
-        NovelAll.push(...element.novel_datas);
+        // setTimeout(()=>{
+          NovelAll.push(...element.novel_datas);
+        // },100)
+        
       });
       return NovelAll;
     },

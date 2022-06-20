@@ -45,7 +45,7 @@
               <router-link class="name line-1" :to="'/novel/' + items.id">{{
                 items.title
               }}</router-link>
-              <div class="gray">แฟนตาซี</div>
+              <div class="gray">{{items.novel_category_data_preview}}</div>
               <div>
                 <NovelStar :rating="Math.round(items.avg_star)" />
               </div>
@@ -59,7 +59,7 @@
                 <div class="list">
                   <i class="fas fa-list"></i>
                   <div class="count-numble-view">
-                    {{ $filter.NumbertoText(items.novel_episode_data_total) }}
+                    {{ $filter.NumbertoText(items.ep_total_preview) }}
                   </div>
                 </div>
               </div>
@@ -99,7 +99,7 @@
                   <div class="list">
                     <i class="fas fa-list"></i>
                     <div class="count-numble-view">
-                      {{ $filter.NumbertoText(item.novel_episode_data_total) }}
+                      {{ $filter.NumbertoText(item.ep_total_preview) }}
                     </div>
                   </div>
                 </div>

@@ -1,49 +1,13 @@
 <template>
     <div class="Statistics" v-if="wraning === true">
-        <!-- <div
-            v-for="(item, index) in mywork"
-            :key="index"
-            class="con-statistics"
-        >
-            <div class="cover-statistics">
-                <div>
-                    <img
-                        :src="item.image_data.url"
-                        class="img-pre nv-img-novel"
-                        width="100%"
-                    />
-                </div>
-                <div class="detail">
-                    <div class="name line-1">
-                        {{item.title}}
-                    </div>
-                    <div class="gray">แฟนตาซี</div>
-                    <div>
-                        <NovelStar :rating="Math.round (item.avg_star)"/>
-                    </div>
-                    <div class="view-list">
-                        <div class="view">
-                            <i class="far fa-eye"></i>
-                            <div class="count-numble-view">
-                                {{ $filter.NumbertoText(4000) }}
-                            </div>
-                        </div>
-                        <div class="list">
-                            <i class="fas fa-list"></i>
-                            <div class="count-numble-view">
-                                {{ $filter.NumbertoText(20320) }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div>
+            <div>เลือกนิยาย</div>
+            <div class="series">
+                 <select id="inCategory">	
+                            <option v-for="item,index in mywork" :key="index" :value="item.id">{{item.title}}</option>
+            </select>
             </div>
-            <div class="con-btn">
-                <div class="nv-btn-orange">
-                    <i class="fas fa-chart-line"></i> ดูสถิติ
-                </div>
-            </div>
-        </div> -->
-        
+        </div>
         <div>
             <div>สถิติการขายรวม</div>
             <div class="series">

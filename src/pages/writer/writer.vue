@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div  :class="wraning === true ? 'b-mo' : 'close'">
+    <div  :class="wraning === true  ? 'b-mo' : 'close'">
       <!-- * คุณยังไม่เพิ่มข้อมูลนักเขียน หากมีข้อมูลนักเขียนเราตัดยอดหรียญทุก 30 วัน <router-link c to="/writer/WriterWithdrawMoney">คลิกที่นี้เพิ่มข้อมูลเขียน</router-link> -->
       * คำแนะนำ หากคุณต้องการถอนเหรียญ  &nbsp; &nbsp; <router-link class="blink" to="/writer/WriterWithdrawMoney">"ให้คลิกที่นี่เพิ่มข้อมูลนักเขียน"</router-link>&nbsp; &nbsp;  จึงจะสามารถทำการถอนเหรียญได้
     </div>
@@ -100,6 +100,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { ListService } from "@/shares/services";
+import { user_profile_data_type_id } from "@/shares/constants/enum"
 export default Vue.extend({
   data() {
     return {
@@ -232,7 +233,8 @@ $radiustap: 5px;
 }
 .s-active1 {
   border-radius: $radiustap 0px 0px $radiustap;
-  border-right: 0px solid;
+  
+  border-right: 1px solid rgb(220, 220, 220);
 }
 .s-active2 {
   // border-radius: 5px 0px 0px 5px;
