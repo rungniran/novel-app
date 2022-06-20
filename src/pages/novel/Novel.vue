@@ -3,47 +3,60 @@
     <!-- <pre>  {{resGetNovel}}</pre> -->
     <div class="nv-box-white cover-novel nv-mt-40" v-if="resGetNovel">
       <div class="box-nove">
-
         <div class="image-nv">
           <!-- {{readNext()}} -->
-					<!-- <canvas id="canvas"></canvas> -->
-          <div class="bg-gradients">
-
-          </div>
-          <img 
-            :src="resGetNovel.image_data ? resGetNovel.image_data.url : $path.image('loading.png')"
+          <!-- <canvas id="canvas"></canvas> -->
+          <div class="bg-gradients"></div>
+          <img
+            :src="
+              resGetNovel.image_data
+                ? resGetNovel.image_data.url
+                : $path.image('loading.png')
+            "
             class="nv-img-novel"
             width="100%"
             onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
           />
         </div>
         <div class="detail">
-					<div>
-						<div class="nv-title line-1">{{resGetNovel.title}}</div>
-						<router-link class="line-1" style="color: #e4803a;" :to="'/profile/'+resGetNovel.user_id+'/writer'">{{resGetNovel.user_id}}</router-link>
-						<div class="con-review">
-                <NovelStar :rating="Math.round (resGetNovel.avg_star)" /> 
-                <!-- <span> ({{dataReview.length}}) </span> -->
-						</div>
-						<div class="nv-mt-10">
-						  <router-link to="#" class="nv-tag">ยังไม่มีข้อมูล</router-link> 
-						</div>
-						<div class="story-sub line-5 " style="margin-top:15px; line-height: 1.6;">
-										{{resGetNovel.detail}}
-          </div> 
-					<div class="view-list nv-mt-10" >
-            <div class="view">
-              <i class="far fa-eye"></i>
-              <div class="count-numble-view">{{ $filter.NumbertoText(resGetNovel.total_view) }}</div>
+          <div>
+            <div class="nv-title line-1">{{ resGetNovel.title }}</div>
+            <router-link
+              class="line-1"
+              style="color: #e4803a"
+              :to="'/profile/' + resGetNovel.user_id + '/writer'"
+              >{{ resGetNovel.user_id }}</router-link
+            >
+            <div class="con-review">
+              <NovelStar :rating="Math.round(resGetNovel.avg_star)" />
+              <!-- <span> ({{dataReview.length}}) </span> -->
             </div>
-            <div class="list">
-              <i class="fas fa-list"></i>
-              <div class="count-numble-view">{{ $filter.NumbertoText(Eplist) }}</div>
+            <div class="nv-mt-10">
+              <router-link to="#" class="nv-tag">ยังไม่มีข้อมูล</router-link>
+            </div>
+            <div
+              class="story-sub line-5"
+              style="margin-top: 15px; line-height: 1.6"
+            >
+              {{ resGetNovel.detail }}
+            </div>
+            <div class="view-list nv-mt-10">
+              <div class="view">
+                <i class="far fa-eye"></i>
+                <div class="count-numble-view">
+                  {{ $filter.NumbertoText(resGetNovel.total_view) }}
+                </div>
+              </div>
+              <div class="list">
+                <i class="fas fa-list"></i>
+                <div class="count-numble-view">
+                  {{ $filter.NumbertoText(Eplist) }}
+                </div>
+              </div>
             </div>
           </div>
-					</div>
-  
-         <!-- {{readNext()}} -->
+
+          <!-- {{readNext()}} -->
           <div class="grud-btn">
             <!-- <router-link :to="'/read/' + readNext() "> -->
             <button @click="Next()" class="nv-btn-orange Novel-mobile">
@@ -62,20 +75,21 @@
             <!-- <button class="nv-btn-blue share">
               <i class="fas fa-share-alt"></i>
             </button> -->
-            
           </div>
         </div>
       </div>
     </div>
     <!-- -->
-    <LoadingNovel v-else/>
+    <LoadingNovel v-else />
 
     <div class="nv-box-white nv-mt-40" v-if="resGetNovel">
-      <div style="    position: relative;">
+      <div style="position: relative">
         <div class="nv-title">เรื่องย่อ</div>
-        <div class="story" v-html="resGetNovel.description" style="margin-top:10px; line-height: 2.0; height: 200px;">
-
-        </div>
+        <div
+          class="story"
+          v-html="resGetNovel.description"
+          style="margin-top: 10px; line-height: 2; height: 200px"
+        ></div>
         <div class="ade"></div>
         <div class="more" @click="more()">ดูเพิ่มเติม</div>
       </div>
@@ -89,7 +103,11 @@
             เขียนรีวิว
           </button>
         </div> -->
-        <NovelReview :dataPreview="dataReview" @fetch="reviewFetch" ref="NovelReview" />
+        <NovelReview
+          :dataPreview="dataReview"
+          @fetch="reviewFetch"
+          ref="NovelReview"
+        />
         <!-- <div class="nv-mt-20">
           <div
             v-for="(item, index) in resGetNovel.comment_preview.slice(0, 3)"
@@ -125,104 +143,119 @@
         </div> -->
       </div>
     </div>
-    <div class="nv-box-white  nv-mt-40 con-Sarabun">
-      <div v-if="dataMomentEp.length === 0" >
-        ยังไม่มีตอนนิยาย
-      </div>
+    <div class="nv-box-white nv-mt-40 con-Sarabun">
+      <div v-if="dataMomentEp.length === 0">ยังไม่มีตอนนิยาย</div>
       <div v-else>
         <div class="sarabun nv-col-2">
           <div class="nv-title">สารบัญ</div>
-          <div style="display: flex; align-items: center;">
-          <!-- <input type="checkbox"  :checked="cleckAuten" @change="switchsell" id="switch" />&nbsp;
+          <div style="display: flex; align-items: center">
+            <!-- <input type="checkbox"  :checked="cleckAuten" @change="switchsell" id="switch" />&nbsp;
              ทดสอบซื้ออัตโนมัติ &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;
           <div @click="sort()" >เรียง</div> &nbsp; &nbsp; -->
-          <button
-            class="nv-btn-light-blue"
-            @click="cleck ?  $refs.NovelBuySet.open() : $base.openlogin()"
-          >
-            ช่วงราคา
-          </button>
+            <button
+              class="nv-btn-light-blue"
+              @click="cleck ? $refs.NovelBuySet.open() : $base.openlogin()"
+            >
+              ช่วงราคา
+            </button>
           </div>
         </div>
-        <div  id="sortMomentEp">
+        <div id="sortMomentEp">
           <div v-for="(item, index) in dataMomentEp" :key="index">
-            <div class="box-price_range" @click="openEp(index)" v-if="item.ep.length !== 0">
-              <div >{{item.moment}} </div>
+            <div
+              class="box-price_range"
+              @click="openEp(index)"
+              v-if="item.ep.length !== 0"
+            >
+              <div>{{ item.moment }}</div>
               <div>
                 <i class="fas fa-chevron-right"></i>
               </div>
             </div>
             <div class="container-ep">
               <!-- :to="'/read/' + NovelID + '/' + itemep.id" -->
-              <div v-for="(itemep, index) in item.ep"
+              <div
+                v-for="(itemep, index) in item.ep"
                 :key="index"
                 @click="openmenuBuy(itemep)"
-								
               >
-              <div :class="'mobile ep ep' + index">
-                <div class="con-h">
-                  <div  class="line-1">#{{itemep.ep_no}} 
-                    <span v-if="itemep.name.length > 30">{{itemep.name.slice(1,30)}}...</span>
-                    <span v-else>{{itemep.name}}</span></div>
-                  <div class="con-coin" v-if="itemep.coin !== '0.00'">
-                    <div class="con-coin" v-if="itemep.bought === false">
-                      <img :src="$path.image('coin-gold.png')" width="20px" />
-                      <span class="count-coin">{{itemep.coin}}</span>
+                <div :class="'mobile ep ep' + index">
+                  <div class="con-h">
+                    <div class="line-1">
+                      #{{ itemep.ep_no }}
+                      <span v-if="itemep.name.length > 30"
+                        >{{ itemep.name.slice(1, 30) }}...</span
+                      >
+                      <span v-else>{{ itemep.name }}</span>
                     </div>
-                    <div class="con-coin" v-else>
-                       <img :src="$path.image('coin-gray.png')" width="20px" />
-                       <span class="count-coin" style="color: #cecece;">{{itemep.coin}}</span>
+                    <div class="con-coin" v-if="itemep.coin !== '0.00'">
+                      <div class="con-coin" v-if="itemep.bought === false">
+                        <img :src="$path.image('coin-gold.png')" width="20px" />
+                        <span class="count-coin">{{ itemep.coin }}</span>
+                      </div>
+                      <div class="con-coin" v-else>
+                        <img :src="$path.image('coin-gray.png')" width="20px" />
+                        <span class="count-coin" style="color: #cecece">{{
+                          itemep.coin
+                        }}</span>
+                      </div>
                     </div>
                   </div>
-                  
-                </div>
-                <div class="con-h">
+                  <div class="con-h">
                     <!-- <div></div> -->
-                     <div class="date">{{itemep.timestamp.split(' ')[0]}} {{itemep.timestamp.split(' ')[1]}} {{itemep.timestamp.split(' ')[2]}}</div>
-                </div>
-              </div>
-              <div :class="'pc ep ep' + index">
-                <div class="line-1">#{{itemep.ep_no}} 
-                  <span v-if="itemep.name.length > 50">{{itemep.name.slice(1,50)}}...</span>
-                  <span v-else>{{itemep.name}}</span>
-                </div>
-                <div class="detail-ed">
-                  <!-- {{readNext()}} -->
-                   <div v-if="readNext() === itemep.id" style="  width: 45px;  color: #556080;">
-                    อ่านอยู่
+                    <div class="date">
+                      {{ itemep.timestamp.split(" ")[0] }}
+                      {{ itemep.timestamp.split(" ")[1] }}
+                      {{ itemep.timestamp.split(" ")[2] }}
+                    </div>
                   </div>
-                  <div v-else style="     width: 45px;">
-                   
+                </div>
+                <div :class="'pc ep ep' + index">
+                  <div class="line-1">
+                    #{{ itemep.ep_no }}
+                    <span v-if="itemep.name.length > 50"
+                      >{{ itemep.name.slice(1, 50) }}...</span
+                    >
+                    <span v-else>{{ itemep.name }}</span>
                   </div>
-                  <div class="con-coin" v-if="itemep.coin !== '0.00'">
-                    <div class="con-coin" v-if="itemep.bought === false">
-                      <img :src="$path.image('coin-gold.png')" width="20px" />
-                      <span class="count-coin">{{itemep.coin}}</span>
+                  <div class="detail-ed">
+                    <!-- {{readNext()}} -->
+                    <div
+                      v-if="readNext() === itemep.id"
+                      style="width: 45px; color: #556080"
+                    >
+                      อ่านอยู่
+                    </div>
+                    <div v-else style="width: 45px"></div>
+                    <div class="con-coin" v-if="itemep.coin !== '0.00'">
+                      <div class="con-coin" v-if="itemep.bought === false">
+                        <img :src="$path.image('coin-gold.png')" width="20px" />
+                        <span class="count-coin">{{ itemep.coin }}</span>
+                      </div>
+                      <div class="con-coin" v-else>
+                        <img :src="$path.image('coin-gray.png')" width="20px" />
+                        <span class="count-coin" style="color: #cecece">{{
+                          itemep.coin
+                        }}</span>
+                      </div>
                     </div>
                     <div class="con-coin" v-else>
-                       <img :src="$path.image('coin-gray.png')" width="20px" />
-                       <span class="count-coin" style="color: #cecece;">{{itemep.coin}}</span>
+                      <img width="20px" />
+                      <span class="count-coin"></span>
                     </div>
+                    <div class="date">{{ itemep.timestamp }}</div>
+                    <div>
+                      <i class="far fa-eye"></i>
+                      {{ $filter.NumbertoText(itemep.count_view) }}
+                    </div>
+                    <div><i class="far fa-comment"></i> 8</div>
                   </div>
-                  <div class="con-coin" v-else>
-                    <img width="20px" />
-                    <span class="count-coin"></span>
-                  </div>
-                  <div class="date">{{itemep.timestamp}}</div>
-                  <div><i class="far fa-eye"></i> {{$filter.NumbertoText(itemep.count_view) }}</div>
-                  <div><i class="far fa-comment"></i> 8</div>
                 </div>
-
               </div>
-              </div>
-              
-
-
             </div>
           </div>
         </div>
       </div>
-
 
       <!-- <div class="nv-mt-30">
         <div class="nv-title">เผยแพร่โดย</div>
@@ -246,23 +279,29 @@
           </div>
         </div>
       </div> -->
-
-
     </div>
 
-    <div class=" nv-box-white nv-mt-40">
-        <div >
-        <div class="nv-title">เผยแพร่โดย</div>
+    <div class="nv-box-white nv-mt-40">
+      <div>
+        <div class="nv-title">ข้อมูลนักเขียน</div>
         <div class="writer-sarabun">
-          <router-link class="writer-profile" :to="'/profile/'+resGetNovel.user_id+'/writer'">
+          <router-link
+            class="writer-profile"
+            :to="'/profile/' + resGetNovel.user_id + '/writer'"
+          >
             <div class="img-profile"></div>
             <div>
-              <div class="line-1">{{resGetNovel.user_id}}</div>
-              <small>ไม่มีข้อมูล</small>
+              <div class="line-1">{{ resGetNovel.user_id }}</div>
+              <small>นักรบมังกร</small>
             </div>
           </router-link>
-          <div class="writer-detail">
-            <div>ไม่มีข้อมูล</div>
+          <div class="writer-detail" >
+             <button disabled
+              class="nv-btn-orange"
+              @click="cleck ? null : $base.openlogin()"
+            >
+              แชท
+            </button>
             <button
               class="nv-btn-orange"
               @click="cleck ? null : $base.openlogin()"
@@ -272,87 +311,115 @@
           </div>
         </div>
       </div>
+      <br />
+      <div>
+        <div class="nv-title">เผยแพร่</div>
+        <div class="writer-sarabun">
+          <div class="writer-release">
+            <div>วันที่เผยแพร่: {{`06 มิ.ย. 2565 11:36:16`}}</div>
+            <div>ตอนล่าสุด: {{`06 มิ.ย. 2565 11:36:16`}}</div>
+          </div>
+        </div>
+      </div>
     </div>
-		<!-- <div class=" nv-box-white tab-ser nv-mt-40">
+    <!-- <div class=" nv-box-white tab-ser nv-mt-40">
 			<div :class="current=== 'DragonHouse' ? 'se active' : 'se'" @click="current= 'DragonHouse'">ทำเนียบนักรบโลหิตมังกร</div>
 			<div :class="current=== 'CheerUp' ? 'se active-cheer' : 'se'"  @click="current= 'CheerUp'">ส่งกำลังใจ</div>
 		</div> 
 		<div class=" nv-box-white dash nv-mt-40">
 			<component :is="current"></component>
 		</div>-->
-    <div class=" nv-box-white dash nv-mt-40">
-      <DragonHouse/>
+    <div class="nv-box-white dash nv-mt-40">
+      <DragonHouse />
     </div>
-    <div class=" nv-box-white nv-mt-40 NovelEditterComment" v-if="profile">
+    <div class="nv-box-white nv-mt-40 NovelEditterComment" v-if="profile">
       <div class="title-com">แสดงความคิดเห็น</div>
-      <NovelEditterComment @click="ClickPost"/>
+      <NovelEditterComment @click="ClickPost" />
     </div>
-    <div class=" nv-box-white nv-mt-40 Comments" v-if="datacomment.length !== 0" >
-      <Comments :DataComment="datacomment" @fetch="fetch"/>
+    <div class="nv-box-white nv-mt-40 Comments" v-if="datacomment.length !== 0">
+      <Comments :DataComment="datacomment" @fetch="fetch" />
     </div>
-     <NovelModal2 ID="buyNovelEpAuto" IDCrad="buyNovelEpAutoCard" ref="buyNovelEpAuto" :Close='true'>
+    <NovelModal2
+      ID="buyNovelEpAuto"
+      IDCrad="buyNovelEpAutoCard"
+      ref="buyNovelEpAuto"
+      :Close="true"
+    >
       <template v-slot:body>
-        <div style="font-size: 23px;">เปิดรายตอน</div>
+        <div style="font-size: 23px">เปิดรายตอน</div>
         <div id="epName" class="line-1"></div>
-        <img class="dagod" v-lazy="$path.image('removebg-preview.png')" width="50%" >
-        <div class="buy-ep--coin" ><span id="epCoin"></span> <img v-lazy="$path.image('coin-gold.png')" width="20%" ></div>
-        <div style="display: flex;    align-items: center;grid-gap: 10px;">
+        <img
+          class="dagod"
+          v-lazy="$path.image('removebg-preview.png')"
+          width="50%"
+        />
+        <div class="buy-ep--coin">
+          <span id="epCoin"></span>
+          <img v-lazy="$path.image('coin-gold.png')" width="20%" />
+        </div>
+        <div style="display: flex; align-items: center; grid-gap: 10px">
           <!-- @click="cleck ? null : $base.openlogin()" -->
-            <input type="checkbox"  :checked="cleckAuten" @change="switchsell" id="switch" />
-             เลือกเพื่อซื้ออัตโนมัติ
-          </div> 
+          <input
+            type="checkbox"
+            :checked="cleckAuten"
+            @change="switchsell"
+            id="switch"
+          />
+          เลือกเพื่อซื้ออัตโนมัติ
+        </div>
         <div class="buy" id="" @click="buy">ซื้อนิยาย</div>
       </template>
     </NovelModal2>
     <!-- <ReviewModal @ResetReviwe="reviewFetch"/> -->
-    <NovelBuySet ref="NovelBuySet"/>
+    <NovelBuySet ref="NovelBuySet" />
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
 
-import { getRGB } from "@/shares/modules/color"
-import { Gatway } from "@/shares/services"
-import { alert } from '@/shares/modules/alert'
-import {sms_alert_BuyEpisode} from '@/shares/constants/smsalert'
-import { setAutoBuy, getAutoBuy }  from '@/shares/modules/autobuy'
+import { getRGB } from "@/shares/modules/color";
+import { Gatway } from "@/shares/services";
+import { alert } from "@/shares/modules/alert";
+import { sms_alert_BuyEpisode } from "@/shares/constants/smsalert";
+import { setAutoBuy, getAutoBuy } from "@/shares/modules/autobuy";
 import "highlight.js/styles/tomorrow.css";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 export default Vue.extend({
   name: "Novel",
   components: {
-    NovelStar:()=> import("@/components/widget/NovelStar.vue"),
-		DragonHouse:()=> import("./dragonhouse/DragonHouse.vue"),
-    LoadingNovel:()=> import("@/components/loader/LoadingNovel.vue"),
+    NovelStar: () => import("@/components/widget/NovelStar.vue"),
+    DragonHouse: () => import("./dragonhouse/DragonHouse.vue"),
+    LoadingNovel: () => import("@/components/loader/LoadingNovel.vue"),
     NovelModal2: () => import("@/components/widget/NovelModal2.vue"),
     // ReviewModal: ()=> import("./reviewmodal/ReviewModal.vue"),
-    Comments:() => import('@/components/Comments.vue'),
-    NovelReview:()=> import('./NovelReview/NovelReview.vue'),
-    NovelEditterComment:()=> import('@/components/widget/NovelEditterComment.vue'),
-    NovelBuySet:()=> import('./NovelBuySet/NovelBuySet.vue'),
-		// CheerUp:()=> import("./cheerup/CheerUp.vue")
+    Comments: () => import("@/components/Comments.vue"),
+    NovelReview: () => import("./NovelReview/NovelReview.vue"),
+    NovelEditterComment: () =>
+      import("@/components/widget/NovelEditterComment.vue"),
+    NovelBuySet: () => import("./NovelBuySet/NovelBuySet.vue"),
+    // CheerUp:()=> import("./cheerup/CheerUp.vue")
   },
   data() {
     return {
       review: [...Array(6).keys()],
       price_range: [...Array(6).keys()],
       img: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-			current: "DragonHouse",
-      resGetNovel:null as any,
-      dataMomentEp:null,
+      current: "DragonHouse",
+      resGetNovel: null as any,
+      dataMomentEp: null,
       NovelID: this.$route.params.id,
-      EpID:'',
+      EpID: "",
       cleckAuten: getAutoBuy(this.$route.params.id),
-      datacomment:[],
-      dataReview:[],
-      Eplist:''
+      datacomment: [],
+      dataReview: [],
+      Eplist: "",
     };
   },
   methods: {
-    async Next(){
-     this.EpID = await this.readNext()
-     await this.buy()
+    async Next() {
+      this.EpID = await this.readNext();
+      await this.buy();
     },
     openEp(key: number): void {
       const con_ep = document.getElementsByClassName("container-ep")[
@@ -369,224 +436,227 @@ export default Vue.extend({
         con_ep.style.display = "block";
       }
     },
-     async getnNovel() {
-      const resGetNovel = await Gatway.getIDService((this as any).cleck === "true" ? '/novel/novel-data' : '/guest/novel/novel-data',this.$route.params.id);
-      this.Eplist  = resGetNovel.data.data.novel_episode_datas.length
+    async getnNovel() {
+      const resGetNovel = await Gatway.getIDService(
+        (this as any).cleck === "true"
+          ? "/novel/novel-data"
+          : "/guest/novel/novel-data",
+        this.$route.params.id
+      );
+      this.Eplist = resGetNovel.data.data.novel_episode_datas.length;
 
-        this.momentEp(resGetNovel.data.data.novel_episode_datas)
-   
+      this.momentEp(resGetNovel.data.data.novel_episode_datas);
     },
 
-    async getEp(){
-     let res = await Gatway.getIDService('/guest/fetch-novel-header', this.$route.params.id)
-    this.resGetNovel = await res.data.data
-     
+    async getEp() {
+      let res = await Gatway.getIDService(
+        "/guest/fetch-novel-header",
+        this.$route.params.id
+      );
+      this.resGetNovel = await res.data.data;
     },
-    async openmenuBuy(item:any):Promise<void>{
-      if(item.coin === '0.00' || this.resGetNovel.user_id === (this as any).profile?.id){
-        this.$router.push(`/read/${item.id}`)
-      }else{
-        
+    async openmenuBuy(item: any): Promise<void> {
+      if (
+        item.coin === "0.00" ||
+        this.resGetNovel.user_id === (this as any).profile?.id
+      ) {
+        this.$router.push(`/read/${item.id}`);
+      } else {
         (this as any).profile
-        ? this.bought(item)
-        : (this as any).$base.openlogin()
+          ? this.bought(item)
+          : (this as any).$base.openlogin();
       }
     },
-    async bought(item:any){
-      if(item.bought === true){
-        this.$router.push(`/read/${item.id}`)
-      }   
-      else{
-        if (this.cleckAuten === true){
-          this.EpID = await item.id,
-          this.buy()
-        }else{
-          console.log('sd');
-          const epName = document.getElementById('epName') as HTMLElement
-          const epCoin = document.getElementById('epCoin') as HTMLElement
-          epName.innerHTML = item.name
-          epCoin.innerHTML = item.coin
+    async bought(item: any) {
+      if (item.bought === true) {
+        this.$router.push(`/read/${item.id}`);
+      } else {
+        if (this.cleckAuten === true) {
+          (this.EpID = await item.id), this.buy();
+        } else {
+          console.log("sd");
+          const epName = document.getElementById("epName") as HTMLElement;
+          const epCoin = document.getElementById("epCoin") as HTMLElement;
+          epName.innerHTML = item.name;
+          epCoin.innerHTML = item.coin;
           this.EpID = item.id;
-          
-          
-          (this as any).$refs.buyNovelEpAuto.open()
+
+          (this as any).$refs.buyNovelEpAuto.open();
           // (this as any).$base.openmodal('buy-novel-ep-auto', 'buy-novel-ep-auto-amination', 0)
         }
       }
     },
-    readNext(){
-      let item = (this as any).$store.state.storyread.story_Read
-      if( (this as any).$store.state.storyread.story_Read){
-        console.log('dffd');
-        
-        const index = item.findIndex(object => {
-          return object.id === this.$route.params.id;
-         });
-         return index !== -1 ?item[index]?.id_ep : (this as any).dataMomentEp[0].ep[0].id
-         
+    readNext() {
+      let item = (this as any).$store.state.storyread.story_Read;
+      if ((this as any).$store.state.storyread.story_Read) {
+        console.log("dffd");
 
-      }else{
-        return (this as any).dataMomentEp[0].ep[0].id
+        const index = item.findIndex((object) => {
+          return object.id === this.$route.params.id;
+        });
+        return index !== -1
+          ? item[index]?.id_ep
+          : (this as any).dataMomentEp[0].ep[0].id;
+      } else {
+        return (this as any).dataMomentEp[0].ep[0].id;
       }
     },
-    async buy(){
-      let res = await Gatway.postService('/reader/novel-episode/read', 
-      { 
-        "novel_episode_datas":[ this.EpID],
-        "payment_confirmation":true
-      } as any)
+    async buy() {
+      let res = await Gatway.postService("/reader/novel-episode/read", {
+        novel_episode_datas: [this.EpID],
+        payment_confirmation: true,
+      } as any);
       if (res.data.code !== 402) {
-        this.$store.commit("reset")
-        let dataitem = {...this.resGetNovel, item:res.data.data}
-        this.$store.commit("setRead", dataitem)
-        alert(sms_alert_BuyEpisode ("เหรียญเพิ่ม",""), 'success')
-        this.$router.push(`/read/${this.EpID}`)    
-      }else{
-        alert('เหรียญของคุณมีไม่เพียงพอ' , 'error')
+        this.$store.commit("reset");
+        let dataitem = { ...this.resGetNovel, item: res.data.data };
+        this.$store.commit("setRead", dataitem);
+        alert(sms_alert_BuyEpisode("เหรียญเพิ่ม", ""), "success");
+        this.$router.push(`/read/${this.EpID}`);
+      } else {
+        alert("เหรียญของคุณมีไม่เพียงพอ", "error");
       }
     },
-    switchsell(){
-     this.cleckAuten = setAutoBuy(this.$route.params.id)
+    switchsell() {
+      this.cleckAuten = setAutoBuy(this.$route.params.id);
     },
     async momentEp(countEp: any) {
       let ep = 0;
-      let [eplast, eplastStas]  = [50,50] as any[];
-      let arraymoment = await [] as any;
+      let [eplast, eplastStas] = [50, 50] as any[];
+      let arraymoment = (await []) as any;
       let count = countEp.length / eplast;
-      let momentCount = count + 0.00; 
-      if(countEp.length > 0){
-        for (let i = 0; i < ~~ momentCount + 1; i++) {
-        setTimeout(()=> { 
-          console.log(eplast,'<', countEp.length); 
-          if(countEp.length <= eplast){
-            arraymoment.push({
-              moment: `บทที่ ${ep + 1} - ${countEp.length}`,
-              ep: countEp.slice(ep, eplast),
-            });
-            ep = +eplast;
-            eplast = eplast + eplast;
-          }else{
-            arraymoment.push({
-              moment: `บทที่ ${ep + 1} - ${eplast}`,
-              ep: countEp.slice(ep, eplast),
-            });
-            ep =+ eplast;
-            eplast = eplast + eplastStas;
-          }
-         }, i * 10);
-          
+      let momentCount = count + 0.0;
+      if (countEp.length > 0) {
+        for (let i = 0; i < ~~momentCount + 1; i++) {
+          setTimeout(() => {
+            console.log(eplast, "<", countEp.length);
+            if (countEp.length <= eplast) {
+              arraymoment.push({
+                moment: `บทที่ ${ep + 1} - ${countEp.length}`,
+                ep: countEp.slice(ep, eplast),
+              });
+              ep = +eplast;
+              eplast = eplast + eplast;
+            } else {
+              arraymoment.push({
+                moment: `บทที่ ${ep + 1} - ${eplast}`,
+                ep: countEp.slice(ep, eplast),
+              });
+              ep = +eplast;
+              eplast = eplast + eplastStas;
+            }
+          }, i * 10);
         }
       }
-      this.dataMomentEp = await arraymoment
+      this.dataMomentEp = await arraymoment;
       setTimeout(async () => {
-       await this.openEp(0)
+        await this.openEp(0);
       }, 100);
-      
     },
-    async addBookshelf(uuid:string){
-      let res = await Gatway.getIDService('/customers/novel/add-bookshelf', uuid )
-      alert(res.data.data,'success')
+    async addBookshelf(uuid: string) {
+      let res = await Gatway.getIDService(
+        "/customers/novel/add-bookshelf",
+        uuid
+      );
+      alert(res.data.data, "success");
     },
-    sort(){
-      let test = document.getElementById('sortMomentEp') as HTMLElement
-      test.style.flexDirection = "column-reverse"
+    sort() {
+      let test = document.getElementById("sortMomentEp") as HTMLElement;
+      test.style.flexDirection = "column-reverse";
     },
-    fetch(){
-      this.getCommentAll()
-      this.getEp()      
+    fetch() {
+      this.getCommentAll();
+      this.getEp();
     },
-    reviewFetch(){
-      (this as any).$refs.NovelReview.getReviewAll()
+    reviewFetch() {
+      (this as any).$refs.NovelReview.getReviewAll();
     },
-    async ClickPost(html:any){
-      let data ={
-        action: 'create-novel-comment',
+    async ClickPost(html: any) {
+      let data = {
+        action: "create-novel-comment",
         html: html,
-        star:'0',
-        novel_data_id :this.$route.params.id
-      }
-      let res = await Gatway.postService('/customers/comments/post', data as any)
+        star: "0",
+        novel_data_id: this.$route.params.id,
+      };
+      let res = await Gatway.postService(
+        "/customers/comments/post",
+        data as any
+      );
       console.log(res);
-      this.getCommentAll()
+      this.getCommentAll();
     },
-    async getCommentAll(){
-      let data ={
-        action:'fetch-comment-all', 
-        novel_data_id:this.$route.params.id
-      }
-      let res = await Gatway.postService('/guest/comments/comment-all', data as any) 
-      this.datacomment = res.data.data
-      setTimeout(async ()=> {
-        if(this.$route.name === 'Novel'){
+    async getCommentAll() {
+      let data = {
+        action: "fetch-comment-all",
+        novel_data_id: this.$route.params.id,
+      };
+      let res = await Gatway.postService(
+        "/guest/comments/comment-all",
+        data as any
+      );
+      this.datacomment = res.data.data;
+      setTimeout(async () => {
+        if (this.$route.name === "Novel") {
           this.getCommentAll();
         }
-        
-      }, 30000)
+      }, 30000);
     },
 
-
-    async getReviewAll(){
-        let res = await Gatway.postService('/guest/comments/comment-preview', 
-      {
-        action:'fetch-preview', 
-        novel_data_id:this.$route.params.id
-      } as any) 
-      this.dataReview = res.data.data
+    async getReviewAll() {
+      let res = await Gatway.postService("/guest/comments/comment-preview", {
+        action: "fetch-preview",
+        novel_data_id: this.$route.params.id,
+      } as any);
+      this.dataReview = res.data.data;
       // this.countReview(res.data.data)
-      
     },
-    more(){
-      let story = document.getElementsByClassName('story')[0] as HTMLElement
-      let more = document.getElementsByClassName('more')[0] as HTMLElement
-      let ade = document.getElementsByClassName('ade')[0] as HTMLElement
-      if(story.style.height == '200px'){
-        story.style.height = story.scrollHeight +'px'
-        more.innerHTML = 'ย่อลง'
-        ade.style.display = 'none'
-
-      }else{
-        story.style.height = 200 +'px'
-        more.innerHTML = 'ดูเพิ่มเติม'
-        ade.style.display = 'flex'
+    more() {
+      let story = document.getElementsByClassName("story")[0] as HTMLElement;
+      let more = document.getElementsByClassName("more")[0] as HTMLElement;
+      let ade = document.getElementsByClassName("ade")[0] as HTMLElement;
+      if (story.style.height == "200px") {
+        story.style.height = story.scrollHeight + "px";
+        more.innerHTML = "ย่อลง";
+        ade.style.display = "none";
+      } else {
+        story.style.height = 200 + "px";
+        more.innerHTML = "ดูเพิ่มเติม";
+        ade.style.display = "flex";
       }
-      
     },
     // countReview(data:any){
     //   console.log(data);
     //   for(let i= 1; i < data.length; i++){
     //     console.log(data[i]);
-        
+
     //   }
-      
+
     // }
-    
- 
   },
-  
-	mounted(){
 
-
-    this.getEp()
-    this.getCommentAll()
-    this.getReviewAll()
-    this.getnNovel()
+  async mounted() {
+    await this.getnNovel();
+    await this.getEp();
+    // await this.getReviewAll();
+    await this.getCommentAll();
     
-		
-		    let img = document.getElementsByClassName('nv-img-novel')[0] as HTMLImageElement
-		// let image_nv = document.getElementsByClassName('image-nv')[0] as HTMLElement
+    
+
+    // let img = document.getElementsByClassName(
+    //   "nv-img-novel"
+    // )[0] as HTMLImageElement;
+    // let image_nv = document.getElementsByClassName('image-nv')[0] as HTMLElement
     // // let shadow = document.getElementsByClassName('nv-shadow')[0] as HTMLImageElement
-		// setTimeout(()=>{
-			let  {r,g,b} = getRGB(img)
-		// image_nv.style.background = `rgb(${r},${g},${b})`
+    // setTimeout(()=>{
+    // let { r, g, b } = getRGB(img);
+    // image_nv.style.background = `rgb(${r},${g},${b})`
     // shadow.style.boxShadow = `rgb(${r},${g},${b}) 0px 7px 29px 0px`
- 
-		// },1000)
-		// console.log("rgb",r,g,b);
-    console.log("test")
-		
-	}
+
+    // },1000)
+    // console.log("rgb",r,g,b);
+    console.log("test");
+  },
 });
 </script>
-<style  lang="scss" scoped src="./Novel.scss">
+<style lang="scss" scoped src="./Novel.scss">
 
 </style>

@@ -136,8 +136,15 @@ export default Vue.extend({
   methods: {
 		opencutom(){
 			let box_cuttom = document.getElementsByClassName("box-cuttom")[0] as HTMLElement
-			box_cuttom.classList.toggle("box-cuttom-show")
-			
+      console.log(box_cuttom.classList)
+      if(box_cuttom.classList.length === 1){
+        box_cuttom.classList.add("box-cuttom-show")
+        this.current = ""
+      }
+      else{
+        box_cuttom.classList.remove("box-cuttom-show")
+      }
+
 		},
 		onScroll(){
 			let story = document.getElementsByClassName("story")[0] as HTMLElement
@@ -291,6 +298,8 @@ export default Vue.extend({
     opanSarabun(){
       if(this.current !== "ReadSarabun"){
       this.current = "ReadSarabun"
+      let box_cuttom = document.getElementsByClassName("box-cuttom")[0] as HTMLElement
+			box_cuttom.classList.remove("box-cuttom-show")			
       }else{
         this.current = ""
       }
@@ -341,11 +350,12 @@ export default Vue.extend({
     
 
   },
-  mounted() {
+  async mounted() {
+    await this.cleckNovel()
     // setTimeout(()=>, 5000);
-    this.getRecommend()
+    await this.getRecommend()
     // this.tets()
-    this.cleckNovel()
+    
     
     
 		// window.scrollTo({ top: 0, behavior: 'smooth' })

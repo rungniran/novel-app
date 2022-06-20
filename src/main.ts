@@ -27,13 +27,13 @@ Vue.config.productionTip = false
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDU25BfrbtLAsV9Vwp6jbe5uvhMyRb6ums",
-  authDomain: "novelkingdom-test.firebaseapp.com",
-  projectId: "novelkingdom-test",
-  storageBucket: "novelkingdom-test.appspot.com",
-  messagingSenderId: "818385858123",
-  appId: "1:818385858123:web:a8cd268dc21654097227ce",
-  measurementId: "G-WK3SK41GN7"
+  apiKey: "AIzaSyBfR5qNewKa29OQmhvUuues8AWnLRsQMGk",
+  authDomain: "novelkingdom-80a1d.firebaseapp.com",
+  projectId: "novelkingdom-80a1d",
+  storageBucket: "novelkingdom-80a1d.appspot.com",
+  messagingSenderId: "276204897935",
+  appId: "1:276204897935:web:13c5c96c6c25ede49e12fa",
+  measurementId: "G-JWS2G13SLN"
 };
 const app =initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);

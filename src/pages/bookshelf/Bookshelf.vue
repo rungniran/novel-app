@@ -26,7 +26,7 @@
               item.title
             }}</router-link>
             <div class="flex-s">
-              <div class="line-1">บทที่ 11 เริ่มต้นใหม่</div>
+              <div class="line-1">--</div>
               <div
                 @click="
                   openmodel(item, index);

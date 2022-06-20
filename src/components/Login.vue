@@ -46,29 +46,29 @@
         <div class="from">
           <div class="contor-input">
             <div class="title">อีเมล</div>
-            <input type="text" class="input" />
+            <input type="email" class="input" id="email" v-model="resgister.email"/>
           </div>
           <div class="contor-input">
             <div class="title">ชื่อผู้ใช้</div>
-            <input type="text" class="input" />
+            <input type="text" class="input" id="username" v-model="resgister.username"/>
           </div>
           <div class="contor-input">
             <div class="title">ชื่อ</div>
-            <input type="text" class="input" />
+            <input type="text" class="input" id="first_name" v-model="resgister.first_name"/>
           </div>
           <div class="contor-input">
             <div class="title">นามสกุล</div>
-            <input type="text" class="input" />
+            <input type="text" class="input" id="last_name" v-model="resgister.last_name"/>
           </div>
           <div class="contor-input">
             <div class="title">รหัสผ่าน</div>
-            <input type="text" class="input" />
+            <input type="password" class="input" v-model="resgister.password" placeholder="รหัสผ่านต้องมากกว่า 8 ตัว"/>
           </div>
           <div class="contor-input">
             <div class="title">ยืนยันรหัสผ่าน</div>
-            <input type="text" class="input" />
+            <input type="password" class="input" v-model="resgister.password_confirmation"/>
           </div>
-          <button class="nv-btn-orange" style="margin-top: 15px">
+          <button class="nv-btn-orange" style="margin-top: 15px" @click="resgisteCostomer()">
             สมัครสมาชิก
           </button>
         </div>
@@ -87,6 +87,7 @@
 import Vue from "vue";
 import { Auth, Gatway } from "../shares/services";
 // import { facebook_app_id } from "../shares/constants";
+import { Validation } from "@/shares/modules/validation";
 import { 
 getAuth, 
 signInWithPopup, 
@@ -106,6 +107,16 @@ export default Vue.extend({
         username: "",
         password: "",
       },
+      resgister:{
+        email:'',
+        username:'',
+        first_name:'',
+        last_name:'',
+        password:'',
+        password_confirmation:'',
+
+
+      }
       // imagefacebook: localStorage.getItem("imagefacebook"),
       // datafacebook: JSON.parse(localStorage.getItem("social_auth")),
     };
@@ -162,9 +173,28 @@ export default Vue.extend({
       comResgister.classList.remove("show-com");
       comLogin.classList.add("show-com");
     },
+    async resgisteCostomer() {
+      let array = ['email','username','first_name','last_name']
+      if ( Validation(array) === true){
+        if(this.resgister.password.length < 8){
+          alert('รหัสผ่านต้องมากกว่า 8 ตัว', 'error')
+        }else{
+          if(this.resgister.password !== this.resgister.password_confirmation){
+            alert('รหัสผ่านไม่ตรงกัน', 'error')
+          }else{
+            const res = await Gatway.postService('/customers/resgister', this.resgister)
+          }
+        }
+      }
+      // let data = {
+      //   password:this.resgister.password,
+      //   password_confirmation: this.resgister.password_confirmation
+      // }
+      // let resPassword = await Gatway.postService('/customers/user-info/change-password', this.resgister)
+      // console.log(resPassword);
+    },
 
 
-    // Vemail(){}
   
     async logInWithFacebook() {
       const provider = new FacebookAuthProvider();
@@ -401,7 +431,6 @@ background: rgba(100, 148, 237, 0.595);
   .login-crad {
     transition: 0.3s;
     border-radius: 10px;
-    height: 470px;
     background: #fff;
     display: grid;
     grid-template-columns: 1fr;

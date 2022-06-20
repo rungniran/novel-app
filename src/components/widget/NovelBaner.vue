@@ -6,9 +6,10 @@
             :loop="true"
             :margin="5"
             :center="true"
-            :autoplay="false"
+            :autoplay="true"
+            :autoplayTimeout="5000"
             :nav="false"
-            :dots="false"
+            :dots="true"
             :responsive="responsive"
         >
             <div v-for="(items, index) in item" :key="index">

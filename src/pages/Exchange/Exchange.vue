@@ -210,12 +210,11 @@ export default Vue.extend({
       let res = await Gatway.postService("/guest/shop-data/lists", {
         shop_type_data_id: "7dc9abbc-d3b3-4b48-ac77-29d00a70469e",
       } as any);
-      console.log(res);
-      this.Exchange = this.AllProduct(res.data.data);
+      this.Exchange = await this.AllProduct(res.data.data);
       let ressticker = await Gatway.postService("/guest/shop-data/lists", {
         shop_type_data_id: "9c1c64df-3516-4098-8575-1c3470206710",
       } as any);
-      let resstickerdata = [] as any;
+      let resstickerdata = await [] as any;
       ressticker.data.data.filter((res: any) => {
         if (!res.diamond) {
           null;

@@ -336,14 +336,14 @@ export default Vue.extend({
   methods: {
     async getnNovel() {
       const resGetNovel = await GetService.getNovel(this.$route.params.id);
-      console.log(resGetNovel.data.data);
-
       this.getNover = await resGetNovel.data.data;
     },
     async getListEp() {
       const resEpisodeData = await Gatway.getService(
         `/customers/episode_data/index/${this.$route.params.id}`
       );
+      console.log(resEpisodeData.data.data);
+      
       this.EpisodeData = await resEpisodeData.data.data;
       this.eplength = resEpisodeData.data.data.data.length;
       this.momentEp(resEpisodeData.data.data.data);
@@ -393,11 +393,11 @@ export default Vue.extend({
 
     filterEp(key: any) {
       return this.EpisodeData.filter((item: any) => {
-        console.log(item.id);
         return item.id.match(key);
       });
     },
     momentEp(countEp: any) {
+      console.log(countEp);
       let arraymoment = [] as any;
       let count = countEp.length / 50;
       let momentCount = count + 0.0;
@@ -536,6 +536,7 @@ export default Vue.extend({
 .ep {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
+  text-align: center;
   padding: 20px;
   border-top: 1px solid #bbbbbb;
 }
@@ -569,7 +570,7 @@ export default Vue.extend({
 .writer-detail {
   display: flex;
   align-items: center;
-  grid-gap: 30px;
+  grid-gap: 15px;
 }
 .con-review {
   display: flex;
@@ -647,6 +648,7 @@ export default Vue.extend({
     grid-template-columns: 1fr;
     grid-gap: 30px;
   }
+
   .image-nv img {
     width: 70%;
   }

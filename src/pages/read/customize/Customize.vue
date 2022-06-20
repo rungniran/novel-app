@@ -85,7 +85,7 @@
 </template>
 
 <script lang="ts" scoped>
-import { changback, fontfamily, setThreme} from './../ReadCustomize'
+import { changback, fontfamily, setThreme } from "./../ReadCustomize";
 import Vue from "vue";
 export default Vue.extend({
   name: "customize",
@@ -123,7 +123,7 @@ export default Vue.extend({
       this.Theme = changback(treme);
     },
     fontfamily(style: string) {
-      this.fontStyle = fontfamily(style)
+      this.fontStyle = fontfamily(style);
     },
   },
   mounted() {
@@ -132,13 +132,12 @@ export default Vue.extend({
       : null;
     localStorage.getItem("fontFamily")
       ? this.fontfamily(localStorage.getItem("fontFamily") as string)
-      :  this.fontfamily("Sarabun");
-    
+      : this.fontfamily("Sarabun");
   },
 });
 </script>
 
-<style  lang="scss">
+<style lang="scss">
 .font-size {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -235,5 +234,11 @@ hr {
 .changback-active {
   //  border: 3px solid #ffb527;
   box-shadow: #ffb527 0px 1px 3px, #ffb527 0px 0px 0px 2px;
+}
+
+@media (max-width: 415px) {
+  .box-cuttom {
+    width: 250px;
+  }
 }
 </style>

@@ -25,7 +25,7 @@
         
           class="item-banner"
           :src="items.image_data ? items.image_data.url  : $path.image('loading.png')"
-           onerror="this.onerror=null;this.src='https://novelkingdom-test.web.app/img/loading.a7cb0bda.png';"
+           onerror="this.onerror=null;this.src='https://novelkingdom-80a1d.firebaseapp.com/img/loading.a7cb0bda.png';"
            :alt="items.title"
           
         />

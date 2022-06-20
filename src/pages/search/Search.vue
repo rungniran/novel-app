@@ -24,7 +24,8 @@
         <div class="con-resouth" v-if="wordSearct.length > 0">
           <router-link v-for="item,index in Searct()" :key="index" :to="'/novel/'+ item.id">
             <div class="nv-img">
-               <img :src="item.image_data.url" class="nv-img-novel loading-img" width="100%"  onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';">
+               <img :src="item.image_data.url" class="nv-img-novel loading-img" width="100%"  
+               onerror="this.onerror=null;this.src='https://novelkingdom-80a1d.firebaseapp.com/img/loading.a7cb0bda.png';">
                <div class="line-1">{{item.title}}</div>
             </div>
           </router-link>
@@ -183,6 +184,9 @@ h1{
 }
 .item-Exchange{
   padding: 20px 0px;
+}
+.search{
+  margin-top: 50px;
 }
 }
 </style>

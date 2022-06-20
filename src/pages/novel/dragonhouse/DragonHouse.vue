@@ -77,7 +77,8 @@ font-size: 30px;
 	padding-bottom: 50px;
 }
 .box-list-dragon{
-	background: #5f5c7f;
+	// background: #5f5c7f;
+	background-color: white;
 }
 .title-dragon{
    font-size: 20px;

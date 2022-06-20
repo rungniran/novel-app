@@ -14,10 +14,7 @@ const instance = axios.create({
     }
 })
 instance.interceptors.response.use(response => {
-    // console.log(response);
     return Promise.resolve(response)
-    
-
   },  (error) => {
     console.log();
     if(error.message === "Network Error"){

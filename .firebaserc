@@ -1,7 +1,8 @@
 {
   "projects": {
-    "default": "novelkingdom-test",
-    "rungniran": "novelkingdom-test"
+    "default": "novelkingdom-80a1d",
+    "rungniran": "novelkingdom-test",
+    "novelkingdom": "novelkingdom-80a1d"
   },
   "targets": {}
 }

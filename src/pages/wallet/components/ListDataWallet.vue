@@ -101,8 +101,9 @@ export default {
 }
 
 .card-layout {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 2.1fr 2.3fr 1.6fr 1.6fr 1.6fr 1fr;
+  text-align: start;
 }
 
 .card-content {
@@ -194,21 +195,26 @@ i {
   i{
      display: none;
   }
+  
 }
 
 @media (max-width: 1024px) {
   .toggle-content {
-    padding-left: 43%;
+    padding-left: 62.8%;
+    text-align: start;
   }
   .ip{
     display: none;
   }
+  .card-layout {
+  display: grid;
+  grid-template-columns: 2.1fr 2.3fr 1.6fr 1fr;
+  text-align: start;
+}
 }
 
 @media (max-width: 768px) {
-  .toggle-content {
-    padding-left: 46%;
-  }
+
   .ip{
     display: none;
   }
@@ -237,6 +243,10 @@ i {
   .coin{
     content: icon;
   }
-  
+  .card-layout {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr;
+  text-align: start;
+}
 }
 </style>

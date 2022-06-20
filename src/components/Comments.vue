@@ -352,7 +352,7 @@ export default Vue.extend({
       color: rgb(114, 114, 114);
 
     font-size: 16px;
-  margin-bottom: 20px;
+  // margin-bottom: 20px;
   margin-left: 60px;
   font-family: "Sarabun", sans-serif;
 }

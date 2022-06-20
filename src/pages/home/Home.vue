@@ -5,7 +5,7 @@
     <div class="nv-box-white nv-mt-20">
       <!-- {{this.$store.state.storyread}} v-if="profile"-->
       <div class="nv-title-item" v-if="nextread === true">
-        <H1 class="nv-title-left">นิยายอ่านต่อ</H1>
+        <H1 class="nv-title-center">นิยายอ่านต่อ</H1>
         <NovelReadNext :loop="false" />
       </div>
       <!-- <LoadingColouser/> -->
@@ -14,22 +14,22 @@
         v-if="recommend"
         :class="nextread === true ? 'nv-mt-70' : 'nv-mt-10'"
       >
-        <H1 class="nv-title-left">นิยายแนะนำ</H1>
+        <H1 class="nv-title-center">นิยายแนะนำ</H1>
         <NovelCarousel :opject="recommend" :loop="false" />
       </div>
       <LoadingColouser v-else :className="profile ? 'nv-mt-70' : 'nv-mt-10'" />
       <div class="nv-title-item nv-mt-70" v-if="hot">
-        <H1 class="nv-title-left">นิยายมาแรง</H1>
+        <H1 class="nv-title-center">นิยายมาแรง</H1>
         <NovelCarousel :opject="hot" :loop="false" />
       </div>
       <!--  -->
       <LoadingColouser v-else />
       <div class="nv-title-item nv-mt-70">
-        <H1 class="nv-title-left">Banner</H1>
+        <H1 class="nv-title-center">Banner</H1>
         <NovelCategory :opject="2" :loop="true" />
       </div>
       <div class="nv-title-item-20 nv-mt-70">
-        <H1 class="nv-title-left">นิยายติดอันดับ</H1>
+        <H1 class="nv-title-center">นิยายติดอันดับ</H1>
         <div class="nover-top">
           <div v-for="(items, index) in maximum" :key="index" class="top-card">
             <div class="lv">{{ index + 1 }}</div>
@@ -69,7 +69,7 @@
         <router-link to="/"></router-link>
       </div>
       <div class="nv-title-item-20 nv-mt-70">
-        <H1 class="nv-title-left">นิยายอัพเดทล่าสุด</H1>
+        <H1 class="nv-title-center">นิยายอัพเดทล่าสุด</H1>
         <div class="nover-latest">
           <router-link
             v-for="(item, index) in update"
@@ -87,7 +87,9 @@
             </div>
             <div class="detail-top">
               <div class="con-name-view-list">
-                <div class="view-list">
+                
+                <div class="name-view-list">
+                  <div class="name-top line-1">{{ item.title }}</div><div class="view-list">
                   <div class="view">
                     <i class="far fa-eye"></i>
                     <div class="count-numble-view">
@@ -101,8 +103,6 @@
                     </div>
                   </div>
                 </div>
-                <div class="name-view-list">
-                  <div class="name-top line-1">{{ item.title }}</div>
                 </div>
                 <p class="line-5 story">
                   {{ item.detail }}
@@ -172,17 +172,18 @@ export default Vue.extend({
       let res = await Gatway.getService('/guest/index/novel-hot')
       this.hot = await res.data.data
       let getlastUpdate = await Gatway.getService('/guest/index/novel-last-update')
-      this.update = await getlastUpdate.data.data 
-      let getNextread = await Gatway.getService('/guest/index/novel-maximum-read')
-      this.maximum = await getNextread.data.data.splice(0,6) 
-       let getRecommend = await Gatway.getService('/guest/recommended-novel')
+      this.update = await getlastUpdate.data.data  
+      let getRecommend = await Gatway.getService('/guest/recommended-novel')
       const data = [] as any
       getRecommend.data.data.forEach((element:any) => {
         if(element.novel_data){
           data.push(element.novel_data)
         }
       });
-      this.recommend = data.splice(0,12)      
+      this.recommend = data.splice(0,12)   
+      let getNextread = await Gatway.getService('/guest/index/novel-maximum-read')
+      this.maximum = await getNextread.data.data.splice(0,6) 
+         
 
     
       
@@ -231,7 +232,7 @@ $primary-lightBlue: #61bcbe;
   width: 100%;
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 0.3fr 1fr 2fr;
   // grid-gap: 15px;
   grid-gap: 15px;
 }
@@ -248,7 +249,7 @@ $primary-lightBlue: #61bcbe;
 }
 .name {
   font-size: 20px;
-  color: #848484;
+  color: #242424;
 }
 .nover-latest {
   display: grid;
@@ -280,6 +281,7 @@ $primary-lightBlue: #61bcbe;
   display: flex;
   flex-direction: column;
   grid-gap: 10px;
+      margin-top: -4px;
 }
 .ep-con {
   display: grid;
@@ -287,24 +289,29 @@ $primary-lightBlue: #61bcbe;
   grid-template-columns: 1fr 1fr;
 }
 
-.view-list {
-  justify-content: end;
-}
+// .view-list {
+//   justify-content: end;
+// }
 
 .lv {
-  border: 1px solid;
-  position: absolute;
-  z-index: 10;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 100%;
-  left: -10px;
-  top: -10px;
+     font-size: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-  background: #ffffff;
+  // border: 1px solid;
+  // // position: absolute;
+  // z-index: 10;
+  // width: 30px;
+  // height: 30px;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+  // border-radius: 100%;
+  // left: -10px;
+  // top: -10px;
+
+  // background: #ffffff;
 
   // text-align: center;
 }
@@ -315,7 +322,7 @@ $primary-lightBlue: #61bcbe;
   margin: 15px 0px;
 }
 .story {
-  font-size: 16px;
+  font-size: 14px;
   font-family: "Sarabun", sans-serif;
 }
 .box-latest:hover {
@@ -329,7 +336,10 @@ $primary-lightBlue: #61bcbe;
 .ew {
   text-align: right;
 }
-
+.name-view-list{
+  display: flex;
+      justify-content: space-between;
+}
 @media (max-width: 1024px) {
   .nover-latest {
     display: grid;
@@ -392,7 +402,7 @@ $primary-lightBlue: #61bcbe;
   .nv-box-white {
     margin: 40px 0px;
     border-radius: 0px;
-    padding: 50px 15px;
+    padding: 15px 15px;
   }
 
   .name {
@@ -446,7 +456,7 @@ $primary-lightBlue: #61bcbe;
     grid-gap: 5px;
   }
   .nv-box-white {
-    padding: 50px 10px;
+    padding: 15px 10px;
   }
   .detail-ep {
     font-size: 13px;
