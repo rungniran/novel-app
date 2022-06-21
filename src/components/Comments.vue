@@ -5,6 +5,61 @@
     </div>
     <div v-else v-for="(item, index) in DataComment" :key="index">
       <div class="box-review">
+        <div>
+          <div
+              class="re-profile"
+              :style="'background: url(' + img + ') center center/cover'"
+            ></div>
+            <!-- <img :src="$path.image('18 adult.png')" width="100px"> -->
+        </div>
+        <div>
+          <div>
+            <div class="name-review" v-if="item.user">
+                <span v-if="item.user.user_profile_datas[0].user_nickname" >{{item.user.user_profile_datas[0].user_nickname}} </span>
+                <span v-else>{{item.user.user_profile_datas[0].first_name}}  {{item.user.user_profile_datas[0].last_name}} &nbsp; </span> 
+                <small v-if="item.novel_episode_data"> #ตอนที่ {{item.novel_episode_data.ep_no}}</small>
+
+              </div>
+              
+              <div class="text-review" :id="'comment'+item.id" v-html="item.comment"></div>
+               <div class="text-review text-edit" :id="'edit'+item.id" >
+          <NovelEditterComment  :htmt="item.comment" @click="editcommet(item, $event)" :Editer="'html'+item.id"/>
+        </div>
+          </div>
+        </div>
+        <div>
+          <div class="review-detail">
+            <div style="
+                position: relative;
+                display: flex;
+                align-items: center;
+                gap: 20px;
+            ">
+               <div class="b-t-reply" @click="Clicklike(item.id)">
+              <i class="fas fa-thumbs-up"></i>
+              <span v-if="item.click_like !== 0"> {{item.click_like}}</span>
+            </div>
+              <i class="fas fa-ellipsis-v" @click="profile ? openObtion(item.id) :  $base.openlogin()"></i>
+              <div class="option" :id="item.id" v-if="profile">
+                <li v-if="item.user_id === profile.id" @click="deleteComment(item.id)">ลบความคิดเห็น</li>
+                <li v-if="item.user_id === profile.id"  @click="EditComment(item.id)">แก้ไข</li>
+                <li v-if="item.user_id !== profile.id">รายงาน</li>
+              </div>
+            </div>
+          
+          </div>    
+          <div class="review-date">{{ $filter.Ago(item.created_at)}}</div>
+          <div class="po-reply">
+           <!-- <div class="b-t-reply" @click="Clicklike(item.id)">
+              <i class="fas fa-thumbs-up"></i>
+              <span v-if="item.click_like !== 0"> {{item.click_like}}</span>
+            </div> -->
+          <div class="b-t-reply" @click="openReply(index)"> ตอบกลับ <span v-if="item.reply_comment.length !== 0">{{item.reply_comment.length}}</span>
+           </div>
+        </div> 
+        </div>
+      </div>
+      <!-- <div class="box-review">
         <div class="review-profile">
           <div class="con-profile">
             <div
@@ -43,10 +98,9 @@
             </div>
           <div class="b-t-reply" @click="openReply(index)"> ตอบกลับ <span v-if="item.reply_comment.length !== 0">{{item.reply_comment.length}}</span>
            </div>
-          <!-- <div class="n-reply"></div>   -->
         </div> 
         
-      </div>
+      </div> -->
       <div class="reply">
         <div v-for="(itemreply, indexReply) in item.reply_comment" :key="indexReply" class="box-reply">
           <div class="review-profile">
@@ -148,7 +202,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      img: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+      img: "https://novelkingdom-80a1d.web.app/img/18%20adult.ca907144.png",
       current: "picker",
       cheerup: Cheerup,
       test: "",
@@ -316,13 +370,14 @@ export default Vue.extend({
 .box-review {
   display: grid;
   position: relative;
-  padding: 15px;
+  padding: 10px;
+  grid-template-columns: 100px 1fr 100px;
   padding-bottom: 30px;
-  grid-template-columns: 1fr;
+  // grid-template-columns: 1fr;
   margin: 5px 0px;
   background: #fff;
   border: 2px solid  #e5e2ee;
-  border-radius: 10px;
+  border-radius: 20px;
   // border-top: 1px solid #d5d5d5;
   grid-gap: 10px;
 }
@@ -333,11 +388,11 @@ export default Vue.extend({
   justify-content: space-between;
 }
 .re-profile {
-  border: 1px solid #d0d0d0;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: #e0e0e0;
+  // border: 1px solid #d0d0d0;
+  width: 100px;
+  height: 100px;
+  // border-radius: 50%;
+  // background: #e0e0e0;
 }
 .fa-thumbs-up{
   padding: 3px;
@@ -351,9 +406,9 @@ export default Vue.extend({
 
       color: rgb(114, 114, 114);
 
-    font-size: 16px;
+    font-size: 17px;
   // margin-bottom: 20px;
-  margin-left: 60px;
+  // margin-left: 60px;
   font-family: "Sarabun", sans-serif;
 }
 .t-reply{
@@ -381,7 +436,7 @@ export default Vue.extend({
   align-items: center;
 }
 .po-reply {
-  color: #ffffff;
+  // color: #ffffff;
   position: absolute;
   right: 15px;
   bottom: 8px;
@@ -390,7 +445,10 @@ export default Vue.extend({
   cursor: pointer;
 }
 .review-date {
-  font-size: 13px;
+  
+    font-size: 13px;
+    text-align: right;
+
 }
 .box-reply {
   background: #fff;
@@ -498,7 +556,7 @@ export default Vue.extend({
   align-items: center;
  }
  .b-t-reply{
-       color: #ffffff;
+      //  color: #ffffff;
        padding: 10px;
     align-items: center;
     display: flex;
@@ -507,7 +565,7 @@ export default Vue.extend({
     display: flex;
     padding: 2px 10px;
     border-radius: 5px;
-    background: #f4ba40;
+    // background: #f4ba40;
  }
  .option{
    display: none;
@@ -535,8 +593,9 @@ export default Vue.extend({
  .text-review:focus-visible{
    outline: none;
    border: 1px solid #c2c2c2;
-   border-radius: 5px;
+   border-radius: 20px;
    padding: 10px;
+
 
  }
  .text-edit{

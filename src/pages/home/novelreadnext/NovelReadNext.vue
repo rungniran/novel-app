@@ -28,7 +28,7 @@
         />
          <div class="grod-detail">
           <div class="name line-1">{{items.datail.title}}</div>
-          <div class="name line-1">{{items.datail.penname_preview}}</div>
+          <div class="name line-1">{{items.datail.novel_episode_datas.length !== 0 ? items.datail.novel_episode_datas[0]['name'] : null}}</div>
 
         </div>
       </router-link>

@@ -1,23 +1,23 @@
 <template>
   <div class="HistoryBuy">
     <router-link
-      v-for="(item, index) in 4"
+      v-for="(item, index) in dataitem"
       :key="index"
-      to="/read/1"
+        :to="'/read/'+ item.id_ep"
       class="con-storyBuy"
     >
-      <img
-        class="img-history-read"
-        src="https://s3.ap-southeast-1.amazonaws.com/media.fictionlog/books/61d58aa01353ba001c779a4d/61dc081cUzBPUw7w.jpeg"
-        width="100%"
-      />
+     <img
+          class="img-history-read"
+          :src="'https://119.59.97.111/storage/novel_image/'+ item.id+ '.png'"
+          @error="$event.target.src= $path.image('loading.png');"
+          alt
+        />
       <div class="detail-novel">
-        <p class="name line-1">Nam sunt pariatur autem ut</p>
+        <p class="name line-1">{{item.detail.title}}</p>
         <br />
-        <p class="line-1 sub-title">บทที่ 1 กลายเป็นแม่ของวายร้าย</p>
+        <p class="line-1 sub-title">{{item.detail.novel_episode_datas.length !== 0 ? item.detail.novel_episode_datas[0]['name'] : null}} </p>
         <div class="date-novel">
-          <p>8 เม.ย. 2022</p>
-          <p>12:04 น.</p>
+          <p>{{item.detail.timestamp}} น.</p>
         </div>
       </div>
     </router-link>
@@ -27,16 +27,28 @@
 import Vue from "vue";
 import { Gatway } from "@/shares/services";
 export default Vue.extend({
+  data(){
+    return{
+      dataitem:null
+    }
+  },
   methods: {
     async getHistoryRead() {
-      let res = await Gatway.getService(
-        "/customers/transaction-data/fetch-own-novel"
-      );
-      console.log(res);
+     let res = await Gatway.postService('/customers/remembers/novel-data', this.$store.state.storyread.story_Read as any)
+      let data = [] as any
+      this.$store.state.storyread.story_Read.forEach((element:any) => {
+        res.data.data.forEach((elementres:any)=>{
+          if(elementres.id === element.id){
+            data.push({...element, detail:elementres})
+          }
+        })
+      });
+      console.log(data); 
+      this.dataitem = data
     },
   },
   mounted() {
-    // this.getHistoryRead()
+    this.getHistoryRead()
   },
 });
 </script>
@@ -63,7 +75,7 @@ export default Vue.extend({
 }
 .detail-novel {
   display: flex;
-  align-items: center;
+  justify-content: space-between;
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
@@ -92,7 +104,7 @@ p{
 .date-novel {
   text-align: center;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  // grid-template-columns: 1fr 1fr;
 }
 
 @media (max-width: 1024px) {

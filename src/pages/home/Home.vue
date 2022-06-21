@@ -12,40 +12,44 @@
       <div
         class="nv-title-item nv-mt-0"
         v-if="recommend"
-        :class="nextread === true ? 'nv-mt-70' : 'nv-mt-10'"
+        :class="nextread === true ? 'nv-mt-60' : 'nv-mt-10'"
       >
         <H1 class="nv-title-center">นิยายแนะนำ</H1>
         <NovelCarousel :opject="recommend" :loop="false" />
       </div>
-      <LoadingColouser v-else :className="profile ? 'nv-mt-70' : 'nv-mt-10'" />
-      <div class="nv-title-item nv-mt-70" v-if="hot">
+      <LoadingColouser v-else :className="profile ? 'nv-mt-60' : 'nv-mt-10'" />
+      <div class="nv-title-item nv-mt-60" v-if="hot">
         <H1 class="nv-title-center">นิยายมาแรง</H1>
         <NovelCarousel :opject="hot" :loop="false" />
       </div>
       <!--  -->
       <LoadingColouser v-else />
-      <div class="nv-title-item nv-mt-70">
+      <div class="nv-title-item nv-mt-60">
         <H1 class="nv-title-center">Banner</H1>
         <NovelCategory :opject="2" :loop="true" />
       </div>
-      <div class="nv-title-item-20 nv-mt-70">
+      <div class="nv-title-item-20 nv-mt-60">
         <H1 class="nv-title-center">นิยายติดอันดับ</H1>
         <div class="nover-top">
           <div v-for="(items, index) in maximum" :key="index" class="top-card">
             <div class="lv">{{ index + 1 }}</div>
             <router-link class="image-top" :to="'/novel/' + items.id">
               <img
-                :src="items.image_data ? items.image_data.url : $path.image('loading.png')"
-                class="nv-img-novel "
-                @error="$event.target.src= $path.image('loading.png');"
-                width="100%"
+                :src="
+                  items.image_data
+                    ? items.image_data.url
+                    : $path.image('loading.png')
+                "
+                class="nv-img-novel"
+                @error="$event.target.src = $path.image('loading.png')"
+                width="80%"
               />
             </router-link>
             <div class="detail">
               <router-link class="name line-1" :to="'/novel/' + items.id">{{
                 items.title
               }}</router-link>
-              <div class="gray">{{items.novel_category_data_preview}}</div>
+              <div class="gray">{{ items.novel_category_data_preview }}</div>
               <div>
                 <NovelStar :rating="Math.round(items.avg_star)" />
               </div>
@@ -68,7 +72,7 @@
         </div>
         <router-link to="/"></router-link>
       </div>
-      <div class="nv-title-item-20 nv-mt-70">
+      <div class="nv-title-item-20 nv-mt-60">
         <H1 class="nv-title-center">นิยายอัพเดทล่าสุด</H1>
         <div class="nover-latest">
           <router-link
@@ -79,30 +83,53 @@
           >
             <div class="image-top">
               <img
-                :src="item.image_data ? item.image_data.url : $path.image('loading.png')"
-                class="nv-img-novel "
-                @error="$event.target.src= $path.image('loading.png');"
+                :src="
+                  item.image_data
+                    ? item.image_data.url
+                    : $path.image('loading.png')
+                "
+                class="nv-img-novel"
+                @error="$event.target.src = $path.image('loading.png')"
                 width="100%"
               />
-            </div>
-            <div class="detail-top">
-              <div class="con-name-view-list">
-                
+              <div class="pc">
                 <div class="name-view-list">
-                  <div class="name-top line-1">{{ item.title }}</div><div class="view-list">
-                  <div class="view">
-                    <i class="far fa-eye"></i>
-                    <div class="count-numble-view">
-                      {{ $filter.NumbertoText(item.total_view) }}
+                  <div class="view-list">
+                    <div class="view">
+                      <i class="far fa-eye"></i>
+                      <div class="count-numble-view">
+                        {{ $filter.NumbertoText(item.total_view) }}
+                      </div>
                     </div>
-                  </div>
-                  <div class="list">
-                    <i class="fas fa-list"></i>
-                    <div class="count-numble-view">
-                      {{ $filter.NumbertoText(item.ep_total_preview) }}
+                    <div class="list">
+                      <i class="fas fa-list"></i>
+                      <div class="count-numble-view">
+                        {{ $filter.NumbertoText(item.novel_episode_data_total) }}
+                      </div>
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <div class="detail-top">
+              <div class="con-name-view-list">
+                <div class="view-list">
+                  <div class="name-top line-1">{{ item.title }}</div>
+                  <div class="mobile">
+                    <div class="view">
+                      <i class="far fa-eye"></i>
+                      <div class="count-numble-view">
+                        {{ $filter.NumbertoText(item.total_view) }}
+                      </div>
+                    </div>
+                    <div class="list">
+                      <i class="fas fa-list"></i>
+                      <div class="count-numble-view">
+                        {{ $filter.NumbertoText(item.ep_total_preview) }}
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <p class="line-5 story">
                   {{ item.detail }}
@@ -140,7 +167,6 @@
 <script lang="ts">
 import Vue from "vue";
 import { Gatway } from "@/shares/services";
-
 export default Vue.extend({
   name: "Home",
   components: {
@@ -159,7 +185,9 @@ export default Vue.extend({
           ? true
           : false,
       recommend: null,
-      banner: [...Array(5).keys()],
+      banner: [
+        
+      ],
       top: [...Array(6).keys()],
       latest: [...Array(10).keys()],
       hot: null,
@@ -167,33 +195,34 @@ export default Vue.extend({
       maximum: null,
     };
   },
-  methods:{
-    async getlasthot(){
-      let res = await Gatway.getService('/guest/index/novel-hot')
-      this.hot = await res.data.data
-      let getlastUpdate = await Gatway.getService('/guest/index/novel-last-update')
-      this.update = await getlastUpdate.data.data  
-      let getRecommend = await Gatway.getService('/guest/recommended-novel')
-      const data = [] as any
-      getRecommend.data.data.forEach((element:any) => {
-        if(element.novel_data){
-          data.push(element.novel_data)
+  methods: {
+    async getlasthot() {
+      let res = await Gatway.getService("/guest/index/novel-hot");
+      this.hot = await res.data.data;
+      let getlastUpdate = await Gatway.getService(
+        "/guest/index/novel-last-update"
+      );
+      this.update = await getlastUpdate.data.data;
+      let getRecommend = await Gatway.getService("/guest/recommended-novel");
+      const data = [] as any;
+      getRecommend.data.data.forEach((element: any) => {
+        if (element.novel_data) {
+          data.push(element.novel_data);
         }
       });
-      this.recommend = data.splice(0,12)   
-      let getNextread = await Gatway.getService('/guest/index/novel-maximum-read')
-      this.maximum = await getNextread.data.data.splice(0,6) 
-         
-
-    
-      
+      this.recommend = data.splice(0, 12);
+      let getNextread = await Gatway.getService(
+        "/guest/index/novel-maximum-read"
+      );
+      this.maximum = await getNextread.data.data.splice(0, 6);
+      console.log('hot',res);
       
     },
     // async getlastUpdate(){
-      
+
     // },
     // async getNextread(){
-        
+
     // },
     // async getRecommend(){
     //   let res = await Gatway.getService('/guest/recommended-novel')
@@ -203,17 +232,17 @@ export default Vue.extend({
     //       data.push(element.novel_data)
     //     }
     //   });
-    //   this.recommend = data.splice(0,12)      
+    //   this.recommend = data.splice(0,12)
 
     // }
   },
 
-  mounted(){
-    this.getlasthot()
+  mounted() {
+    this.getlasthot();
     // this.getlastUpdate()
     // this.getNextread()
     // this.getRecommend()
-  }
+  },
 });
 </script>
 <style lang="scss" scoped>
@@ -226,7 +255,7 @@ $primary-lightBlue: #61bcbe;
   display: grid;
   grid-gap: 30px 0px;
   grid-template-columns: 1fr 1fr;
-  grid-gap: 35px 90px;
+  grid-gap: 10px 50px;
 }
 .top-card {
   width: 100%;
@@ -246,6 +275,8 @@ $primary-lightBlue: #61bcbe;
   display: flex;
   justify-content: center;
   align-items: center;
+  display: grid;
+  // grid-template-rows: 3fr 0.5fr;
 }
 .name {
   font-size: 20px;
@@ -281,7 +312,7 @@ $primary-lightBlue: #61bcbe;
   display: flex;
   flex-direction: column;
   grid-gap: 10px;
-      margin-top: -4px;
+  margin-top: -4px;
 }
 .ep-con {
   display: grid;
@@ -289,15 +320,20 @@ $primary-lightBlue: #61bcbe;
   grid-template-columns: 1fr 1fr;
 }
 
-// .view-list {
-//   justify-content: end;
-// }
+.mobile {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.view-list {
+  justify-content: space-between;
+}
 
 .lv {
-     font-size: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  font-size: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   // border: 1px solid;
   // // position: absolute;
@@ -336,9 +372,17 @@ $primary-lightBlue: #61bcbe;
 .ew {
   text-align: right;
 }
-.name-view-list{
+.name-view-list {
   display: flex;
-      justify-content: space-between;
+  justify-content: center;
+  padding: 5px;
+}
+  .nv-box-white {
+    padding: 10px 15px;
+  }
+
+.pc {
+  display: none;
 }
 @media (max-width: 1024px) {
   .nover-latest {
@@ -353,10 +397,15 @@ $primary-lightBlue: #61bcbe;
   .detail-top {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-between;
   }
   .box-latest:hover {
     transform: scale(1);
+  }
+  .name-view-list {
+    display: flex;
+    justify-content: center;
+    padding-top: 10px;
   }
 }
 @media (max-width: 768px) {
@@ -368,19 +417,21 @@ $primary-lightBlue: #61bcbe;
   .detail-ep {
     font-size: 20px;
   }
+  .nover-top {
+    width: 100%;
+    display: grid;
+    grid-gap: 30px 0px;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 35px;
+  }
 
   .name {
-    font-size: 30px;
+    font-size: 25px;
   }
   .gray {
     font-size: 20px;
   }
 
-  .nover-top {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-gap: 20px;
-  }
   .story {
     font-size: 20px;
   }
@@ -391,7 +442,7 @@ $primary-lightBlue: #61bcbe;
   .detail-top {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-betweenx;
   }
   .name-top {
     font-size: 30px;
@@ -404,12 +455,26 @@ $primary-lightBlue: #61bcbe;
     border-radius: 0px;
     padding: 15px 15px;
   }
-
+  .nover-top {
+    display: grid;
+    grid-template-columns: 340px 340px;
+    grid-gap: 40px;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    padding-right: 25px;
+  }
+  .nover-top::-webkit-scrollbar {
+    display: none;
+  }
   .name {
     font-size: 22px;
   }
   .gray {
     font-size: 14px;
+  }
+
+  .pc{
+    display: contents;
   }
 
   .story {
@@ -421,11 +486,14 @@ $primary-lightBlue: #61bcbe;
     grid-template-columns: 1fr;
     grid-gap: 20px;
   }
-
+  .mobile{
+    display: none;
+  }
   .name-view-list {
     display: flex;
     // align-items: flex-start;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
   }
   // .box-latest {
@@ -461,7 +529,7 @@ $primary-lightBlue: #61bcbe;
   .detail-ep {
     font-size: 13px;
   }
-    .box-latest {
+  .box-latest {
     padding: 10px 10px;
     grid-template-columns: 1.5fr 2.8fr;
   }

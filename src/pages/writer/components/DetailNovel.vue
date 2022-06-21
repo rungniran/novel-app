@@ -235,14 +235,6 @@ small {
   gap: 10px;
 }
 
-.layout-main {
-  display: grid;
-  grid-template-columns: 1fr 3fr;
-  gap: 20px;
-  background-color: #f5ecfd;
-  padding: 20px;
-  border-radius: 10px;
-}
 .option-select {
   padding: 10px 10px 30px 10px;
   background-color: white;

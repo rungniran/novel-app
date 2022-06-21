@@ -50,7 +50,7 @@
       <div class="detail-novel" >
         <img src="https://s3.ap-southeast-1.amazonaws.com/media.fictionlog/books/61d58aa01353ba001c779a4d/61dc081cUzBPUw7w.jpeg" width="18%">
         <div>
-          <p class="name">Nam sunt pariatur autem ut</p><br>
+          <p class="name">{{item.created_at}}</p><br>
           <p>บทที่ 1 กลายเป็นแม่ของวายร้าย</p>
             <div class="buy-coin" >
             <img :src="$path.image('coin-gold.png')" height="20px" >
@@ -59,7 +59,7 @@
         </div>
       </div>
       <div>
-         <p> 8 เม.ย. 2022, 12:04 </p>
+         <p> {{item.time_stamp}} </p>
       </div>
     </router-link>
   </div>

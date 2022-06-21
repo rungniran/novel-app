@@ -51,6 +51,7 @@
               <option :value="2">นิยายติดอันดับ</option>
               <option :value="3">นิยายอัปเดทล่าสุด</option>
             </select>
+
           </div>
           <!-- <div class="grop">
               <input type="checkbox"> 
@@ -74,6 +75,7 @@
               /></span>
               <div class="line-5 story">
                 {{ item.detail }}
+
               </div>
             </div>
             <div class="view-list">
@@ -86,7 +88,7 @@
               <div class="list">
                 <i class="fas fa-list"></i>
                 <div class="count-numble-view">
-                  {{ $filter.NumbertoText(20320) }}
+                  {{ $filter.NumbertoText(item.ep_total_preview) }}
                 </div>
               </div>
             </div>

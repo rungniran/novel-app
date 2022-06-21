@@ -140,6 +140,10 @@ const dynamic_path = {
 		const images = require.context('../../assets/images/cheerup', false, /\.png$/)
 		return images('./' + img)
 	},
+	imageCover(img:string):string{
+			const images = require.context('../../assets/images/image-cover')
+			return images('./' + img)
+	}
 	
 }
 

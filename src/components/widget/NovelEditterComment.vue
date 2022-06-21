@@ -22,12 +22,12 @@
       <div class="nv-btn-yellow submit" @click="submit($event)">ส่ง</div>
     </div>
     <div id="stiker">
-      <div class="con-stiker" v-if="sticker">
+      <div class="con-stiker" >
         <div @click="close()" class="close">
         <i class="fas fa-times-circle" ></i>
         </div>
-        <!-- <div class="con-title-stiker" v-if="sticker"> -->
-        <carousel :nav="false" :dots="false" :items="5">
+        <span v-if="sticker">
+        <carousel :nav="false" :dots="false" :items="5" >
           <div
             v-for="(item, index) in sticker"
             :key="index"
@@ -37,7 +37,7 @@
             {{ item.name }}
           </div>
         </carousel>
-        <!-- </div> -->
+        </span>
         <div class="con-item">
           <div v-for="(item, index) in stickerss" :key="index">
             <div
@@ -91,12 +91,15 @@ export default Vue.extend({
     };
   },
   methods: {
-    opanstiker(as) {
-      let conModal = document.getElementById("stiker") as HTMLElement;
+    async opanstiker(as:any) {
+      
+      await this.getListstiger()
+      let conModal = await document.getElementById("stiker") as HTMLElement;
 
-      this.filter(this.sticker[0]);
-      localStorage.setItem("s", as);
-      conModal.style.display = "flex";
+     await this.filter(this.sticker[0]);
+     await localStorage.setItem("s", as);
+      conModal.style.display = await "flex";
+      
     },
     addstikerf(stiker: any) {
       const editer = document.getElementById(
@@ -140,9 +143,11 @@ export default Vue.extend({
       html.innerHTML = "";
     },
     async getListstiger() {
+      
       let res = await Gatway.getService("/customers/treasure-box-data/index");
       let data = [] as any;
      
+      console.log(res);
       
       res.data.data.filter((res: any) => {
         // console.log( JSON.parse(res.system_note));
@@ -167,6 +172,8 @@ export default Vue.extend({
       const uniq = new Set(data.map((e: any) => JSON.stringify(e)));
       const resa = Array.from(uniq).map((e: any) => JSON.parse(e));
       this.sticker = await resa;
+      console.log(this.sticker);
+      
     },
     async filter(item: any) {
       let res = await Gatway.getIDService("admin/shop-data-topic", item.id);
@@ -183,7 +190,7 @@ export default Vue.extend({
     },
   },
   mounted() {
-    this.getListstiger();
+    // this.getListstiger();
   },
 });
 </script>
@@ -236,6 +243,7 @@ export default Vue.extend({
 .Editer {
   min-height: 80px;
   margin-right: 70px;
+  font-family: "Sarabun", sans-serif;
 }
 .text-editer {
   padding: 20px;

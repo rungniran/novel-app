@@ -2,7 +2,7 @@
   <div class="NovelPreview">
     <div class="nv-box-white nv-mt-40">
       <div class="box-nove">
-        <div class="image-nv ">
+        <div class="image-nv">
           <img
             :src="
               getNover.image_data
@@ -10,7 +10,7 @@
                 : $path.svg('imgload.svg')
             "
             class="nv-img-novel"
-             onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
+            onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
             width="100%"
           />
         </div>
@@ -26,7 +26,7 @@
             </div>
             <div class="nv-mt-10">
               <router-link to="#" class="nv-tag">{{
-                getNover.novel_category_data_id
+                getNover.novel_category_data_preview
               }}</router-link>
             </div>
             <div class="story-sub" style="margin-top: 15px; line-height: 1.6">
@@ -62,7 +62,7 @@
               "
               ><button class="nv-btn-yellow">แก้ไข</button></router-link
             >
-
+            <button class="nv-btn-orange btn-promotion" @click="$refs.PromotionModal.open()">โปรโมชัน</button>
             <!-- <button class="nv-btn-light-blue">โปรโมชั่น</button> -->
             <button
               class="nv-btn-blue"
@@ -113,7 +113,11 @@
           </div> -->
 
           <div v-for="(item, indexmoment) in moment" :key="indexmoment">
-            <div v-if="item.ep.length" class="box-price_range" @click="openEp(indexmoment)">
+            <div
+              v-if="item.ep.length"
+              class="box-price_range"
+              @click="openEp(indexmoment)"
+            >
               <div>{{ item.moment }}</div>
               <div>
                 <i class="fas fa-chevron-right"></i>
@@ -164,6 +168,7 @@
           </div>
         </div>
       </div>
+      <PromotionModal ref="PromotionModal"/>
     </div>
     <!-- <div class="nv-box-white nv-mt-40" id="series">
       <div class="series">
@@ -276,6 +281,8 @@ export default Vue.extend({
     NovelConfirm: () => import("@/components/widget/NovelConfirm.vue"),
     // eslint-disable-next-line vue/no-unused-components
     NovelModal: () => import("@/components/widget/NovelModal.vue"),
+    PromotionModal:()=> import('./PromotionModal.vue')
+
   },
   data() {
     return {
@@ -341,8 +348,8 @@ export default Vue.extend({
       const resEpisodeData = await Gatway.getService(
         `/customers/episode_data/index/${this.$route.params.id}`
       );
-      console.log('sdsd',resEpisodeData.data);
-      
+      console.log("sdsd", resEpisodeData.data);
+
       this.EpisodeData = await resEpisodeData.data;
       this.eplength = resEpisodeData.data.length;
       this.momentEp(resEpisodeData.data.data);
@@ -400,8 +407,8 @@ export default Vue.extend({
       let arraymoment = [] as any;
       let count = countEp.length / 50;
       let momentCount = count + 0.0;
-       let ep = 0;
-      let [eplast, eplastStas]  = [50,50] as any[];
+      let ep = 0;
+      let [eplast, eplastStas] = [50, 50] as any[];
       if (countEp.length > 0) {
         for (let i = 0; i < ~~momentCount + 1; i++) {
           if (countEp.length <= eplast) {
@@ -409,14 +416,14 @@ export default Vue.extend({
               moment: `บทที่ ${ep + 1} - ${countEp.length}`,
               ep: countEp.slice(ep, eplast),
             });
-              ep = +eplast;
+            ep = +eplast;
             eplast = eplast + eplast;
           } else {
             arraymoment.push({
               moment: `บทที่ ${ep + 1} - ${eplast}`,
               ep: countEp.slice(ep, eplast),
             });
-            ep =+ eplast;
+            ep = +eplast;
             eplast = eplast + eplastStas;
           }
         }
@@ -440,7 +447,7 @@ export default Vue.extend({
       window.scrollTo({ top: series.offsetHeight, behavior: "smooth" });
     },
     test() {
-      const limit = 100
+      const limit = 100;
       let Sell = [
         Math.floor(Math.random() * limit),
         Math.floor(Math.random() * limit),
@@ -486,6 +493,16 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss" scoped>
+.btn-promotion{
+  background-color: #61bcbe;
+    border: 2px solid #61bcbe;
+
+}
+
+.btn-promotion:hover{
+    box-shadow: #61bcbe 0px 3px 10px 0px;
+}
+
 .box-nove {
   display: grid;
   grid-template-columns: 1fr 2.5fr;
@@ -651,8 +668,8 @@ export default Vue.extend({
   .image-nv img {
     width: 70%;
   }
-  .series{
- grid-template-columns: 1fr ;
-}
+  .series {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

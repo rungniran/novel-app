@@ -37,6 +37,16 @@ const routes: Array<RouteConfig> = [
     component: () => import('../pages/About.vue')
   },
   {
+    path: '/about',
+    name: 'About',
+    component: () => import('../pages/About.vue')
+  },
+  {
+    path: '/privacy',
+    name: 'privacy',
+    component: () => import('../pages/pagefooter/PolicyPrivacy.vue')
+  },
+  {
     path: '/category',
     name: 'Category',
     component: () => import('../pages/category/Category.vue')

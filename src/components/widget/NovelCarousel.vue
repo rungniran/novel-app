@@ -1,6 +1,6 @@
 <template>
   
- 
+    
     <carousel 
       :items="1"
       :loop="true"
@@ -15,12 +15,14 @@
      
     >
     <template>
+      
       <router-link
         v-for="(items, index) in opject"
         :key="index"
         :to="'/novel/' + items.id"
         class="nv-box-carousel carousel"
       >
+      
         <img
         
           class="item-banner"
@@ -43,8 +45,7 @@
             <div class="list">
               <i class="fas fa-list"></i>
               <div class="count-numble-view">
-                <!-- {{items.ep_total_preview}} -->
-                {{ $filter.NumbertoText(items.ep_total_preview) }}
+                {{ $filter.NumbertoText(items.novel_episode_data_total) }}
               </div>
             </div>
           </div>

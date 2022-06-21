@@ -1,12 +1,20 @@
 <template>
   <div class="WriterSeport" v-if="wraning === true">
+    <!-- <pre> {{listwithdraw}}</pre>
+     {{this.listwithdraw.total_coin * (30/100) }} -->
       <div class="WriterSeport-select">
-      <select id="inCategory">	
-        <option v-for="item,index in 3" :key="index" :value="item.id">{{item}}</option>
-      </select>
-      <select id="inCategory">	
-        <option v-for="item,index in 3" :key="index" :value="item.id">{{item}}</option>
-      </select>
+        <div>
+          <div>เดือน</div>
+          <select id="inCategory">	
+            <option v-for="item,index in 3" :key="index" :value="item.id">{{item}}</option>
+          </select>
+        </div>
+        <div>
+          <div>ปี</div>
+          <select id="inCategory">	
+            <option v-for="item,index in 3" :key="index" :value="item.id">{{item}}</option>
+          </select>
+        </div>
       </div>
       <br><br>
      <table>
@@ -21,17 +29,28 @@
   </tr>
   <tr>
     <td>รายได้จากการขาย</td>
-    <td>{{ $filter.NumberToString(this.$store.state.auth.dataset.coin_balance )}}</td>
+    <td>{{ $filter.NumberToString(this.listwithdraw.total_coin  )}}</td>
  
   </tr>
   <tr>
     <td>หักค่าบริการแพลทฟอร์ม (30%)</td>
-    <td>?</td>
+    <td>
+      {{
+        $filter.NumberToString(
+          this.listwithdraw.total_coin * (30/100) 
+        ) 
+      }}</td>
 
   </tr>
   <tr>
     <td>รายได้สุทธิ</td>
-    <td>{{ $filter.NumberToString(this.$store.state.auth.dataset.coin_balance )}}</td>
+    <td>
+      {{ 
+        $filter.NumberToString(
+          this.listwithdraw.total_coin - (this.listwithdraw.total_coin * (30/100) )
+        )
+      }}
+    </td>
 
   </tr>
   <tr>
@@ -44,14 +63,26 @@
   </tr>
   <tr>
     <td>รายได้รวม</td>
-    <td>{{ $filter.NumberToString(this.$store.state.auth.dataset.coin_balance )}}</td>
+    <td>
+      {{ 
+        $filter.NumberToString(
+          this.listwithdraw.total_coin - (this.listwithdraw.total_coin * (30/100) )
+        )
+      }}
+    </td>
 
   </tr> 
 </table>
 <div class="dcoin">
         <div>
           <small>รายรับคงเหลือ (บาท) </small>
-          <div>{{ $filter.NumberToString(this.$store.state.auth.dataset.coin_balance )}}</div>
+          <div>
+            {{ 
+              $filter.NumberToString(
+                this.listwithdraw.total_coin - (this.listwithdraw.total_coin * (30/100) )
+              )
+            }}
+          </div>
           
         </div>
         <div>
@@ -114,11 +145,27 @@
 
 <script>
 import Vue from "vue";
+import {Gatway} from "@/shares/services"
 export default Vue.extend({
   name: "Seport",
   props: {
     wraning: Boolean,
   },
+  data(){
+    return{
+      listwithdraw:''
+    }
+  },
+  methods:{
+    async  withdraw(){
+      let res = await Gatway.getService('/customers/withdraw-data')
+      console.log(res.data.data);
+      this.listwithdraw = res.data.data[0]
+    }
+  },
+  mounted(){
+    this.withdraw()
+  }
 });
 </script>
 
@@ -168,13 +215,6 @@ small {
   display: grid;
   gap: 10px;
 }
-<<<<<<< HEAD
-.WriterSeport-select{
-  display: flex;
-  gap: 10px;
-}
-</style>
-=======
 
 .layout-main {
   display: grid;
@@ -195,5 +235,10 @@ small {
   gap: 20px;
 
 }
+.WriterSeport-select{
+      display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr 1fr;
+
+}
 </style>
->>>>>>> 75d9322ef797a0f2934eb001588232980b5dcd94

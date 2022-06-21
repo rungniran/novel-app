@@ -36,7 +36,7 @@
               <div class="view">
                 <i class="far fa-eye"></i>
                 <div class="count-numble-view">
-                  {{ $filter.NumbertoText(20320) }}
+                  {{ $filter.NumbertoText(20000) }}
                 </div>
               </div>
               <div class="list">

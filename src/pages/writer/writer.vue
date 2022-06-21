@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div  :class="wraning === true  ? 'b-mo' : 'close'">
+    <div  :class="data_type() === false  ? 'b-mo' : 'close'">
       <!-- * คุณยังไม่เพิ่มข้อมูลนักเขียน หากมีข้อมูลนักเขียนเราตัดยอดหรียญทุก 30 วัน <router-link c to="/writer/WriterWithdrawMoney">คลิกที่นี้เพิ่มข้อมูลเขียน</router-link> -->
       * คำแนะนำ หากคุณต้องการถอนเหรียญ  &nbsp; &nbsp; <router-link class="blink" to="/writer/WriterWithdrawMoney">"ให้คลิกที่นี่เพิ่มข้อมูลนักเขียน"</router-link>&nbsp; &nbsp;  จึงจะสามารถทำการถอนเหรียญได้
     </div>
@@ -88,9 +88,14 @@
           </router-link>
         </div>
         <div class="nv-mt-30 component">
-          <component :is="current" :wraning="wraning"></component>
+          <!-- {{current}} -->
+          <component v-if="current !== 'Statistics' " :is="current" :wraning="wraning"></component>
+          <div :class="current === 'Statistics' ? ' ':'close' " >
+               <Statistics   :wraning="wraning"/>
+          </div>
         </div>
         <ModalCreateNovel />
+        <!-- <Statistics :wraning="wraning"/> -->
       </div>
     </div>
 
@@ -124,8 +129,17 @@ export default Vue.extend({
     },
     async listNovel() {
       let res = await ListService.listNovel();
-      this.wraning = res.data.data.length !== 0 ?  true  : false
+      
+      this.wraning = res.data.data.length !== 0   ?  true  : false
     },
+    data_type(){
+      if((this as any).profile.user_profile_datas[0].user_profile_data_type_id === user_profile_data_type_id.writer){
+        return true    
+      }else{
+        return false
+      }
+    }
+
 
     // opanmodal():void{
     // document.getElementsByClassName("create-novel")[0].classList.add("create-novel-show")

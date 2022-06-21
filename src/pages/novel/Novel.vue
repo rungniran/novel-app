@@ -20,7 +20,7 @@
         </div>
         <div class="detail">
           <div>
-            <div class="nv-title line-1">{{ resGetNovel.title }}</div>
+            <div class="nv-title">{{ resGetNovel.title }}</div>
             <router-link
               class="line-1"
               style="color: #e4803a"
@@ -32,7 +32,9 @@
               <!-- <span> ({{dataReview.length}}) </span> -->
             </div>
             <div class="nv-mt-10">
-              <router-link to="#" class="nv-tag">{{resGetNovel.novel_category_data_preview}}</router-link>
+              <router-link to="#" class="nv-tag">{{
+                resGetNovel.novel_category_data_preview
+              }}</router-link>
             </div>
             <div
               class="story-sub line-5"
@@ -246,7 +248,7 @@
                     <div class="date">{{ itemep.timestamp }}</div>
                     <div>
                       <i class="far fa-eye"></i>
-                      {{ $filter.NumbertoText(itemep.total_view) }}
+                      {{itemep.count_view }}
                     </div>
                     <div><i class="far fa-comment"></i> 8</div>
                   </div>
@@ -281,8 +283,8 @@
       </div> -->
     </div>
 
-    <div class="nv-box-white nv-mt-40">
-      <div>
+    <div class="writer-info nv-box-writer">
+      <div class="bg-writer-info">
         <div class="nv-title">ข้อมูลนักเขียน</div>
         <div class="writer-sarabun">
           <router-link
@@ -291,17 +293,13 @@
           >
             <div class="img-profile"></div>
             <div>
-              <div class="line-1">{{ resGetNovel.user_id }}</div>
+              <div class="">{{ resGetNovel.user_id }}</div>
               <small>นักรบมังกร</small>
             </div>
           </router-link>
-          <div class="writer-detail" >
-             <button disabled
-              class="nv-btn-orange"
-              @click="cleck ? null : $base.openlogin()"
-            >
-              แชท
-            </button>
+          
+        </div>
+        <div class="writer-detail">
             <button
               class="nv-btn-orange"
               @click="cleck ? null : $base.openlogin()"
@@ -309,15 +307,13 @@
               ติดตาม
             </button>
           </div>
-        </div>
       </div>
-      <br />
-      <div>
+      <div class="bg-writer-release">
         <div class="nv-title">เผยแพร่</div>
         <div class="writer-sarabun">
           <div class="writer-release">
-            <div>วันที่เผยแพร่: {{`06 มิ.ย. 2565 11:36:16`}}</div>
-            <div>ตอนล่าสุด: {{`06 มิ.ย. 2565 11:36:16`}}</div>
+            <div>วันที่เผยแพร่: {{ `06 มิ.ย. 2565 11:36:16` }}</div>
+            <div>ตอนล่าสุด: {{ `06 มิ.ย. 2565 11:36:16` }}</div>
           </div>
         </div>
       </div>
@@ -418,6 +414,7 @@ export default Vue.extend({
   },
   methods: {
     async Next() {
+      console.log(this.readNext());
       this.EpID = await this.readNext();
       await this.buy();
     },
@@ -474,7 +471,6 @@ export default Vue.extend({
         if (this.cleckAuten === true) {
           (this.EpID = await item.id), this.buy();
         } else {
-          console.log("sd");
           const epName = document.getElementById("epName") as HTMLElement;
           const epCoin = document.getElementById("epCoin") as HTMLElement;
           epName.innerHTML = item.name;
@@ -508,9 +504,10 @@ export default Vue.extend({
       } as any);
       if (res.data.code !== 402) {
         this.$store.commit("reset");
-        let dataitem = { ...this.resGetNovel, item: res.data.data };
-        this.$store.commit("setRead", dataitem);
-        alert(sms_alert_BuyEpisode("เหรียญเพิ่ม", ""), "success");
+        // let dataitem = { ...this.resGetNovel, item: res.data.data };
+        // this.$store.commit("setRead", dataitem);
+        // console.log(res.data.data.current.coin);
+        alert('คุณในซื้อนิยาย ' +  res.data.data.current.coin + ' เหรียญ','success');
         this.$router.push(`/read/${this.EpID}`);
       } else {
         alert("เหรียญของคุณมีไม่เพียงพอ", "error");
@@ -638,8 +635,6 @@ export default Vue.extend({
     await this.getEp();
     // await this.getReviewAll();
     await this.getCommentAll();
-    
-    
 
     // let img = document.getElementsByClassName(
     //   "nv-img-novel"
@@ -657,6 +652,4 @@ export default Vue.extend({
   },
 });
 </script>
-<style lang="scss" scoped src="./Novel.scss">
-
-</style>
+<style lang="scss" scoped src="./Novel.scss"></style>
