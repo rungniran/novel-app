@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="b-mo">
+    <!-- <div class="b-mo">
       ข้อมูลนักเขียน
-    </div>
-    <div class="nv-box-white nv-mt-40 Money">
+    </div> -->
+    <div class="nv-box-white nv-mt-40 " v-if="getdataWreter.length !== 0">
       <div v-for="item, index in getdataWreter" :key="index" class="list-bank">
         <div> ธนาคาร {{item.bank_type_id}}<br> เลขบัญชี {{item.account_no}} </div> 
         <div style="display: flex; gap:10px"> รออนุมัส <div @click="del(item.id)">ยกเลิก</div> </div>
@@ -162,9 +162,11 @@ export default Vue.extend({
      
     },
     async submit(){
-      let arrvalidate = ["first_name", "last_name", "file","account_no","bank_type_id"] as any;
-      if (Validation(arrvalidate) === true) {
+      let arrvalidate = ["first_name", "last_name","account_no"] as any;
+      // if (Validation(arrvalidate) === true) {
         let res = await Gatway.postService('/customers/bank-datas', this.dataObj as any) 
+        console.log(res);
+        
         if(res.data.code === 200){
           let formData = new FormData();
           formData.append('file',this.fileAccount as any)
@@ -173,13 +175,13 @@ export default Vue.extend({
           (this as any).$refs.Modeal.open()
           this.getlist()
         }
-      }
+      // }
       
       
     },
     async getlist(){
       let res = await Gatway.getService('/customers/bank-datas')
-      console.log(res);
+      console.log('>>>',res);
       res.data.data.length !== 0 
       ? this.form = true
       : this.form = false

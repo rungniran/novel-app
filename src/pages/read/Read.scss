@@ -14,6 +14,21 @@ user-select: none;
   background: #1c1c1e;
   
 }
+.NovelEditterComment {
+  padding: 0px;
+  // margin-bottom: 40px;
+}
+.NovelEditterComment {
+  padding: 0px;
+}
+.title-com {
+  padding: 10px;
+  text-align: center;
+  color: #ffffff;
+  font-size: 20px;
+  background: #6A70AA;
+  border-radius: 10px 10px 0 0;
+}
 .dark .box-name{
   color: #fff;
 }
@@ -129,7 +144,7 @@ user-select: none;
 .grod-1 {
   display: flex;
   grid-gap: 5px;    
-  align-items: center;
+  // align-items: center;
 
 }
 

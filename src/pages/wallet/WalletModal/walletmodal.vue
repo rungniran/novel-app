@@ -113,6 +113,7 @@
             class="prompt_pay"
           >
             <div class="box-img-pp">
+              <!-- {{qrcode}} -->
               <img :src="qrcode" class="PromptPayimg" width="100%" />
             </div>
             <span class="price_amount" v-if="dataPay"
@@ -278,7 +279,7 @@ export default Vue.extend({
                   "success"
                 );
                 this.$store.commit("reset");
-                window.location.href = res.data.data.authorize_uri;
+                window.location.href = res.data.data[0].authorize_uri;
               }
             );
           }
@@ -308,7 +309,8 @@ export default Vue.extend({
           this.dataPay = item;
           Gatway.postService("/customers/payment-gateway/payment", pay).then(
             (res) => {
-              this.qrcode = res.data.data["qr-code"];
+              console.log(res.data.data);
+              this.qrcode = res.data.data[0]["qr-code"];
               this.cleckpp(res);
             }
           );
@@ -362,7 +364,7 @@ export default Vue.extend({
           Gatway.postService("/customers/payment-gateway/payment", pay).then(
             (res) => {
               this.$store.commit("reset");
-              window.location.href = res.data.data.authorize_uri;
+              window.location.href = res.data.data[0].authorize_uri;
             }
           );
         }
@@ -390,7 +392,7 @@ export default Vue.extend({
           Gatway.postService("/customers/payment-gateway/payment", pay).then(
             (res) => {
               this.$store.commit("reset");
-              window.location.href = res.data.data.authorize_uri;
+              window.location.href = res.data.data[0].authorize_uri;
             }
           );
         }
@@ -414,7 +416,7 @@ $sizePage: 360px;
   flex-direction: column;
   align-items: stretch;
   overflow-y:scroll;
-  height: 100vh;
+  height: 500px;
   width: $sizePage;
   padding: 0px;
 }
@@ -448,9 +450,14 @@ $sizePage: 360px;
 .walllet-page {
   padding: 15px;
   width: $sizePage;
-  height: 100vh;
+  height: 100%;
   overflow-y: scroll;
 }
+
+.walllet-page::-webkit-scrollbar {
+  display: none;
+}
+
 .walllet-con-coin {
   display: flex;
   grid-gap: 10px;

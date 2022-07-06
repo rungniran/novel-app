@@ -19,9 +19,9 @@
         <div class="from-title">ชื่อผู้ใช้</div>
         <input :value="profile.username"/>
       </div>-->
-      <!-- <div class="con-save">
+      <div class="con-save">
         <div class="nv-btn-light-blue btn" @click="submit()">บันทึกข้อมูลส่วนตัว</div>
-      </div> -->
+      </div>
     </div>
     <div class="from nv-mt-30">
         <div class="contor-input">
@@ -34,7 +34,7 @@
         <input  :value="profile.email" disabled/>
       </div>
        <div class="con-save">
-        <div class="nv-btn-light-blue btn" @click="ChangeUsername()">บันทึกข้อมูลผู้ใช้</div>
+        <div class="nv-btn-light-blue btn" @click="ChangeUsername()">เปลี่ยน ชื่อผู้ใช้</div>
       </div>
     </div>
     <div class="from nv-mt-30">
@@ -50,6 +50,12 @@
         <div class="nv-btn-light-blue btn" @click="ChangePassword()">เปลี่ยนรหัสผ่าน</div>
       </div>
     </div>
+    <div class="from nv-mt-30">
+      <div class="con-save">
+        <div class="nv-btn-light-blue btn" @click="clear()">ล้างนิยายอ่านต่อ</div>
+        <!-- <div class="nv-btn-light-blue btn" @click="ChangePassword()">เปลี่ยนรหัสผ่าน</div> -->
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -62,12 +68,13 @@ export default Vue.extend({
   data(){
     return{
       Obj:{
-        first_name: this.$store.state.auth.dataset.user_profile_datas[0].first_name,
-        id:this.$store.state.auth.dataset.user_profile_datas[0].id,
-        last_name:this.$store.state.auth.dataset.user_profile_datas[0].last_name,
+        first_name: this.$store.state.auth.dataset.user_profile_datas.first_name,
+        id:this.$store.state.auth.dataset.user_profile_datas.id,
+        last_name:this.$store.state.auth.dataset.user_profile_datas.last_name,
         user_id:this.$store.state.auth.dataset.id,
-        user_nickname: this.$store.state.auth.dataset.user_profile_datas[0].user_nickname ? this.$store.state.auth.dataset.user_profile_datas[0].user_nickname : this.$store.state.auth.display_name,
-        user_profile_data_type_id:'a406c04d-3f50-4ea8-986e-315452753638'
+        user_nickname: this.$store.state.auth.dataset.user_profile_datas.user_nickname ? this.$store.state.auth.dataset.user_profile_datas.user_nickname : this.$store.state.auth.display_name,
+        user_profile_data_type_id:'a406c04d-3f50-4ea8-986e-315452753638',
+        type_of_company_data_id:''
       }, 
       ObjPassword:{
         password:'',
@@ -76,25 +83,25 @@ export default Vue.extend({
       ObjUsername:{
         id:this.$store.state.auth.dataset.id,
         username:this.$store.state.auth.dataset.username,
-        status_change_username:false
+        status_change_username:true
       }
     }
   },
   methods:{
     async submit(){
       console.log(this.Obj);
-      let res = await Gatway.PutService('/customers/profile-data', (this as any).profile.user_profile_datas[0].id , this.Obj as any )
-      // if( res.data.code === 200){
-      //   alert(sms_alert_Update_UserInformation.successful ,'success')
-      //   this.$store.commit('reset') 
-      // }
+      let res = await Gatway.PutService('/customers/profile-data', (this as any).profile.user_profile_datas.id , this.Obj as any )
+      if( res.data.code === 200){
+        alert(sms_alert_Update_UserInformation.successful ,'success')
+        this.$store.commit('reset') 
+      }
     },
     async ChangeUsername(){
       let res = await Gatway.postService('/customers/user-info/change-username', this.ObjUsername as any)
       res.data.code === 200 
       ? alert(sms_alert_Update_UserInformation.successful, 'success') 
       : null
-       await  this.submit()
+      //  await  this.submit()
        this.$store.commit('reset')
        
     },
@@ -116,6 +123,9 @@ export default Vue.extend({
       }else{
          alert('Password ต้องมากกว่า 8 ตัว','error') 
       }
+    },
+    clear(){
+     localStorage.removeItem("StoryRead");
     }
   },
   mounted(){

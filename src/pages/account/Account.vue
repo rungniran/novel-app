@@ -8,7 +8,7 @@
             background: url(https://cdn-icons-png.flaticon.com/512/149/149071.png) center center/cover;
           "
         >
-          <div class="Lv">LV.2 &nbsp; <small>( 70 exp )</small></div>
+          <!-- <div class="Lv">LV.2 &nbsp; <small>( 70 exp )</small></div> -->
         </div>
       </div>
       <div class="contant">

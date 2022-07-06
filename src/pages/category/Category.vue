@@ -3,7 +3,12 @@
     <div class="nv-box-white nv-mt-40 recommend">
       <div class="nv-title-item">
         <div class="nv-title-center">นิยายแนะนำ</div>
-        <NovelCarousel v-if="recommend" :opject="recommend" :loop="false" />
+        <NovelCarousel
+          v-if="recommend"
+          :opject="recommend"
+          :loop="false"
+          :star="false"
+        />
       </div>
     </div>
     <div class="nv-box-white nv-mt-40 con-Category">
@@ -46,12 +51,11 @@
         <div class="status-novel">
           <div class="grop">
             <p class="Category-title">จัดเรียงตาม</p>
-            <select @change="sort" v-model="dataSort">
-              <option :value="1">นิยายมาแรง</option>
-              <option :value="2">นิยายติดอันดับ</option>
-              <option :value="3">นิยายอัปเดทล่าสุด</option>
+            <select @change="sort" v-model="dataSort" class="custom-select">
+              <option class="item-option" :value="2">นิยายมาแรง</option>
+              <option class="item-option" :value="1">นิยายติดอันดับ</option>
+              <option class="item-option" :value="3">นิยายอัปเดตล่าสุด</option>
             </select>
-
           </div>
           <!-- <div class="grop">
               <input type="checkbox"> 
@@ -73,9 +77,8 @@
               <span style="display: flex; gap: 10px; align-items: center">
                 <NovelStar :rating="Math.round(item.avg_star)"
               /></span>
-              <div class="line-5 story">
+              <div class="line-4 story">
                 {{ item.detail }}
-
               </div>
             </div>
             <div class="view-list">
@@ -95,14 +98,13 @@
           </div>
           <div class="category-img">
             <img
-              :src="
+              v-lazy="
                 item.image_data
                   ? item.image_data.url
                   : $path.image('loading.png')
               "
               onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
               class="nv-img-novel"
-              width="100%"
             />
           </div>
         </router-link>
@@ -113,6 +115,7 @@
           @changePage="onChangePage"
           :pageSize="8"
           :maxPages="5"
+          :labels="customLabels"
         ></jw-pagination>
       </div>
     </div>
@@ -136,6 +139,13 @@ import { Gatway } from "@/shares/services";
 import JwPagination from "jw-vue-pagination";
 Vue.component("jw-pagination", JwPagination);
 // const exampleItems = [...Array(150).keys()].map(i => ({ id: (i+1), name: 'Item ' + (i+1) }));
+const customLabels = {
+  first: "<<",
+  last: ">>",
+  previous: "<",
+  next: ">",
+};
+
 enum TypeSort {
   hot = 1,
   top = 2,
@@ -161,6 +171,7 @@ export default Vue.extend({
       dataTypeNovel: TypeNovel,
       translated: true,
       mysafe: true,
+      customLabels,
     };
   },
   components: {
@@ -170,7 +181,6 @@ export default Vue.extend({
   methods: {
     async getNovelType() {
       let res = await Gatway.getService("/guest/novel/group-type");
-
       this.category = res.data.data;
       this.All = res.data.data;
       this.exampleItems = await this.novelAll(res.data.data);
@@ -195,9 +205,8 @@ export default Vue.extend({
       let NovelAll = [] as any;
       ojb.forEach((element: any) => {
         // setTimeout(()=>{
-          NovelAll.push(...element.novel_datas);
+        NovelAll.push(...element.novel_datas);
         // },100)
-        
       });
       return NovelAll;
     },
@@ -254,10 +263,16 @@ export default Vue.extend({
               console.log(
                 element.novel_data.novel_category_data_id === this.textCategory
               );
-              data.push(element.novel_data);
+              data.push({
+                ...element.novel_data,
+                novel_episode_data_total: element.novel_data.ep_total_preview,
+              });
             }
           } else {
-            data.push(element.novel_data);
+            data.push({
+              ...element.novel_data,
+              novel_episode_data_total: element.novel_data.ep_total_preview,
+            });
           }
         }
       });
@@ -267,36 +282,53 @@ export default Vue.extend({
   },
   mounted() {
     this.getNovelType();
-    this.getRecommend();
+    // this.getRecommend();
   },
 });
 </script>
 <style lang="scss" scoped>
+select {
+}
+.custom-select {
+}
+.item-option {
+  padding: 8px 16px !important;
+  background: cyan !important;
+  color: #ab93f9 !important;
+}
+.view-list-category {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 40%;
+}
 .novel-category {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-gap: 20px;
+  grid-gap: 30px 25px;
 }
 .box-crad {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  height: 200px;
+  grid-template-columns: 1.6fr 1fr;
+  height: 210px;
   border-radius: 10px;
   background: #ffffff;
-  border: 2px solid #f4ba40;
+  border: 1px solid #ab93f9;
   // box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 18px 0px;
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 10px;
   padding: 15px;
   grid-gap: 20px;
   margin: 5px 0px;
   transition: 0.3s;
 }
+.view-list{
+  margin-top: 10px;
+}
 .box-crad:hover {
-  background: #fff6e5;
+  background: #fbf9ff;
 }
 
 .box-crad:hover .title {
-  color: #f4ba40;
+  color: #ab93f9;
 }
 .title {
   transition: 0.3s;
@@ -315,20 +347,21 @@ export default Vue.extend({
 }
 .con-detail {
   display: flex;
+  height: 180px;
   flex-direction: column;
   justify-content: space-between;
-  width: 260px;
+  width: 100%;
 }
 .category-img {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-  .group-checkbox {
-    display: grid;
-    grid-template-columns: auto auto;
-    gap: 20px;
-  }
+.group-checkbox {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 20px;
+}
 
 .filter {
   display: flex;
@@ -338,7 +371,7 @@ export default Vue.extend({
   justify-content: space-between;
 }
 .recommend {
-  min-height: 500px;
+  min-height: 400px;
 }
 select {
   display: block;
@@ -380,14 +413,16 @@ select {
 }
 
 .category-img > img {
-  position: absolute;
-  object-fit: fill;
-  height: 200px;
-  width: 150px;
-  margin-top: 20px;
+  // position: absolute;
+  // object-fit: fill;
+  // height: 200px;
+  width: 150px !important;
+  // margin-top: 20px;
+  margin-right: 10px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
-@media (max-width: 820px) {
+@media (max-width: 1024px) {
   .novel-category {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -396,17 +431,17 @@ select {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      width: 200px;
+      width: 100%;
     }
   }
 
-  .category-img > img {
-    position: absolute;
-    object-fit: fill;
-    height: 180px;
-    width: 130px;
-    margin-top: 20px;
-  }
+  // .category-img > img {
+  //   position: absolute;
+  //   object-fit: fill;
+  //   height: 180px;
+  //   width: 130px !important;
+  //   margin-top: 20px;
+  // }
 
   .con-detail {
     display: flex;
@@ -416,10 +451,10 @@ select {
   .story {
     -webkit-line-clamp: 3;
   }
-  .box-crad {
-    padding: 17px;
-    grid-template-columns: 2fr 1.3fr;
-  }
+  // .box-crad {
+  //   padding: 17px;
+  //   grid-template-columns: 2fr 1.3fr;
+  // }
   .filter,
   .con-grop {
     flex-direction: column;
@@ -435,17 +470,27 @@ select {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      width: 180px;
+      width: 170px;
     }
   }
 
+<<<<<<< HEAD
+  // .category-img > img {
+  //   position: absolute;
+  //   object-fit: fill;
+  //   height: 190px ;
+  //   width: 140px !important;
+  //   margin-top: 20px;
+  // }
+=======
   .category-img > img {
     position: absolute;
     object-fit: fill;
     height: 190px;
-    width: 140px;
+    width: 140px !important;
     margin-top: 20px;
   }
+>>>>>>> a0e0b84e7e892d201e13a68a9a34fa28b447b098
 
   .con-detail {
     display: flex;
@@ -455,17 +500,51 @@ select {
   .story {
     -webkit-line-clamp: 3;
   }
-  .box-crad {
-    padding: 17px;
-    grid-template-columns: 2fr 1.3fr;
-  }
+  // .box-crad {
+  //   padding: 17px;
+  //   grid-template-columns: 1.7fr 1.3fr;
+  // }
   .filter,
   .con-grop {
     flex-direction: column;
   }
 }
+<<<<<<< HEAD
+@media (max-width: 710px){
+  // .box-crad {
+  //   padding: 17px;
+  //   grid-template-columns: 2.7fr 1.3fr;
+  // }
+   .novel-category {
+=======
+@media (max-width: 710px) {
+  .box-crad {
+    padding: 17px;
+    grid-template-columns: 2.7fr 1.3fr;
+  }
+  .novel-category {
+>>>>>>> a0e0b84e7e892d201e13a68a9a34fa28b447b098
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 20px;
+    .con-detail {
+      width: 100%;
+    }
+  }
+}
 
 @media (max-width: 415px) {
+<<<<<<< HEAD
+  //   .box-crad {
+  //   padding: 17px;
+  //   grid-template-columns: 2fr 1.3fr;
+  // }
+=======
+  .box-crad {
+    padding: 17px;
+    grid-template-columns: 2fr 1.3fr;
+  }
+>>>>>>> a0e0b84e7e892d201e13a68a9a34fa28b447b098
   .novel-category {
     display: grid;
     grid-template-columns: 1fr;
@@ -476,13 +555,13 @@ select {
       justify-content: space-between;
     }
   }
-  .category-img > img {
-    position: absolute;
-    object-fit: fill;
-    height: 180px;
-    width: 140px;
-    margin-top: 20px;
-  }
+  // .category-img > img {
+  //   position: absolute;
+  //   object-fit: fill;
+  //   height: 180px;
+  //   width: 140px !important;
+  //   margin-top: 20px;
+  // }
   .con-Category {
     border-radius: 0px;
     padding: 50px 10px;
@@ -491,6 +570,20 @@ select {
   .con-grop {
     flex-direction: column;
   }
+<<<<<<< HEAD
+  // .box-crad {
+  //   border-radius: 10px;
+  //   margin: 5px 0px;
+  //   height: 180px;
+  //   // background: #fff6e4;
+  //   // border: 0px solid #212529;
+  // }
+  .view-list-category{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 50%;
+}
+=======
   .box-crad {
     border-radius: 10px;
     margin: 5px 0px;
@@ -498,5 +591,11 @@ select {
     // background: #fff6e4;
     // border: 0px solid #212529;
   }
+  .view-list-category {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 50%;
+  }
+>>>>>>> a0e0b84e7e892d201e13a68a9a34fa28b447b098
 }
 </style>

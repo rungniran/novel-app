@@ -1,7 +1,7 @@
 <template>
   <div class="Comments">
-    <div v-if="DataComment.length === 0" class="notcomment">
-      ไม่มีความความคิดเห็น
+    <div v-if="DataComment.length === 0" class="notcomment nv-box-white">
+       <EmptyContent pathName="8.png" text="นิยายตอนนี้ยังไม่มีความคิดเห็น" fontSize=30px></EmptyContent>
     </div>
     <div v-else v-for="(item, index) in DataComment" :key="index">
       <div class="box-review">
@@ -27,17 +27,12 @@
         </div>
           </div>
         </div>
-        <div>
+        <div class="comment-detail">
           <div class="review-detail">
-            <div style="
-                position: relative;
-                display: flex;
-                align-items: center;
-                gap: 20px;
-            ">
+            <div  class="ddd">
                <div class="b-t-reply" @click="Clicklike(item.id)">
               <i class="fas fa-thumbs-up"></i>
-              <span v-if="item.click_like !== 0"> {{item.click_like}}</span>
+              <span class="totallike" v-if="item.click_like !== 0"> {{item.click_like}}</span>
             </div>
               <i class="fas fa-ellipsis-v" @click="profile ? openObtion(item.id) :  $base.openlogin()"></i>
               <div class="option" :id="item.id" v-if="profile">
@@ -186,23 +181,26 @@
         </div>
       </div>
     </div> -->
+    <!-- <div class="nv-mt-40"></div> -->
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
 import { Cheerup } from "@/shares/constants";
 import { Gatway } from '@/shares/services'
+import EmptyContent from '../pages/empty/empty.vue'
 export default Vue.extend({
   name: "Comments",
   components: {
-    NovelEditterComment:()=> import('./widget/NovelEditterComment.vue')
+    NovelEditterComment:()=> import('./widget/NovelEditterComment.vue'),
+    EmptyContent,
   },
   props:{
     DataComment:[]
   },
   data() {
     return {
-      img: "https://novelkingdom-80a1d.web.app/img/18%20adult.ca907144.png",
+      img: "https://novelkingdom-80a1d.web.app/img/dragon.15adb922.png",
       current: "picker",
       cheerup: Cheerup,
       test: "",
@@ -379,7 +377,7 @@ export default Vue.extend({
   border: 2px solid  #e5e2ee;
   border-radius: 20px;
   // border-top: 1px solid #d5d5d5;
-  grid-gap: 10px;
+  grid-gap: 30px;
 }
 .review-profile {
   display: flex;
@@ -445,7 +443,6 @@ export default Vue.extend({
   cursor: pointer;
 }
 .review-date {
-  
     font-size: 13px;
     text-align: right;
 
@@ -476,8 +473,8 @@ export default Vue.extend({
 .text-editer {
   padding: 20px;
   background: #fff;
-  border: 2px solid #d7d7d7;
-  border-radius: 10px;
+  border: 2px solid #e5e2ee;
+  border-radius: 10px ;
   position: relative;
 }
 .option-icon {
@@ -490,6 +487,12 @@ export default Vue.extend({
 }
 .editer:focus-visible {
   outline: none;
+}
+.fas {
+  color: #fff;
+}
+.totallike {
+  color: #fff;
 }
 .con-modal {
   position: fixed;
@@ -531,6 +534,10 @@ export default Vue.extend({
 .reply-show{
   display: block;
 }
+.stiker-img {
+  height: 70px;
+  width: 70px;
+}
 .r{
   width: 20px;
     position: absolute;
@@ -556,8 +563,8 @@ export default Vue.extend({
   align-items: center;
  }
  .b-t-reply{
-      //  color: #ffffff;
-       padding: 10px;
+    // color: #ffffff;
+    padding: 10px;
     align-items: center;
     display: flex;
     gap: 5px;
@@ -565,8 +572,13 @@ export default Vue.extend({
     display: flex;
     padding: 2px 10px;
     border-radius: 5px;
-    // background: #f4ba40;
+    // border: 1px solid #6A70AA;
+    // background: #6A70AA;
  }
+//  .b-t-reply:hover {
+//   box-shadow: #6A70AA 0px 3px 10px 0px;
+//  } 
+ 
  .option{
    display: none;
    position:absolute;
@@ -607,6 +619,13 @@ export default Vue.extend({
    justify-content: center;
    padding: 40px;
  }
+ .ddd{
+  position: relative;
+                display: flex;
+                align-items: center;
+                gap: 20px;
+ }
+
  @media (max-width: 1024px) {
 
 }
@@ -619,6 +638,13 @@ export default Vue.extend({
 
 
 @media (max-width: 415px) {
+  .text-editer {
+    // margin-bottom: 100px;
+}
+   .comment-detail{
+      width: 300px;
+    display: flex;
+ }
   .text-review {
     font-size: 17px;
 
@@ -628,7 +654,20 @@ export default Vue.extend({
     border-radius: 0px;
     // border: 2px solid #f4ba40;
     border-left: 0px;
+     grid-template-columns: 50px 1fr;
+     grid-template-rows: 1fr 30px;
+     grid-template-areas: 'null null' 'comment-detail comment-detail';
     border-right: 0px;
+  }
+  .po-reply{
+     position: relative;
+  }
+  .comment-detail{
+    grid-area: comment-detail;
+  }
+  .re-profile{
+    width: 50px;
+    height: 50px;
   }
   .box-reply{
     //  border-radius: 0px;
@@ -642,9 +681,27 @@ export default Vue.extend({
   .r{
     display: none;
   }
-  // .input-comment{
 
-  // }
+  .review-date {
+    padding: 10px;
+
+}
+  .ddd{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    right: 10px;
+    top: 10px;
+  }
+  .b-t-reply {
+     margin: 0px 0px 0px 270px;
+     width: max-content;
+  }
+  .review-date {
+    width: auto;
+    
+  }
 }
 
 </style>

@@ -35,14 +35,14 @@ export default Vue.extend({
 }
 
 .aler-system{
-  @include all-aler(#842029,#f5c2c7, #f8d7da);
+  @include all-aler(#fabfae,#DF3D0A, #DF3D0A);
 }
 .success{
-  @include all-aler(#0f5132,#badbcc, #d1e7dd);
+  @include all-aler(#dee9e4,#dee9e4, #61BCBE);
 }
 
 .error{
-  @include all-aler(#842029,#f5c2c7, #f8d7da);
+  @include all-aler(#fabfae,#DF3D0A, #DF3D0A);
 }
 
 @keyframes example {

@@ -32,13 +32,16 @@ export default Vue.extend({
   },
   methods: {
     close(): void {
-      document.getElementById(this.$props.ID)?.classList.remove("show");
+       let id = document.getElementById(this.$props.ID) as HTMLElement;
+      let idCrad = document.getElementById(this.$props.IDCrad) as HTMLElement;
+      id?.classList.remove("show");
+      idCrad?.classList.remove("contai-modal-crad-show")
     },
     open(): void {
-      console.log(this.$props.ID);
-      
       let id = document.getElementById(this.$props.ID) as HTMLElement;
+      let idCrad = document.getElementById(this.$props.IDCrad) as HTMLElement;
       id?.classList.add("show");
+      idCrad?.classList.add("contai-modal-crad-show")
     },
   },
   mounted() {
@@ -79,9 +82,14 @@ export default Vue.extend({
 }
 .contai-modal-crad {
    position: relative;
+   transition: 0.3s;
   padding: 20px;
   background: #fff;
   border-radius: 10px;
+  transform: scale(0.9);
+}
+.contai-modal-crad-show {
+  transform: scale(1.0);
 }
 #WriterWithdrawMoneyCrad{
   display: flex;
@@ -118,5 +126,31 @@ export default Vue.extend({
     border-radius: 10px;
     max-width: 470px;
     transition: .1s; 
+}
+#createNovelCrad{
+  position: absolute;
+  top: 70px;
+}
+#BuyBovelEpAutoCrad{
+   background: #ffffff;
+	display: flex;
+    grid-gap: 10px;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    padding: 20px 40px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+    border-radius: 10px;
+    max-width: 470px;
+}
+#ModalConditionsCrad{
+   height: 90vh;
+    border-radius: 15px;
+     transition: .3s;
+    // overflow-y: scroll;
+   max-width: 850px;
+   padding: 40px 0px;
+   background: #ffffff;
+   box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
 }
 </style>

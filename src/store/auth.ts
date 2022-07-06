@@ -1,5 +1,6 @@
 
 import {Auth} from "../shares/services";
+import { alertSystem } from "../shares/modules/alert";
 export type statetype = {
     dataset:any,
     display_name?:string| null,
@@ -11,10 +12,10 @@ export type statetype = {
 
 const disployName = ()=>{
     if (JSON.parse(localStorage.getItem("dataset") as any)){
-        if(JSON.parse(localStorage.getItem("dataset") as any).user_profile_datas[0].user_nickname ){
-           return JSON.parse(localStorage.getItem("dataset") as any).user_profile_datas[0].user_nickname 
+        if(JSON.parse(localStorage.getItem("dataset") as any).user_profile_datas.user_nickname ){
+           return JSON.parse(localStorage.getItem("dataset") as any).user_profile_datas.user_nickname 
         }else{
-            return JSON.parse(localStorage.getItem("dataset") as any).user_profile_datas[0].first_name +' '+  JSON.parse(localStorage.getItem("dataset") as any).user_profile_datas[0].last_name
+            return JSON.parse(localStorage.getItem("dataset") as any).user_profile_datas.first_name +' '+  JSON.parse(localStorage.getItem("dataset") as any).user_profile_datas.last_name
         }
     }else{
         return null
@@ -44,23 +45,34 @@ const getters ={
 const mutations = {
     async login(state:statetype,{token,status}:{token:string,status:string }):Promise<void>{
         const res = await Auth.customer(token)
-        const resProfile = await Auth.profile(token, res.data.id)
-        const resFetchcookie = await Auth.fetchcookie(token)
-        console.log(resFetchcookie.data.data);
+        // console.log(res.dataemail_verified_at);
         
-        if(resFetchcookie.data.data !== 'Success'){
-            const cookie = resFetchcookie.data.data.cookie?.item !== undefined
-            ? resFetchcookie.data.data.cookie?.item 
-            : JSON.parse(resFetchcookie.data.data.cookie)?.item
-            localStorage.setItem("StoryRead", JSON.stringify(cookie));
+        if(res.data.email_verified_at){
+            const resProfile = await Auth.profile(token, res.data.id)
+        //  console.log(JSON.parse(resProfile.data));
+            const profile =  resProfile.data.data.user_profile_datas[0]
+            const resFetchcookie = await Auth.fetchcookie(token)
+            console.log(resFetchcookie.data.data);
+            
+            if(resFetchcookie.data.data !== 'Success'){
+                const cookie = resFetchcookie.data.data.cookie?.item !== undefined
+                ? resFetchcookie.data.data.cookie?.item 
+                : JSON.parse(resFetchcookie.data.data.cookie)?.item
+                localStorage.setItem("StoryRead", JSON.stringify(cookie));
+            }
+            localStorage.setItem("loggedIn", status);
+            localStorage.setItem("token", token);
+            const object = {...resProfile.data.data , show_name: `${profile?.first_name}  ${profile?.last_name}` , user_profile_datas: profile}
+            localStorage.setItem("dataset", JSON.stringify(object));
+            state.dataset = object
+            state.display_name = disployName()
+            
+            window.location.reload() 
+        }else{
+            alertSystem('คุณต้องยืนยันอีเมลก่อน')
+            
         }
-        localStorage.setItem("loggedIn", status);
-        localStorage.setItem("token", token);
-        const object = {...resProfile.data.data , show_name: `${resProfile.data.data.user_profile_datas[0]?.first_name}  ${resProfile.data.data.user_profile_datas[0]?.last_name}`}
-        state.dataset = object
-        state.display_name = disployName()
-        localStorage.setItem("dataset", JSON.stringify(object));
-        window.location.reload() 
+        
         
     },
     logout(state:statetype):void{
@@ -81,10 +93,11 @@ const mutations = {
     async reset(state:statetype):Promise<void>{
         const  key = localStorage.getItem("token") as string
         if(key){
-            const res =  await Auth.customer(key)
-            const resProfile = await Auth.profile(key, res.data.id)
+            // const resProfile =  await Auth.customer(key)
+            const resProfile = await Auth.profile(key, JSON.parse(localStorage.getItem("dataset") as any).id)
                 state.coin = resProfile.data.data.coin_balance_sandbox
-                const object = {...resProfile.data.data , show_name: `${resProfile.data.data.user_profile_datas[0].first_name}  ${resProfile.data.data.user_profile_datas[0].last_name}`} 
+                const profile =  resProfile.data.data.user_profile_datas[0]
+                const object = {...resProfile.data.data  , show_name: `${profile?.first_name}  ${profile?.last_name}`, user_profile_datas: profile} 
                 state.dataset = object
                 state.display_name = disployName()
                 localStorage.setItem("dataset", JSON.stringify(object));

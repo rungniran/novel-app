@@ -5,11 +5,15 @@
        
         <div class="con-menu-footer"> 
           <div class="list-menu">เกี่ยวกับเรา</div>
-          <div  class="list-menu line">ติดต่อเรา</div>
+          <div  class="list-menu line">
+            <router-link to="/contact">  ติดต่อเรา </router-link>
+          </div>
           <div  class="list-menu line">
             <router-link to="/privacy"> นโยบายความเป็นส่วนตัว </router-link>
           </div>
-          <div  class="list-menu line">ข้อตกลงในการใช้งาน</div>
+          <div  class="list-menu line">
+            <router-link to="/terms-conditions">  ข้อตกลงในการใช้งาน </router-link>
+          </div>
         </div>
         <!-- <div><i class="fas fa-copyright"></i> novelkingdom 2022 version bata</div> -->
       </div>
@@ -83,5 +87,14 @@ export default Vue.extend({
    padding: 20px 10px;
 
 }
+.line{
+  border-left: 0px solid #ffb527;
+}
+.con-menu-footer{
+  display: grid;
+  grid-template-columns: 1fr 1fr ;
+  gap: 15px;
+}
+
 }
 </style>

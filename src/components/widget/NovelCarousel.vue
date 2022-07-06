@@ -1,6 +1,6 @@
 <template>
-  
-    
+  <div class="NovelCarousel">
+   <!-- <pre> {{opject}}</pre> -->
     <carousel 
       :items="1"
       :loop="true"
@@ -9,12 +9,15 @@
       :lazyLoad="false"
       :autoplay="false"
       :singleItem="false"
-      :nav="false"
+      :nav="true"
+      class="NovelCarousel"
       :dots="false"
       :responsive="responsive"
+      :navText="sdds"
      
     >
     <template>
+      <!-- <pre>{{opject}}</pre> -->
       
       <router-link
         v-for="(items, index) in opject"
@@ -22,7 +25,6 @@
         :to="'/novel/' + items.id"
         class="nv-box-carousel carousel"
       >
-      
         <img
         
           class="item-banner"
@@ -31,10 +33,13 @@
            :alt="items.title"
           
         />
+
         <div class="grod-detail">
           <div class="name line-1">{{items.title}}</div>
           <div class="subname">{{items.novel_category_data_preview}}</div>
-          <div><NovelStar :rating="Math.round (items.avg_star)" /></div>
+          <div>
+            <NovelStar v-if="star === true" :rating="Math.round (items.avg_star)" />
+          </div>
           <div class="view-list">
             <div class="view">
               <i class="far fa-eye"></i>
@@ -45,7 +50,7 @@
             <div class="list">
               <i class="fas fa-list"></i>
               <div class="count-numble-view">
-                {{ $filter.NumbertoText(items.novel_episode_data_total) }}
+                 {{ $filter.NumbertoText(items.novel_episode_data_total) }}
               </div>
             </div>
           </div>
@@ -53,7 +58,7 @@
       </router-link>
       </template>
     </carousel >
-
+  </div>
 </template>
 
 <script lang="ts">
@@ -66,6 +71,10 @@ export default Vue.extend({
   props: {
     loop:Boolean,
     opject:[],
+    star:{
+      type:Boolean,
+      default:true
+    }
     // eslint-disable-next-line no-undef
   },
 
@@ -92,7 +101,8 @@ export default Vue.extend({
         1100: {
           items: 6,
         },
-      },
+        
+      },sdds: ['<i class="fa fa-angle-left" aria-hidden="true"></i>','<i class="fa fa-angle-right" aria-hidden="true"></i>']
     };
   },
   // methods:{
@@ -135,6 +145,7 @@ $second-grayLight: #cfd4d9;
   font-size: 15px;
   color: rgb(182, 182, 182);
 }
+
 // .owl-stage-outer {
 //   padding: 15px 0px;
 // }

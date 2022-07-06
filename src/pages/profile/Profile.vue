@@ -29,10 +29,10 @@
               class="nv-btn-light-blue msg viewprofile"
               >ดูโปรไฟล์นักเขียน</router-link
             >
-            <div class="nv-btn-yellow msg">ส่งข้อความ</div>
+            <!-- <div class="nv-btn-yellow msg">ส่งข้อความ</div>
             <router-link v-if="this.$route.params.username === profile.id" to="/account" class="nv-btn-blue edit"
               ><i class="far fa-edit"></i> ตั้งค่า</router-link
-            >
+            > -->
           </div>
           <div class="nv-mt-10">
             <div>

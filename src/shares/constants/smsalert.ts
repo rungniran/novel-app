@@ -11,8 +11,12 @@ export function sms_alert_Bookshelf (novelname:string):string{
 /*หน้า นักเขียน(Authorpage)*/
 
 /*หน้า รายละเอียดนิยาย*/
-export function sms_alert_Bookdetail (novelname:string):string{
+export function sms_alert_Add_BookShelf (novelname:string):string{
     return `เพิ่มนิยาย ${novelname} ลงชั้นหนังสือสำเร็จ`
+  
+}
+export function sms_alert_ (novelname:string):string{
+    return `ลบนิยาย ${novelname} จากชั้นหนังสือสำเร็จ` // ในรูปเเบบหน้าจอขนาดมือถือ
   
 }
 export function sms_alert_Review (novelname:string):string{
@@ -61,7 +65,7 @@ export function sms_alert_DelNovel (novelname:string):string{
     return `ลบนิยายเรื่อง ${novelname} สำเร็จ`
 }
 
-
+ 
 /*หน้า เเจ้งเตือนระบบ*/
 
 /*หน้า ค้นหานิยาย*/
@@ -77,7 +81,7 @@ export function sms_alert_Exchange (productname:string,diamond:string):string{
     return `ส่งคำขอเเลกสินค้า ${productname} สำเร็จ ราคา ${diamond} เพชร (กรุณารอการอนุมัติจากทีมงาน)`
 
 }
-export function sms_alert_Buyitems (productname:string,diamond:string){
+export function sms_alert_Buyitems (productname:string,diamond:string):string{
     return `ซื้อสินค้า ${productname} สำเร็จ ราคา ${diamond} เพชร `
 
 }

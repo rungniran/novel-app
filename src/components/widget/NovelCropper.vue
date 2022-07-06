@@ -1,9 +1,9 @@
 <template>
 	<div id="NovelCropper">
 	<div class="size">	
-	resize =	{{size.size}} {{size.value}}<br>
+	<!-- resize =	{{size.size}} {{size.value}}<br>
 
-	defail =	{{size_defail.size}} {{size_defail.value}}
+	defail =	{{size_defail.size}} {{size_defail.value}} -->
   <!-- {{imgupdata}} -->
 	</div>
     <span id="NovelCropper" v-if="img != ''">
@@ -35,7 +35,7 @@
         <div  class="reset" @click="reset">ลบ</div>
         </span>
         <span class="NovelCropper-input" v-else>
-		<input  type="file" class="file" @change="previewFiles">
+		<input  type="file" class="file" @change="previewFiles" accept="image/png, image/jpeg">
         <img src="https://novelkingdom.co/images/use-file-img.png" class="camera">
         </span>
 

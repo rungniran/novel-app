@@ -12,10 +12,10 @@
             <span>1</span>
             <div>ผู้ติดตาม</div>
           </div>
-          <div class="follow">
+          <!-- <div class="follow">
             <span>1</span>
             <div>ผู้ติดตาม</div>
-          </div>
+          </div> -->
         </div>
 
       <div>
@@ -24,13 +24,13 @@
             <router-link :to="'/profile/' + this.$route.params.username" class="nv-btn-light-blue msg viewprofile"
               >ดูโปรไฟล์นักอ่าน</router-link
             >
-            <div class="nv-btn-yellow msg">ส่งข้อความ</div>
-            <div class="nv-btn-yellow msg" @click="$base.openmodal('modal-xl', 'modal-animation', 0)">ส่งกำลังใจ</div>
+            <!-- <div class="nv-btn-yellow msg">ส่งข้อความ</div>
+            <div class="nv-btn-yellow msg" @click="$base.openmodal('modal-xl', 'modal-animation', 0)">ส่งกำลังใจ</div> -->
             <div class="nv-btn-yellow msg">ติดตาม</div>
           </div>
         </div>
-        <div class="nv-mt-30">
-          <div class="title">นิยายของ {{ gatitemProfile.user_nickname }}</div>
+        <div class="nv-mt-30" >
+          <div class="title">นิยายของคุณ {{ gatitemProfile.user_nickname }}</div>
           <Work/>
         </div>
       </div>
@@ -63,9 +63,16 @@ export default Vue.extend({
       console.log(res);
       this.gatitemProfile = res.data.data
       
+    },
+    async getnovel(){
+      let res = await    Gatway.getService('/customers/novel')
+      console.log(res);
+      
     }
+    
   },
   mounted(){
+    this.getnovel()
      this.getdata()
   }
 });

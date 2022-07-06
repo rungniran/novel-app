@@ -22,13 +22,13 @@
       <!-- {{'https://119.59.97.111/storage/'+items.id +'.png'}} -->
        <img
           class="item-banner"
-          :src="'https://119.59.97.111/storage/novel_image/'+ items.id+ '.png'"
+           :src="'https://119.59.97.111/storage/novel_image/'+ items.id+ '.png'"
           @error="$event.target.src= $path.image('loading.png');"
           alt
         />
          <div class="grod-detail">
           <div class="name line-1">{{items.datail.title}}</div>
-          <div class="name line-1">{{items.datail.novel_episode_datas.length !== 0 ? items.datail.novel_episode_datas[0]['name'] : null}}</div>
+          <div class="subname line-1">{{items.datail.novel_episode_datas.length !== 0 ? items.datail.novel_episode_datas[0]['name'] : null}}</div>
 
         </div>
       </router-link>
@@ -77,10 +77,14 @@ export default Vue.extend({
     async NovelReadNext(){
       let res = await Gatway.postService('/customers/remembers/novel-data', this.$store.state.storyread.story_Read as any)
       let data = [] as any
+      
       this.$store.state.storyread.story_Read.forEach((element:any) => {
         res.data.data.forEach((elementres:any)=>{
-          if(elementres.id === element.id){
-            data.push({...element, datail:elementres})
+          // console.log(elementres);
+          if(elementres){
+            if(elementres.id === element.id){
+              data.push({...element, datail:elementres})
+            }
           }
         })
       });
@@ -116,13 +120,13 @@ $second-grayLight: #cfd4d9;
   justify-content: flex-start;
   align-items: flex-start;
 }
-.nv-box-carousel .grod-detail .name {
+ .name {
   color: #1e2046;
-  font-size: 18px;
+  font-size: 18px !important;
 }
 .subname {
   font-size: 15px;
-  color: rgb(182, 182, 182);
+  color: #646464;
 }
 .owl-stage-outer {
   padding: 15px 0px;

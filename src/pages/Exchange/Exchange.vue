@@ -11,7 +11,7 @@
             "
           ></div>
           <div>
-            <div v-if="profile">{{ this.$store.state.auth.display_name }}</div>
+            <div v-if="profile">{{ profile.display_name }}</div>
             <div v-if="profile">{{ profile.dragon }}</div>
           </div>
         </div>
@@ -82,7 +82,10 @@
           @click="sell(item)"
         >
           <!-- {{item.shop_item_datas[0].image_data.url}} -->
-          <img
+          <!-- {{item.limit_status_item}} -->
+           <div class="limit-items" v-if="item.limit_status_item === true">{{item.amount}}</div>
+
+          <img class="img-sticker"
             :src="
               item.shop_item_datas[0]
                 ? item.shop_item_datas[0].image_data.url
@@ -97,13 +100,16 @@
               ใช้เพชร {{ $filter.NumberToString(item.diamond) }} ดวงแลก
               {{ item.name }}
             </div>
-            <div class="btn-item">
+            <div class="btn-item" v-if="item.diamond !== '0.00'">
               <img
                 :src="$path.image('diamond.png')"
                 width="25px"
                 height="25px"
               />
               {{ $filter.NumberToString(item.diamond) }}
+            </div>
+            <div class="btn-item"  v-else>
+              ฟรี
             </div>
           </div>
         </div>
@@ -128,7 +134,7 @@
           </div>
           <div class="contor-input">
             <div class="title">เบอร์โทรศัพท์</div>
-            <input id="title" v-model="data.phoneNumber" required />
+            <input id="title" type="number" v-model="data.phoneNumber" required />
           </div>
         </div>
         <button class="nv-mt-20 nv-btn-yellow" @click="submitAddress()">
@@ -214,13 +220,15 @@ export default Vue.extend({
       let ressticker = await Gatway.postService("/guest/shop-data/lists", {
         shop_type_data_id: "9c1c64df-3516-4098-8575-1c3470206710",
       } as any);
+      console.log(ressticker);
+      
       let resstickerdata = await [] as any;
       ressticker.data.data.filter((res: any) => {
-        if (!res.diamond) {
-          null;
-        } else if (parseInt(res.diamond) !== 0) {
+        // if (!res.diamond) {
+        //   null;
+        // } else if (parseInt(res.diamond) !== 0 || parseInt(res.diamond)  === 0 ) {
           resstickerdata.push(res);
-        }
+        // }
       });
       this.sticker = await resstickerdata;
     },
@@ -229,7 +237,6 @@ export default Vue.extend({
       (this as any).$refs.Modal.open();
     },
     async submitAddress() {
-      console.log(this.itempd);
 
       let res = await Gatway.postService("/customers/shop-data/buy", {
         shop_topic_data_id: this.itempd.shop_topic_data_id,
@@ -240,6 +247,7 @@ export default Vue.extend({
       alert("สำเร็จ", "success");
       this.$store.commit("reset");
       (this as any).$refs.Modal.close();
+      this.gitlist()
     },
     AllProduct(item: any) {
       let Product = [] as any;
@@ -280,12 +288,14 @@ export default Vue.extend({
         shop_type_data_id: item.shop_type_data_id,
         shop_item_data_id: item.shop_type_data_id,
       } as any);
-      console.log(res.data.data);
+      console.log(res.data);
       if (res.data.code === 200) {
         alert("ซื้อสำเร็จ", "success");
         this.$store.commit("reset");
         this.gitlist();
         (this as any).$refs.popup.close();
+      }else if (res.data.code === 422){
+        alert(res.data.data, "error");
       }
     },
   },
@@ -298,11 +308,21 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss" scoped>
+textarea {
+   resize: none;
+}
+
 .text-sticker {
   text-align: center;
   font-size: 25px;
   padding: 20px;
   color: #8663ba;
+}
+
+.img-exchange{
+   top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .add-coin {
@@ -347,12 +367,27 @@ export default Vue.extend({
   border-radius: 10px;
   position: relative;
   display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 1fr;
   align-items: center;
   gap: 25px;
+  cursor: pointer;
+  
+}
+.box-item:hover {
+  background: #f2f3f5;
+  border: 1px solid #eadffa;
+  box-shadow: rgba(48, 7, 108, 0.12) 0px 2px 4px 0px, rgba(48, 7, 108, 0.32) 0px 2px 16px 0px;
+  transition: 0.2s ease-out;
 }
 .box-item img {
   border-radius: 7px;
+}
+
+.img-sticker{
+    top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 .item-name {
   font-size: 20px;
@@ -365,9 +400,16 @@ export default Vue.extend({
   justify-content: center;
   padding: 5px 20px;
   background: #f1e2ff;
+  box-shadow: rgba(94, 57, 148, 0.22) 0px 8px 24px;
+  // box-shadow: rgba(94, 57, 148, 0.12) 0px 4px 12px,rgba(94, 57, 148, 0.32) 0px 2px 16px 0px;
   cursor: pointer;
   width: 100%;
   border-radius: 50px;
+  
+}
+.btn-item:hover {
+  background: #e8d0fd;
+  transition: 0.3s ease-in;
 }
 .detail-item {
   display: flex;
@@ -399,11 +441,11 @@ export default Vue.extend({
   top: 0;
   padding: 0px 20px;
   background: #fc7c7c;
-  border-radius: 0px 0px 5px 0px;
+  border-radius: 5px 0px 5px 0px;
 }
 .limit-items-s {
   background: #8663ba;
-  border-radius: 0px 0px 5px 0px;
+  border-radius: 5px 0px 5px 0px;
 }
 .not-full {
   opacity: 0.3;

@@ -1,6 +1,7 @@
 <template>
   <div class="NovelCategory">
     <carousel
+    v-if="data"
       :items="1"
       :autoplay="false"
       :loop="false"
@@ -13,36 +14,39 @@
       :responsive="responsive"
     >
       <router-link
-        to="/"
-        v-for="(items, index) in opject"
+        :to="'/novel/'+ items.ref"
+        v-for="(items, index) in data"
         :key="index"
         class="category"
       >
         <img
-          src="https://novelkingdom.co/banner/banner_pc_202202034194803.jpg"
+          :src="items.image_preview" 
+          class="img-banner-novel"
           alt
         />
         <div class="cate-con">
           <div class="cate-con-name">
-            <div class="cate-name line-1">เพียงรักข้ามพบ</div>
-            <NovelStar :rating="5" />
+            <div class="cate-name line-1">
+              {{items.novel_data.title}}
+            </div>
+            <!-- <NovelStar :rating="5" /> -->
           </div>
           <div class="cate-datail">
-            <div>Novel Kingdom</div>
+            <div>{{items.novel_data.penname_preview}}</div>
             |
-            <div>Novel Kingdom</div>
-            |
+            <!-- <div>Novel Kingdom</div>
+            | -->
             <div class="view-list">
               <div class="view">
                 <i class="far fa-eye"></i>
                 <div class="count-numble-view">
-                  {{ $filter.NumbertoText(20000) }}
+                  {{ $filter.NumbertoText(items.novel_data.total_view) }}
                 </div>
               </div>
               <div class="list">
                 <i class="fas fa-list"></i>
                 <div class="count-numble-view">
-                  {{ $filter.NumbertoText(20320) }}
+                  {{ $filter.NumbertoText(items.novel_data.ep_total_preview) }}
                 </div>
               </div>
             </div>
@@ -57,6 +61,7 @@
 import Vue from "vue";
 import carousel from "vue-owl-carousel";
 import NovelStar from "@/components/widget/NovelStar.vue";
+import {Gatway} from "@/shares/services"
 export default Vue.extend({
   name: "NovelCategory",
   props: {
@@ -64,7 +69,7 @@ export default Vue.extend({
   },
   components: {
     carousel,
-    NovelStar,
+    // NovelStar,
   },
   data() {
     return {
@@ -82,8 +87,22 @@ export default Vue.extend({
           items: 2,
         },
       },
+      data:null
     };
   },
+  methods:{
+    async getlist(){
+       let banner2 = await Gatway.getService("/guest/banner2");
+      console.log(banner2);
+      this.data = banner2.data.data.filter((element:any)=>{
+        return element.table
+      })
+
+    }
+  },
+  mounted(){
+    this.getlist()
+  }
 });
 </script>
 <style>
@@ -97,6 +116,7 @@ export default Vue.extend({
   align-items: center;
   grid-gap: 10px;
   flex-wrap: wrap;
+   font-size: 13px;
 }
 .cate-con {
   margin-top: 10px;
@@ -104,6 +124,11 @@ export default Vue.extend({
 .cate-name {
   font-size: 18px;
   color: #000;
+}
+.img-banner-novel{
+  /* box-shadow: rgba(0, 0, 0, 0.35) 0px -50px 36px -28px inset; */
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+  border-radius: 20px;
 }
 
 .category .owl-carousel .owl-item img {
@@ -118,7 +143,7 @@ export default Vue.extend({
     color: #000;
   }
   .cate-datail {
-    font-size: 20px;
+    font-size: 13px;
 }
 }
 @media (max-width: 415px) {
@@ -130,7 +155,7 @@ export default Vue.extend({
     color: #000;
   }
    .cate-datail {
-    font-size: 16px;
+    font-size: 13px;
 }
 
 }

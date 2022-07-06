@@ -11,6 +11,8 @@
       ondragenter="event.preventDefault(); event.dataTransfer.dropEffect = 'none'"
       ondragover="event.preventDefault(); event.dataTransfer.dropEffect = 'none'"
       class="Editer"
+      oncopy="return false"
+      onpaste="return false"
       :id="Editer"
       @input="onInput()"
       v-html="htmt"
@@ -22,34 +24,39 @@
       <div class="nv-btn-yellow submit" @click="submit($event)">ส่ง</div>
     </div>
     <div id="stiker">
-      <div class="con-stiker" >
+      <div class="con-stiker">
         <div @click="close()" class="close">
-        <i class="fas fa-times-circle" ></i>
+          <i class="fas fa-times-circle"></i>
         </div>
         <span v-if="sticker">
-        <carousel :nav="false" :dots="false" :items="5" >
-          <div
-            v-for="(item, index) in sticker"
-            :key="index"
-            class="title line-1"
-            @click="filter(item)"
-          >
-            {{ item.name }}
-          </div>
-        </carousel>
+          <carousel :nav="false" :dots="false" :items="5">
+            <div
+              v-for="(item, index) in sticker"
+              :key="index"
+              class="title line-1"
+              @click="filter(item)"
+            >
+              {{ item.name }}
+            </div>
+          </carousel>
         </span>
-        <div class="con-item">
+        <div class="con-item" v-if="stickerss">
           <div v-for="(item, index) in stickerss" :key="index">
             <div
-              v-if="item.image_data"
-              @click="addstikerf(item.image_data.url)"
+              v-if="item.image_preview"
+              @click="addstikerf(item.image_preview)"
             >
               <img
-                v-lazy="item.image_data.url"
+                v-lazy="item.image_preview"
                 :alt="item.name"
                 class="stiker-img"
               />
             </div>
+          </div>
+        </div>
+        <div v-else>
+          <div class="layout-sticker-modal">
+            <p>คุณยังไม่มีสติ๊กเกอร์</p>
           </div>
         </div>
       </div>
@@ -60,8 +67,9 @@
 import Vue from "vue";
 import { Cheerup } from "@/shares/constants";
 import { Gatway } from "@/shares/services";
-import { shop_type_data_id } from "@/shares/constants/enum"
+import { shop_type_data_id } from "@/shares/constants/enum";
 import carousel from "vue-owl-carousel";
+// import EmptyContent from "../../pages/empty/empty.vue";
 export default Vue.extend({
   name: "NovelEditterComment",
   props: {
@@ -74,6 +82,7 @@ export default Vue.extend({
   },
   components: {
     carousel,
+    // EmptyContent,
   },
 
   data() {
@@ -87,19 +96,17 @@ export default Vue.extend({
       },
       test: "",
       sticker: null as any,
-      stickerss: [] as any,
+      stickerss: null as any,
     };
   },
   methods: {
-    async opanstiker(as:any) {
-      
-      await this.getListstiger()
-      let conModal = await document.getElementById("stiker") as HTMLElement;
+    async opanstiker(as: any) {
+      await this.getListstiger();
+      let conModal = (await document.getElementById("stiker")) as HTMLElement;
 
-     await this.filter(this.sticker[0]);
-     await localStorage.setItem("s", as);
+      await this.filter(this.sticker[0]);
+      await localStorage.setItem("s", as);
       conModal.style.display = await "flex";
-      
     },
     addstikerf(stiker: any) {
       const editer = document.getElementById(
@@ -143,50 +150,41 @@ export default Vue.extend({
       html.innerHTML = "";
     },
     async getListstiger() {
-      
-      let res = await Gatway.getService("/customers/treasure-box-data/index");
-      let data = [] as any;
-     
-      console.log(res);
-      
-      res.data.data.filter((res: any) => {
-        // console.log( JSON.parse(res.system_note));
-        if(JSON.parse(res.system_note).shop_type_data_id === shop_type_data_id.sticker){
-          data.unshift({
-            id: JSON.parse(res.system_note).id,
-            name: JSON.parse(res.system_note).name,
-          });
-        }
-      });
-      let ressticker = await Gatway.postService("/guest/shop-data/lists", {
-        shop_type_data_id: "9c1c64df-3516-4098-8575-1c3470206710",
-      } as any);
-      ressticker.data.data.filter((res: any) => {
-        if (res.diamond === null || parseInt(res.diamond) === 0) {
-          data.push({
-            id: res.id,
-            name: res.name,
-          });
-        }
-      });
-      const uniq = new Set(data.map((e: any) => JSON.stringify(e)));
-      const resa = Array.from(uniq).map((e: any) => JSON.parse(e));
-      this.sticker = await resa;
-      console.log(this.sticker);
-      
+      let res = await Gatway.getService("/customers/treasure-box-data/sticker");
+      console.log(res.data.data);
+      this.sticker = await res.data.data;
+      // res.data.data.filter((res: any) => {
+      //  console.log(JSON.parse(res.system_note));
+
+      //   if(JSON.parse(res.system_note).shop_transaction_type_data_id === shop_type_data_id.sticker){
+      //     console.log(JSON.parse(res.system_note));
+
+      //     data.unshift({
+      //       id: JSON.parse(res.system_note).id,
+      //       name: JSON.parse(res.system_note).name,
+      //     });
+      //   }
+      // });
+      // this.sticker = await data
+      // let ressticker = await Gatway.postService("/guest/shop-data/lists", {
+      //   shop_type_data_id: "9c1c64df-3516-4098-8575-1c3470206710",
+      // } as any);
+      // ressticker.data.data.filter((res: any) => {
+      //   if (res.diamond === null || parseInt(res.diamond) === 0) {
+      //     data.push({
+      //       id: res.id,
+      //       name: res.name,
+      //     });
+      //   }
+      // });
+      // const uniq = new Set(data.map((e: any) => JSON.stringify(e)));
+      // const resa = Array.from(uniq).map((e: any) => JSON.parse(e));
+      // this.sticker = await resa;
+      // console.log(this.sticker);
     },
     async filter(item: any) {
-      let res = await Gatway.getIDService("admin/shop-data-topic", item.id);
-
-      // this.sticker.filter((res:any)=>{
-
-      //   if(res.id === item.id){
-      //     // console.log(res.shop_item_datas);
-      //      this.stickerss = res.shop_item_datas
-      //     // data.push(res)
-      //   }
-      // })
-      this.stickerss = res.data.data.shop_item_datas;
+      console.log(item);
+      item !== undefined ? (this.stickerss = item.shop_item_datas) : null;
     },
   },
   mounted() {
@@ -195,6 +193,11 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss" scoped>
+.layout-sticker-modal{
+  display: flex;
+  justify-content: center;
+  align-items: center !important;
+}
 .t-reply {
   font-size: 20px;
   /* color: #565656; */
@@ -248,7 +251,7 @@ export default Vue.extend({
 .text-editer {
   padding: 20px;
   border: 1px solid #d7d7d7;
-  border-radius: 10px;
+  border-radius: 0 0 10px 10px !important;
   position: relative;
 }
 .option-icon {
@@ -279,7 +282,7 @@ export default Vue.extend({
   min-height: 450px;
   position: relative;
   overflow: hidden;
-   width: 550px;
+  width: 550px;
   // display: grid;
   padding: 0px 20px;
   // grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -332,8 +335,8 @@ export default Vue.extend({
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 }
 .stiker-img {
-  height: 100px;
-  width: 100px;
+  height: 70px;
+  width: 70px;
 }
 .con-title-stiker {
   position: absolute;
@@ -341,12 +344,12 @@ export default Vue.extend({
   display: flex;
   // gap: 20px;
 }
-.close{
+.close {
   position: absolute;
-    right: 5px;
-    font-size: 20px;
-    cursor: pointer;
-    z-index: 1000;
+  right: 5px;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 1000;
 }
 
 @media (max-width: 415px) {
@@ -365,16 +368,15 @@ export default Vue.extend({
     width: 100%;
     padding: 0px;
   }
-  .con-item
-  {
+  .con-item {
     margin: 20px 0px;
   }
-  .title{
+  .title {
     width: 100px;
   }
   .stiker-img {
     height: 80px;
     width: 80px;
-}
+  }
 }
 </style>

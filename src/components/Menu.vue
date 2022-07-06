@@ -19,7 +19,7 @@
     </router-link>
     <li class="coin gold">
       <div class="nv-con-coin">
-        <img :src="$path.image('coin-gold.png')" width="25px" height="25px" />
+        <img v-lazy="$path.image('coin-gold.png')" width="25px" height="25px" />
         {{
           $filter.NumberToString(
             this.$store.state.auth.dataset.coin_balance_sandbox
@@ -32,7 +32,7 @@
     </li>
     <li class="coin diamond">
       <div class="nv-con-coin">
-        <img :src="$path.image('diamond.png')" width="25px" height="25px" />
+        <img v-lazy="$path.image('diamond.png')" width="25px" height="25px" />
         {{ $filter.NumberToString(this.$store.state.auth.dataset.diamond_balance) }}
       </div>
       <router-link
@@ -48,7 +48,7 @@
       to="/treasury"
    
     >
-      <img :src="$path.svg('treasury.svg')" width="20px" />
+      <img v-lazy="$path.svg('treasury.svg')" width="20px" />
       คลังสมบัติ
     </router-link>
     <router-link
@@ -57,7 +57,7 @@
       active-class="active-submenu"
     
     >
-      <img :src="$path.image('star.png')" width="20px" />
+      <img v-lazy="$path.image('star.png')" width="20px" />
       ผลงานของฉัน
     </router-link>
     <router-link
@@ -66,7 +66,7 @@
       active-class="active-submenu"
  
     >
-      <img :src="$path.image('list.png')" width="20px" />
+      <img v-lazy="$path.image('list.png')" width="20px" />
       ชั้นหนังสือ
     </router-link>
     <router-link
@@ -75,7 +75,7 @@
       active-class="active-submenu"
    
     >
-      <img :src="$path.image('history.png')" width="20px" />
+      <img v-lazy="$path.image('history.png')" width="20px" />
       ประวัติการใช้งาน
     </router-link>
     <router-link
@@ -84,7 +84,7 @@
       to="/reportproblem"
    
     >
-      <img :src="$path.image('info.png')" width="20px" />
+      <img v-lazy="$path.image('info.png')" width="20px" />
       แจ้งปัญหา
     </router-link>
     <router-link
@@ -93,11 +93,11 @@
       to="/account"
 
     >
-      <img :src="$path.image('setting.png')" width="20px" />
+      <img v-lazy="$path.image('setting.png')" width="20px" />
       ตั้งค่า
     </router-link>
     <li class="con-list" @click="logout()">
-      <img :src="$path.image('logout.png')" width="20px" />
+      <img v-lazy="$path.image('logout.png')" width="20px" />
       ออกจากระบบ
     </li>
   </div>

@@ -8,19 +8,19 @@
           <!-- <canvas id="canvas"></canvas> -->
           <div class="bg-gradients"></div>
           <img
-            :src="
+             v-lazy="
               resGetNovel.image_data
                 ? resGetNovel.image_data.url
                 : $path.image('loading.png')
             "
             class="nv-img-novel"
             width="100%"
-            onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
+            @error="$event.target.src = $path.image('loading.png')"
           />
         </div>
         <div class="detail">
           <div>
-            <div class="nv-title">{{ resGetNovel.title }}</div>
+            <div class="nv-title line-1">{{ resGetNovel.title }}</div>
             <router-link
               class="line-1"
               style="color: #e4803a"
@@ -61,8 +61,8 @@
           <!-- {{readNext()}} -->
           <div class="grud-btn">
             <!-- <router-link :to="'/read/' + readNext() "> -->
-            <button @click="Next()" class="nv-btn-orange Novel-mobile">
-              อ่านต่อ
+            <button @click="Next()" class="nv-btn-orange Novel-mobile" :disabled="EplistNext ? false:  true">
+              อ่าน
             </button>
             <!-- </router-link> -->
             <button
@@ -96,69 +96,28 @@
         <div class="more" @click="more()">ดูเพิ่มเติม</div>
       </div>
       <div class="nv-mt-90">
-        <!-- <div class="nv-col-2">
-          <div class="nv-title">รีวิวผู้อ่าน ({{dataReview.length }})</div>
-          <button
-            class="nv-btn-yellow"
-            @click="cleck ? $base.openmodal('review-modal', 'review-modal-amination', 1) : $base.openlogin()"
-          >
-            เขียนรีวิว
-          </button>
-        </div> -->
         <NovelReview
           :dataPreview="dataReview"
           @fetch="reviewFetch"
           ref="NovelReview"
         />
-        <!-- <div class="nv-mt-20">
-          <div
-            v-for="(item, index) in resGetNovel.comment_preview.slice(0, 3)"
-            :key="index"
-            class="box-review"
-          >
-            <div class="review-profile">
-              <div class="con-profile">
-                <div
-                  class="re-profile"
-                  :style="'background: url(' + img + ') center center/cover'"
-                ></div>
-                <div>
-                  <div class="name-review">{{item.user_id}}</div>
-                  <div class="review-date">
-                    <NovelStar :rating="item.star" />15 กุมภาพันธ์ ค.ศ. 2022
-                  </div>
-                </div>
-              </div>
-              <div class="review-detail">
-                <div class="in-review-detail">
-                 <i class="far fa-thumbs-up"></i>
-                  
-                </div>
-                <i class="fas fa-ellipsis-v"></i>
-              </div>
-            </div>
-            <div class="text-review" v-html="item.comment">
-              
-            </div>
-          </div>
-          <div v-if="resGetNovel.comment_preview.length > 3" class="view-all">ดูรีวิวทั้งหมด</div>
-        </div> -->
+ 
       </div>
     </div>
-    <div class="nv-box-white nv-mt-40 con-Sarabun">
+
+    <div class="nv-box-white nv-mt-40 con-Sarabun" v-if="dataMomentEp">
       <div v-if="dataMomentEp.length === 0">ยังไม่มีตอนนิยาย</div>
       <div v-else>
         <div class="sarabun nv-col-2">
           <div class="nv-title">สารบัญ</div>
           <div style="display: flex; align-items: center">
-            <!-- <input type="checkbox"  :checked="cleckAuten" @change="switchsell" id="switch" />&nbsp;
-             ทดสอบซื้ออัตโนมัติ &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;
-          <div @click="sort()" >เรียง</div> &nbsp; &nbsp; -->
             <button
               class="nv-btn-light-blue"
-              @click="cleck ? $refs.NovelBuySet.open() : $base.openlogin()"
+              @click="cleck ? $refs.NovelBuySet.open({
+                item: EplistNext
+              }) : $base.openlogin()"
             >
-              ช่วงราคา
+              ซื้อยกชุด
             </button>
           </div>
         </div>
@@ -174,8 +133,9 @@
                 <i class="fas fa-chevron-right"></i>
               </div>
             </div>
+            
             <div class="container-ep">
-              <!-- :to="'/read/' + NovelID + '/' + itemep.id" -->
+              <!-- <pre>{{item.ep}}</pre> -->
               <div
                 v-for="(itemep, index) in item.ep"
                 :key="index"
@@ -192,11 +152,11 @@
                     </div>
                     <div class="con-coin" v-if="itemep.coin !== '0.00'">
                       <div class="con-coin" v-if="itemep.bought === false">
-                        <img :src="$path.image('coin-gold.png')" width="20px" />
+                        <img v-lazy="$path.image('coin-gold.png')" width="20px" />
                         <span class="count-coin">{{ itemep.coin }}</span>
                       </div>
                       <div class="con-coin" v-else>
-                        <img :src="$path.image('coin-gray.png')" width="20px" />
+                        <img v-lazy="$path.image('coin-gray.png')" width="20px" />
                         <span class="count-coin" style="color: #cecece">{{
                           itemep.coin
                         }}</span>
@@ -204,7 +164,6 @@
                     </div>
                   </div>
                   <div class="con-h">
-                    <!-- <div></div> -->
                     <div class="date">
                       {{ itemep.timestamp.split(" ")[0] }}
                       {{ itemep.timestamp.split(" ")[1] }}
@@ -216,12 +175,11 @@
                   <div class="line-1">
                     #{{ itemep.ep_no }}
                     <span v-if="itemep.name.length > 50"
-                      >{{ itemep.name.slice(1, 50) }}...</span
+                      >{{ itemep.name.slice(0, 50) }}...</span
                     >
                     <span v-else>{{ itemep.name }}</span>
                   </div>
                   <div class="detail-ed">
-                    <!-- {{readNext()}} -->
                     <div
                       v-if="readNext() === itemep.id"
                       style="width: 45px; color: #556080"
@@ -246,11 +204,14 @@
                       <span class="count-coin"></span>
                     </div>
                     <div class="date">{{ itemep.timestamp }}</div>
-                    <div>
+                    <div class="eye-icon-sarabun">
                       <i class="far fa-eye"></i>
-                      {{itemep.count_view }}
+                       <p style="padding-left:5px">
+                         {{ $filter.NumbertoText(itemep.count_view) }}
+                         </p> 
+
                     </div>
-                    <div><i class="far fa-comment"></i> 8</div>
+                    <div><i class="far fa-comment"></i> {{itemep.total_comment_preview}}</div>
                   </div>
                 </div>
               </div>
@@ -258,33 +219,25 @@
           </div>
         </div>
       </div>
-
-      <!-- <div class="nv-mt-30">
-        <div class="nv-title">เผยแพร่โดย</div>
-        <div class="writer-sarabun">
-          <div class="writer-profile">
-            <div class="img-profile"></div>
-            <div>
-              <div>Novel Kingdom</div>
-              <small>@rugnzdfv</small>
-            </div>
-          </div>
-          <div class="writer-detail">
-            <div>1 เรื่อง</div>
-            <div>1599 ผู้ติดตาม</div>
-            <button
-              class="nv-btn-orange"
-              @click="cleck ? null : $base.openlogin()"
-            >
-              ติดตาม
-            </button>
-          </div>
-        </div>
-      </div> -->
+    </div>
+    <div class="nv-box-white nv-mt-40 con-Sarabun" style="display: flex; justify-content: center; align-items: center;" v-else>
+        <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+     width="40px" height="40px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+  <path fill="#000" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
+    <animateTransform attributeType="xml"
+      attributeName="transform"
+      type="rotate"
+      from="0 25 25"
+      to="360 25 25"
+      dur="0.6s"
+      repeatCount="indefinite"/>
+    </path>
+  </svg>
+  กำลังโหลดสารบัญ...
     </div>
 
-    <div class="writer-info nv-box-writer">
-      <div class="bg-writer-info">
+    <div class="writer-info nv-box-white" v-if="resGetNovel">
+      <div class="bg-writer-info line">
         <div class="nv-title">ข้อมูลนักเขียน</div>
         <div class="writer-sarabun">
           <router-link
@@ -293,7 +246,7 @@
           >
             <div class="img-profile"></div>
             <div>
-              <div class="">{{ resGetNovel.user_id }}</div>
+              <div class="">{{ resGetNovel.penname_preview }}</div>
               <small>นักรบมังกร</small>
             </div>
           </router-link>
@@ -312,8 +265,8 @@
         <div class="nv-title">เผยแพร่</div>
         <div class="writer-sarabun">
           <div class="writer-release">
-            <div>วันที่เผยแพร่: {{ `06 มิ.ย. 2565 11:36:16` }}</div>
-            <div>ตอนล่าสุด: {{ `06 มิ.ย. 2565 11:36:16` }}</div>
+            <div>วันที่เผยแพร่: {{ resGetNovel.timestamp }} น.</div>
+            <div>ตอนล่าสุด: วันนี้ </div>
           </div>
         </div>
       </div>
@@ -325,10 +278,10 @@
 		<div class=" nv-box-white dash nv-mt-40">
 			<component :is="current"></component>
 		</div>-->
-    <div class="nv-box-white dash nv-mt-40">
+    <div class="nv-box-white dash nv-mt-40" v-if="NovelID === 'F35F97E0-8B37-4705-BED4-12866281B4ED'">
       <DragonHouse />
     </div>
-    <div class="nv-box-white nv-mt-40 NovelEditterComment" v-if="profile">
+    <div class="nv-box-white nv-mt-40  NovelEditterComment bg-editor-comments" v-if="profile">
       <div class="title-com">แสดงความคิดเห็น</div>
       <NovelEditterComment @click="ClickPost" />
     </div>
@@ -354,7 +307,6 @@
           <img v-lazy="$path.image('coin-gold.png')" width="20%" />
         </div>
         <div style="display: flex; align-items: center; grid-gap: 10px">
-          <!-- @click="cleck ? null : $base.openlogin()" -->
           <input
             type="checkbox"
             :checked="cleckAuten"
@@ -366,7 +318,6 @@
         <div class="buy" id="" @click="buy">ซื้อนิยาย</div>
       </template>
     </NovelModal2>
-    <!-- <ReviewModal @ResetReviwe="reviewFetch"/> -->
     <NovelBuySet ref="NovelBuySet" />
   </div>
 </template>
@@ -376,17 +327,18 @@ import Vue from "vue";
 import { getRGB } from "@/shares/modules/color";
 import { Gatway } from "@/shares/services";
 import { alert } from "@/shares/modules/alert";
-import { sms_alert_BuyEpisode } from "@/shares/constants/smsalert";
+import { sms_alert_Add_BookShelf } from "@/shares/constants/smsalert";
 import { setAutoBuy, getAutoBuy } from "@/shares/modules/autobuy";
-import "highlight.js/styles/tomorrow.css";
-import "quill/dist/quill.core.css";
-import "quill/dist/quill.snow.css";
+// import LoadingNovel from "@/components/loader/LoadingNovel.vue"
+// import "highlight.js/styles/tomorrow.css";
+// import "quill/dist/quill.core.css";
+// import "quill/dist/quill.snow.css";
 export default Vue.extend({
   name: "Novel",
   components: {
     NovelStar: () => import("@/components/widget/NovelStar.vue"),
     DragonHouse: () => import("./dragonhouse/DragonHouse.vue"),
-    LoadingNovel: () => import("@/components/loader/LoadingNovel.vue"),
+    // LoadingNovel,
     NovelModal2: () => import("@/components/widget/NovelModal2.vue"),
     // ReviewModal: ()=> import("./reviewmodal/ReviewModal.vue"),
     Comments: () => import("@/components/Comments.vue"),
@@ -410,13 +362,35 @@ export default Vue.extend({
       datacomment: [],
       dataReview: [],
       Eplist: "",
+      EplistNext: null as any
     };
   },
   methods: {
     async Next() {
-      console.log(this.readNext());
-      this.EpID = await this.readNext();
-      await this.buy();
+      const index = this.EplistNext.findIndex(object => {
+          return object.id === this.readNext();
+        });
+      // console.log(this.EplistNext[index]);
+      this.openmenuBuy(this.EplistNext[index])
+      // console.log(this.readNext());
+      // let res = await Gatway.postService("/reader/novel-episode/read", {
+      //   novel_episode_datas: [this.readNext()],
+      //   payment_confirmation: false,
+      // } as any);
+      // console.log(res.data.data);
+      // if(res.data.data === "please pay"){
+      //   // alert("กรุณาซื้อตอนนิยาย", "error");
+      //   const index = this.EplistNext.findIndex(object => {
+      //     return object.id === 'b';
+      //   });
+      //    this.EplistNext[index]
+  
+      // }else{
+      //   this.$router.push(`/read/${this.readNext()}`);
+      // } 
+      
+      // this.EpID = await this.readNext();
+      // await this.buy();
     },
     openEp(key: number): void {
       const con_ep = document.getElementsByClassName("container-ep")[
@@ -434,24 +408,30 @@ export default Vue.extend({
       }
     },
     async getnNovel() {
+      let res = await Gatway.getIDService(
+        "/guest/fetch-novel-header",
+        this.$route.params.id
+      );
+      this.resGetNovel =  res.data.data;
       const resGetNovel = await Gatway.getIDService(
         (this as any).cleck === "true"
           ? "/novel/novel-data"
           : "/guest/novel/novel-data",
         this.$route.params.id
       );
-      this.Eplist = resGetNovel.data.data.novel_episode_datas.length;
-
+      // this.$store.commit('setSarabun', {key:resGetNovel.data.data.novel_episode_datas}) 
+      // this.Eplist = resGetNovel.data.data.novel_episode_datas.length;
+      this.EplistNext = resGetNovel.data.data.novel_episode_datas
       this.momentEp(resGetNovel.data.data.novel_episode_datas);
     },
 
-    async getEp() {
-      let res = await Gatway.getIDService(
-        "/guest/fetch-novel-header",
-        this.$route.params.id
-      );
-      this.resGetNovel = await res.data.data;
-    },
+    // async getEp() {
+    //   let res = await Gatway.getIDService(
+    //     "/guest/fetch-novel-header",
+    //     this.$route.params.id
+    //   );
+    //   this.resGetNovel = await res.data.data;
+    // },
     async openmenuBuy(item: any): Promise<void> {
       if (
         item.coin === "0.00" ||
@@ -476,17 +456,13 @@ export default Vue.extend({
           epName.innerHTML = item.name;
           epCoin.innerHTML = item.coin;
           this.EpID = item.id;
-
           (this as any).$refs.buyNovelEpAuto.open();
-          // (this as any).$base.openmodal('buy-novel-ep-auto', 'buy-novel-ep-auto-amination', 0)
         }
       }
     },
     readNext() {
       let item = (this as any).$store.state.storyread.story_Read;
       if ((this as any).$store.state.storyread.story_Read) {
-        console.log("dffd");
-
         const index = item.findIndex((object) => {
           return object.id === this.$route.params.id;
         });
@@ -497,6 +473,7 @@ export default Vue.extend({
         return (this as any).dataMomentEp[0].ep[0].id;
       }
     },
+
     async buy() {
       let res = await Gatway.postService("/reader/novel-episode/read", {
         novel_episode_datas: [this.EpID],
@@ -513,9 +490,13 @@ export default Vue.extend({
         alert("เหรียญของคุณมีไม่เพียงพอ", "error");
       }
     },
+
+
     switchsell() {
       this.cleckAuten = setAutoBuy(this.$route.params.id);
     },
+
+
     async momentEp(countEp: any) {
       let ep = 0;
       let [eplast, eplastStas] = [50, 50] as any[];
@@ -524,8 +505,8 @@ export default Vue.extend({
       let momentCount = count + 0.0;
       if (countEp.length > 0) {
         for (let i = 0; i < ~~momentCount + 1; i++) {
-          setTimeout(() => {
-            console.log(eplast, "<", countEp.length);
+          // setTimeout(() => {
+            // console.log(eplast, "<", countEp.length);
             if (countEp.length <= eplast) {
               arraymoment.push({
                 moment: `บทที่ ${ep + 1} - ${countEp.length}`,
@@ -541,7 +522,7 @@ export default Vue.extend({
               ep = +eplast;
               eplast = eplast + eplastStas;
             }
-          }, i * 10);
+          // }, i * 10);
         }
       }
       this.dataMomentEp = await arraymoment;
@@ -549,24 +530,36 @@ export default Vue.extend({
         await this.openEp(0);
       }, 100);
     },
+
+
     async addBookshelf(uuid: string) {
       let res = await Gatway.getIDService(
         "/customers/novel/add-bookshelf",
         uuid
       );
-      alert(res.data.data, "success");
+      console.log(res.data);
+      
+      alert(sms_alert_Add_BookShelf(this.resGetNovel.title), "success");
     },
+
+
     sort() {
       let test = document.getElementById("sortMomentEp") as HTMLElement;
       test.style.flexDirection = "column-reverse";
     },
+
+
     fetch() {
       this.getCommentAll();
-      this.getEp();
+      // this.getEp();
     },
+
+
     reviewFetch() {
       (this as any).$refs.NovelReview.getReviewAll();
     },
+
+
     async ClickPost(html: any) {
       let data = {
         action: "create-novel-comment",
@@ -581,6 +574,8 @@ export default Vue.extend({
       console.log(res);
       this.getCommentAll();
     },
+
+
     async getCommentAll() {
       let data = {
         action: "fetch-comment-all",
@@ -606,11 +601,15 @@ export default Vue.extend({
       this.dataReview = res.data.data;
       // this.countReview(res.data.data)
     },
+
+
     more() {
       let story = document.getElementsByClassName("story")[0] as HTMLElement;
       let more = document.getElementsByClassName("more")[0] as HTMLElement;
       let ade = document.getElementsByClassName("ade")[0] as HTMLElement;
-      if (story.style.height == "200px") {
+      console.log(story.scrollHeight);
+      
+      if ( story.style.height == "200px") {
         story.style.height = story.scrollHeight + "px";
         more.innerHTML = "ย่อลง";
         ade.style.display = "none";
@@ -620,21 +619,14 @@ export default Vue.extend({
         ade.style.display = "flex";
       }
     },
-    // countReview(data:any){
-    //   console.log(data);
-    //   for(let i= 1; i < data.length; i++){
-    //     console.log(data[i]);
-
-    //   }
-
-    // }
   },
 
-  async mounted() {
-    await this.getnNovel();
-    await this.getEp();
+   mounted() {
+    //  this.getEp();
+     this.getnNovel();
     // await this.getReviewAll();
-    await this.getCommentAll();
+    // this.$store.commit('setSarabun', this.$route.params.id) 
+     this.getCommentAll();
 
     // let img = document.getElementsByClassName(
     //   "nv-img-novel"
@@ -648,7 +640,6 @@ export default Vue.extend({
 
     // },1000)
     // console.log("rgb",r,g,b);
-    console.log("test");
   },
 });
 </script>

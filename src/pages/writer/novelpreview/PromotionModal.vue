@@ -39,30 +39,57 @@
         <div class="card">
           <div class="card-detail">
             <p>
-              1.1 โปรโมชัน ซื้อครบ 100 ตอนหรือมากกว่า ลดเหลือตอนละ 1.5 เหรียญ
+              1.1 โปรโมชัน ซื้อตั้งแต่ตอน XXX ถึงตอนที่ XXX ลดเหลือตอนละ XXX เหรียญ
             </p>
             <div class="button-layout">
-              <button class="nv-btn-blue" @click="openSettingPromo()">
+              <button class="nv-btn-blue" @click="openSettingPromoOne()">
                 เลือก
               </button>
             </div>
           </div>
-          <div class="icon-promo">
-            <i class="fa fa-angle-down" @click="toggleIsVisible"></i>
+        </div>
+        <div class="card">
+          <div class="card-detail">
+            <p>
+              1.2 โปรโมชัน <span class="red-color">ซื้อนิยายยกชุด</span> XXX ตอนหรือมากกว่า ได้ส่วนลด XXX เหรียญ
+            </p>
+            <div class="button-layout">
+              <button class="nv-btn-blue" @click="openSettingPromoTwo()">
+                เลือก
+              </button>
+            </div>
           </div>
-          <div v-show="isVisible">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quas
-            cumque nesciunt natus distinctio ducimus ipsam tempora consequuntur
-            ad in nulla quia, aspernatur ipsum rerum voluptates nostrum facilis
-            eos reprehenderit ea?
+        </div>
+        <div class="card">
+          <div class="card-detail">
+            <p>
+              1.3 โปรโมชัน <span class="red-color">ซื้อนิยายยกชุด</span> XXX ตอนหรือมากกว่า ได้ส่วนลด XXX% 
+            </p>
+            <div class="button-layout">
+              <button class="nv-btn-blue" @click="openSettingPromoThree()">
+                เลือก
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-detail">
+            <p>
+             1.4 โปรโมชัน <span class="red-color">ครบทุกตอน</span> (ถึงตอนล่าสุดของนิยาย) ได้ส่วนลด XXX%
+            </p>
+            <div class="button-layout">
+              <button class="nv-btn-blue" @click="openSettingPromoFour()">
+                เลือก
+              </button>
+            </div>
           </div>
         </div>
       </template>
     </NovelModal2>
     <NovelModal2
-      ID="PromotionSettingModal"
-      IDCrad="PromotionSettingModalCard"
-      ref="setting"
+      ID="OneSettingModal"
+      IDCrad="OneSettingModalCard"
+      ref="Onesetting"
       :Close="true"
     >
       <template v-slot:body>
@@ -71,7 +98,7 @@
           <div class="card-detail-setting">
             <div>
               <p>
-                1.1 โปรโมชัน ซื้อครบ 100 ตอนหรือมากกว่า ลดเหลือตอนละ 1.5 เหรียญ
+                 1.1 โปรโมชัน ซื้อตั้งแต่ตอน XXX ถึงตอนที่ XXX ลดเหลือตอนละ XXX เหรียญ
               </p>
             </div>
             <div class="buy">
@@ -116,7 +143,170 @@
               laudantium, architecto numquam suscipit eius, necessitatibus in.
             </p>
           </div>
+          <button class="nv-btn">บันทึกข้อมูล</button>
+        </div>
+      </template>
+    </NovelModal2>
+    <NovelModal2
+      ID="TwoSettingModal"
+      IDCrad="TwoSettingModalCard"
+      ref="Twosetting"
+      :Close="true"
+    >
+      <template v-slot:body>
+        <h1 class="title-promo">ตั้งค่าโปรโมชัน</h1>
+        <div class="card-setting">
+          <div class="card-detail-setting">
+            <div>
+              <p>
+               1.2 โปรโมชัน <span class="red-color">ซื้อนิยายยกชุด</span> XXX ตอนหรือมากกว่า ได้ส่วนลด XXX เหรียญ
+              </p>
+            </div>
+            <div class="buy">
+              <div>ซื้อครบ <input type="text" /></div>
+              <div>ลด (เหรียญ) <input type="text" /></div>
+              <div>วันสิ้นสุดโปรโมชัน <input type="date" /></div>
+              <div>
+                &nbsp;<button class="nv-btn">เพิ่มช่วงโปรโมชันตอนนิยาย</button>
+              </div>
+            </div>
+          </div>
+          <table style="width: 100%">
+            <tr>
+                <th>ซื้อครบ</th>
+              <th>ลด (เหรียญ)</th>
+              <th>เริ่มต้น/สิ้นสุด</th>
+              <th>จัดการ</th>
+            </tr>
+            <tr>
+              <td>100</td>
+              <td>50</td>
+              <td>20/06/65 27/06/65</td>
+              <td>
+                <button>แก้ไข</button>
+                <button>ลบ</button>
+              </td>
+            </tr>
+          </table>
+          <div>
+            ตัวอย่างโปรโมชัน
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Aspernatur explicabo quam quisquam, suscipit excepturi perferendis
+              expedita? Commodi neque voluptates laborum natus, aspernatur modi
+              laudantium, architecto numquam suscipit eius, necessitatibus in.
+            </p>
+          </div>
           <button class="btn-save">บันทึกข้อมูล</button>
+        </div>
+      </template>
+    </NovelModal2>
+    <NovelModal2
+      ID="ThreeSettingModal"
+      IDCrad="ThreeSettingModalCard"
+      ref="Threesetting"
+      :Close="true"
+    >
+      <template v-slot:body>
+        <h1 class="title-promo">ตั้งค่าโปรโมชัน</h1>
+        <div class="card-setting">
+          <div class="card-detail-setting">
+            <div>
+              <p>
+               1.3 โปรโมชัน <span class="red-color">ซื้อนิยายยกชุด</span> XXX ตอนหรือมากกว่า ได้ส่วนลด XXX% 
+              </p>
+            </div>
+            <div class="buy">
+              
+              
+              <div>ซื้อครบ <input type="text" /></div>
+              <div>ลด (%) <input type="text" /></div>
+              <div>วันสิ้นสุดโปรโมชัน <input type="date" /></div>
+              <div>
+                &nbsp;<button class="nv-btn">เพิ่มช่วงโปรโมชันตอนนิยาย</button>
+              </div>
+            </div>
+          </div>
+          <table style="width: 100%">
+            <tr>
+                <th>ซื้อครบ</th>
+              <th>ลด (%)</th>
+              <th>เริ่มต้น/สิ้นสุด</th>
+              <th>จัดการ</th>
+            </tr>
+            <tr>
+              <td>100</td>
+              <td>50</td>
+              <td>20/06/65 27/06/65</td>
+              <td>
+                <button>แก้ไข</button>
+                <button>ลบ</button>
+              </td>
+            </tr>
+          </table>
+          <div>
+            ตัวอย่างโปรโมชัน
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Aspernatur explicabo quam quisquam, suscipit excepturi perferendis
+              expedita? Commodi neque voluptates laborum natus, aspernatur modi
+              laudantium, architecto numquam suscipit eius, necessitatibus in.
+            </p>
+          </div>
+          <button class="btn-save">บันทึกข้อมูล</button>
+        </div>
+      </template>
+    </NovelModal2>
+    <NovelModal2
+      ID="FourSettingModal"
+      IDCrad="FourSettingModalCard"
+      ref="Foursetting"
+      :Close="true"
+    >
+      <template v-slot:body>
+        <h1 class="title-promo">ตั้งค่าโปรโมชัน</h1>
+        <div class="card-setting">
+          <div class="card-detail-setting">
+            <div>
+              <p>
+                 1.4 โปรโมชัน <span class="red-color">ครบทุกตอน</span> (ถึงตอนล่าสุดของนิยาย) ได้ส่วนลด XXX%
+              </p>
+            </div>
+            <div class="buy">
+              
+              <div>ลด (%) <input type="text" /></div>
+              <div>วันสิ้นสุดโปรโมชัน <input type="date" /></div>
+              <div>
+                &nbsp;<button class="nv-btn">เพิ่มช่วงโปรโมชันตอนนิยาย</button>
+              </div>
+            </div>
+          </div>
+          <table style="width: 100%">
+            <tr>
+             
+              <th>ลด %</th>
+              <th>เริ่มต้น/สิ้นสุด</th>
+              <th>จัดการ</th>
+            </tr>
+            <tr>
+              <td>50</td>
+              <td>20/06/65 27/06/65</td>
+              <td>
+                <button>แก้ไข</button>
+                <button>ลบ</button>
+              </td>
+            </tr>
+          </table>
+          <div>
+            ตัวอย่างโปรโมชัน
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Aspernatur explicabo quam quisquam, suscipit excepturi perferendis
+              expedita? Commodi neque voluptates laborum natus, aspernatur modi
+              laudantium, architecto numquam suscipit eius, necessitatibus in.
+            </p>
+          </div>
+          <button class="nv-btn-light-blue">บันทึกข้อมูล</button>
         </div>
       </template>
     </NovelModal2>
@@ -132,8 +322,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      object: [],
-      isVisible: false,
+      object: ['1'],
     };
   },
   methods: {
@@ -145,32 +334,62 @@ export default Vue.extend({
       this.$refs.select.open();
       this.$refs.Modeal.close();
     },
-    openSettingPromo() {
-      this.$refs.setting.open();
+    openSettingPromoOne() {
+      this.$refs.Onesetting.open();
       this.$refs.Modeal.close();
       this.$refs.select.close();
+      this.$refs.Twosetting.close();
+      this.$refs.Threesetting.close();
+      this.$refs.Foursetting.close();
     },
-    toggleIsVisible() {
-      this.isVisible = !this.isVisible;
+     openSettingPromoTwo() {
+      this.$refs.Twosetting.open();
+      this.$refs.Modeal.close();
+      this.$refs.select.close();
+      this.$refs.Onesetting.close();
+      this.$refs.Threesetting.close();
+      this.$refs.Foursetting.close();
+
     },
+     openSettingPromoThree() {
+      this.$refs.Threesetting.open();
+      this.$refs.Modeal.close();
+      this.$refs.select.close();
+      this.$refs.Twosetting.close();
+      this.$refs.Onesetting.close();
+      this.$refs.Foursetting.close();
+
+    },
+     openSettingPromoFour() {
+      this.$refs.Foursetting.open();
+      this.$refs.Modeal.close();
+      this.$refs.select.close();
+      this.$refs.Twosetting.close();
+      this.$refs.Onesetting.close();
+      this.$refs.Threesetting.close();
+
+    },
+    
   },
 });
 </script>
 <style lang="scss">
-.btn-save{
-    display: flex;
-    justify-content: center;
-    text-align: center;
+.btn-save {
+  display: flex;
+  justify-content: center;
+  text-align: center;
 }
-
+.red-color{
+    color: red;
+}
 table,
 th,
 td {
   border: 1px solid black;
 }
 
-table{
-    margin-top: 20px;
+table {
+  margin-top: 20px;
 }
 .add-more-promo {
   margin-top: 150px;
@@ -205,7 +424,7 @@ table{
 .button-layout {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
-  gap: 10px;
+  gap: 20px;
   display: flex;
   align-items: center;
 }
@@ -223,8 +442,8 @@ table{
   margin-bottom: 10px;
 }
 .contai-modal-crad {
-  height: 450px;
-  width: 800px;
+  height: 450px !important;
+  width: 800px !important;
   overflow-y: scroll;
 }
 .contai-modal-crad::-webkit-scrollbar {

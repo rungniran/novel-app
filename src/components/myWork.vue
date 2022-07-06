@@ -19,17 +19,26 @@
                 </div>
             </div>
       </router-link>
+   
     </div>
-     
-    <div v-else class=" not-novel">
-      คุณยังไม่มีนิยาย
+         <div v-else class=" notdata">
+        <EmptyContent
+          class="image"
+          pathName="1.png"
+          text="นักเขียนยังไม่มีนิยาย"
+          fontSize="36px"
+        ></EmptyContent>
     </div>
+      
   
+    
   </div>
+  
 </template>
 
 <script  lang="ts">
 import Vue from 'vue'
+import EmptyContent from "../pages/empty/empty.vue";
 export default Vue.extend({
     name:"Work",
     data(){
@@ -39,7 +48,10 @@ export default Vue.extend({
     },
     props:{
       data:[] as any 
-    }
+    },
+  components: {
+    EmptyContent,
+  }
 })
 </script>
 
@@ -62,18 +74,28 @@ export default Vue.extend({
   position: absolute;
   bottom: 0px;
   width: 100%;
-  height: 40px;
-  background: #febc2a;
+  height: 30px;
+  background: radial-gradient(circle, rgba(11,173,16,1) 0%, rgba(172,195,34,1) 98%);
   display: flex;
   justify-content: center;
   align-items: center;
   color: #fff;
+}
+.type-novel:hover{
+  background: radial-gradient(circle, rgba(172,195,34,1) 0%, rgba(11,173,16,1) 98%);
+  transition: all 0.5s ease-out;
+}
+.img-pre {
+
 }
 .container-detail {
   margin: 10px 0px;
   display: flex;
   align-items: center;
   flex-direction: column;
+}
+.notdata {
+  margin-top: 20px;
 }
 .name-novel{
   text-align: center;

@@ -1,54 +1,81 @@
 <template>
   <div class="HistoryBuy">
-    <router-link
-      v-for="(item, index) in dataitem"
-      :key="index"
-        :to="'/read/'+ item.id_ep"
-      class="con-storyBuy"
-    >
-     <img
+    <div v-if="dataitem">
+      <router-link
+        v-for="(item, index) in dataitem"
+        :key="index"
+        :to="'/read/' + item.novel_episode_datas[0]['id']"
+        class="con-storyBuy"
+      >
+        <img
           class="img-history-read"
-          :src="'https://119.59.97.111/storage/novel_image/'+ item.id+ '.png'"
-          @error="$event.target.src= $path.image('loading.png');"
+          :src="'https://119.59.97.111/storage/novel_image/' + item.id + '.png'"
+          @error="$event.target.src = $path.image('loading.png')"
           alt
         />
-      <div class="detail-novel">
-        <p class="name line-1">{{item.detail.title}}</p>
-        <br />
-        <p class="line-1 sub-title">{{item.detail.novel_episode_datas.length !== 0 ? item.detail.novel_episode_datas[0]['name'] : null}} </p>
-        <div class="date-novel">
-          <p>{{item.detail.timestamp}} น.</p>
+        <div class="detail-novel">
+          <p class="name line-1">{{ item.detail.title }}</p>
+          <br />
+          <p class="line-1 sub-title">
+            {{ item.novel_episode_datas[0]["name"] }}
+          </p>
+          <div class="date-novel">
+            <p>{{ item.timestamp }} น.</p>
+          </div>
         </div>
+      </router-link>
+      <div v-if="dataitem.length === 0">
+        <EmptyContent
+          class="image"
+          pathName="6.png"
+          text="คุณยังไม่มีประวัติการอ่านนิยาย"
+        ></EmptyContent>
       </div>
-    </router-link>
+    </div>
+    <div v-else>londing...</div>
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
 import { Gatway } from "@/shares/services";
+import EmptyContent from "../../empty/empty.vue";
+
 export default Vue.extend({
-  data(){
-    return{
-      dataitem:null
-    }
+  data() {
+    return {
+      dataitem: null as any,
+    };
+  },
+  components: {
+    EmptyContent,
   },
   methods: {
     async getHistoryRead() {
-     let res = await Gatway.postService('/customers/remembers/novel-data', this.$store.state.storyread.story_Read as any)
-      let data = [] as any
-      this.$store.state.storyread.story_Read.forEach((element:any) => {
-        res.data.data.forEach((elementres:any)=>{
-          if(elementres.id === element.id){
-            data.push({...element, detail:elementres})
-          }
-        })
-      });
-      console.log(data); 
-      this.dataitem = data
+      let res = await Gatway.postService(
+        "/customers/remembers/novel-data",
+        this.$store.state.storyread.story_Read as any
+      );
+      console.log(res);
+      if (res.data.data.length === 0) {
+        this.dataitem = res.data.data;
+      } else {
+        let data = [] as any;
+        this.$store.state.storyread.story_Read.forEach((element: any) => {
+          res.data.data.forEach((elementres: any) => {
+            if (elementres) {
+              if (elementres.id === element.id) {
+                data.push({ ...elementres, datail: elementres });
+              }
+            }
+          });
+        });
+        console.log(data);
+        this.dataitem = data;
+      }
     },
   },
   mounted() {
-    this.getHistoryRead()
+    this.getHistoryRead();
   },
 });
 </script>
@@ -58,7 +85,7 @@ export default Vue.extend({
   height: 50%;
 }
 
-.sub-title{
+.sub-title {
   color: rgb(168, 166, 166);
 }
 
@@ -83,7 +110,7 @@ export default Vue.extend({
   font-size: 25px;
 }
 
-p{
+p {
   font-size: 18px;
 }
 
@@ -108,7 +135,7 @@ p{
 }
 
 @media (max-width: 1024px) {
-  p{
+  p {
     font-size: 20px;
   }
 }
@@ -118,7 +145,7 @@ p{
     width: 60%;
     object-fit: cover;
   }
-  p{
+  p {
     font-size: 17px;
   }
 }
@@ -129,11 +156,11 @@ p{
     width: 70%;
     object-fit: cover;
   }
-  .name{
+  .name {
     font-size: 13px;
   }
 
-  p{
+  p {
     font-size: 11px;
   }
 }

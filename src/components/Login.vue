@@ -2,24 +2,25 @@
   <div class="login" @click="onmouse == false ? close() : null">
     <div class="login-crad">
       <div class="login-img">
-        <img :src="$path.image('25.png')" />
+        <img v-lazy="$path.image('25.png')" />
       </div>
       <div class="container-from login-from">
         <div class="socail">
           <div class="center text-login">เข้าสู่ระบบ</div>
-          
+
           <div class="google" @click="logingoogle()">
             <img src="../assets/images/image 5.png" width="18px" />
             เข้าสู่ระบบด้วย Google
           </div>
-          <div  @click="logInWithFacebook">
+          <div @click="logInWithFacebook">
             <!-- <div class="imagefacebook-con" v-if="datafacebook">
               <img :src="imagefacebook" class="imagefacebook" />
               <span>{{datafacebook.first_name}} {{datafacebook.last_name}}</span>
               <div>เข้าสู่ระบบ</div>
             </div> -->
             <div class="facebook">
-               <i class="fab fa-facebook" style="font-size:20px"></i>  เข้าสู่ระบบด้วย Facebook
+              <i class="fab fa-facebook" style="font-size: 20px"></i>
+              เข้าสู่ระบบด้วย Facebook
             </div>
           </div>
         </div>
@@ -46,30 +47,92 @@
         <div class="from">
           <div class="contor-input">
             <div class="title">อีเมล</div>
-            <input type="email" class="input" id="email" v-model="resgister.email"/>
+            <input
+              type="email"
+              class="input"
+              id="email"
+              v-model="resgister.email"
+            />
           </div>
           <div class="contor-input">
             <div class="title">ชื่อผู้ใช้</div>
-            <input type="text" class="input" id="username" v-model="resgister.username"/>
+            <input
+              type="text"
+              class="input"
+              id="username"
+              v-model="resgister.username"
+            />
           </div>
           <div class="contor-input">
             <div class="title">ชื่อ</div>
-            <input type="text" class="input" id="first_name" v-model="resgister.first_name"/>
+            <input
+              type="text"
+              class="input"
+              id="first_name"
+              v-model="resgister.first_name"
+            />
           </div>
           <div class="contor-input">
             <div class="title">นามสกุล</div>
-            <input type="text" class="input" id="last_name" v-model="resgister.last_name"/>
+            <input
+              type="text"
+              class="input"
+              id="last_name"
+              v-model="resgister.last_name"
+            />
           </div>
           <div class="contor-input">
             <div class="title">รหัสผ่าน</div>
-            <input type="password" class="input" v-model="resgister.password" placeholder="รหัสผ่านต้องมากกว่า 8 ตัว"/>
+            <input
+              type="password"
+              class="input"
+              v-model="resgister.password"
+              placeholder="รหัสผ่านต้องมากกว่า 8 ตัว"
+            />
           </div>
           <div class="contor-input">
             <div class="title">ยืนยันรหัสผ่าน</div>
-            <input type="password" class="input" v-model="resgister.password_confirmation"/>
+            <input
+              type="password"
+              class="input"
+              v-model="resgister.password_confirmation"
+            />
           </div>
-          <button class="nv-btn-orange" style="margin-top: 15px" @click="resgisteCostomer()">
-            สมัครสมาชิก
+          <button
+            class="nv-btn-orange"
+            style="margin-top: 15px"
+            @click="resgisteCostomer()"
+          >
+            <svg
+              v-if="isLoading"
+              version="1.1"
+              id="loader-1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="25px"
+              height="25px"
+              viewBox="0 0 50 50"
+              style="enable-background: new 0 0 50 50"
+              xml:space="preserve"
+            >
+              <path
+                :fill="color"
+                d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z"
+              >
+                <animateTransform
+                  attributeType="xml"
+                  attributeName="transform"
+                  type="rotate"
+                  from="0 25 25"
+                  to="360 25 25"
+                  dur="0.6s"
+                  repeatCount="indefinite"
+                />
+              </path>
+            </svg>
+            <div v-else>สมัครสมาชิก</div>
           </button>
         </div>
         <div class="register">
@@ -78,27 +141,47 @@
         </div>
       </div>
     </div>
-    
+    <NovelModal2
+      ID="emailConfirm"
+      IDCrad="emailConfirmCard"
+      ref="emailConfirm"
+      :Close="true"
+    >
+      <template v-slot:body>
+        <div>
+          <figure class="img-dragon">
+            <img class="img-no-data" src="../assets/images/dragon/11.png" />
+          </figure>
+          <p style="text-align: center">
+            การสมัครของคุณสำเร็จโปรดยืนยันตัวตนใน email
+          </p>
+          <div class="layout-iconcheck">
+            <i class="fa fa-check-circle icon-check" aria-hidden="true"></i>
+          </div>
+        </div>
+      </template>
+    </NovelModal2>
   </div>
-  
 </template>
 
-<script f>
+<script>
 import Vue from "vue";
 import { Auth, Gatway } from "../shares/services";
 // import { facebook_app_id } from "../shares/constants";
 import { Validation } from "@/shares/modules/validation";
-import { 
-getAuth, 
-signInWithPopup, 
-GoogleAuthProvider, 
-FacebookAuthProvider, 
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  FacebookAuthProvider,
 } from "firebase/auth";
-import {alert} from "@/shares/modules/alert"
+import { alert } from "@/shares/modules/alert";
 
 export default Vue.extend({
   name: "Login",
-
+  components: {
+    NovelModal2: () => import("./widget/NovelModal2.vue"),
+  },
   data() {
     return {
       isLogin: false,
@@ -107,22 +190,21 @@ export default Vue.extend({
         username: "",
         password: "",
       },
-      resgister:{
-        email:'',
-        username:'',
-        first_name:'',
-        last_name:'',
-        password:'',
-        password_confirmation:'',
-
-
-      }
+      resgister: {
+        email: "",
+        username: "",
+        first_name: "",
+        last_name: "",
+        password: "",
+        password_confirmation: "",
+      },
+      isLoading: false,
       // imagefacebook: localStorage.getItem("imagefacebook"),
       // datafacebook: JSON.parse(localStorage.getItem("social_auth")),
     };
   },
   mounted() {
-    let login = document.getElementsByClassName("login-crad")[0] 
+    let login = document.getElementsByClassName("login-crad")[0];
     login.onmouseover = () => {
       this.onmouse = true;
     };
@@ -143,7 +225,7 @@ export default Vue.extend({
         if (res.data.status === true) {
           this.$store.commit("login", { token, status });
         } else {
-          const alert = document.getElementsByClassName("aret")[0] 
+          const alert = document.getElementsByClassName("aret")[0];
           alert.style.transform = "scale(1.0)";
         }
       });
@@ -174,15 +256,31 @@ export default Vue.extend({
       comLogin.classList.add("show-com");
     },
     async resgisteCostomer() {
-      let array = ['email','username','first_name','last_name']
-      if ( Validation(array) === true){
-        if(this.resgister.password.length < 8){
-          alert('รหัสผ่านต้องมากกว่า 8 ตัว', 'error')
-        }else{
-          if(this.resgister.password !== this.resgister.password_confirmation){
-            alert('รหัสผ่านไม่ตรงกัน', 'error')
-          }else{
-            const res = await Gatway.postService('/customers/resgister', this.resgister)
+      let array = ["email", "username", "first_name", "last_name"];
+      if (Validation(array) === true) {
+        if (this.resgister.password.length < 8) {
+          alert("รหัสผ่านต้องมากกว่า 8 ตัว", "error");
+        } else {
+          if (
+            this.resgister.password !== this.resgister.password_confirmation
+          ) {
+            alert("รหัสผ่านไม่ตรงกัน", "error");
+          } else {
+            this.isLoading = true;
+            const res = await Gatway.postService("/register", this.resgister);
+            console.log(res.data);
+            if (res.data.code === 422) {
+              // console.log('----');
+              res.data.data.email !== undefined
+                ? alert("email นี้ถูกใช้ไปแล้ว", "error")
+                : null;
+              res.data.data.username !== undefined
+                ? alert("username นี้ถูกใช้ไปแล้ว", "error")
+                : null;
+            } else {
+              this.$refs.emailConfirm.open();
+              this.isLoading = false;
+            }
           }
         }
       }
@@ -194,64 +292,75 @@ export default Vue.extend({
       // console.log(resPassword);
     },
 
-
-  
     async logInWithFacebook() {
       const provider = new FacebookAuthProvider();
-      try{
-        const res = await signInWithPopup(getAuth(),provider)
-        console.log(res.user.providerData[0].email, res.user.providerData[0].uid );
-        let email =  res.user.providerData[0].email 
-        ? res.user.providerData[0].email 
-        : `${res.user.providerData[0].uid}@facebook.com`
-        var login =  {
+      try {
+        const res = await signInWithPopup(getAuth(), provider);
+        console.log(
+          res.user.providerData[0].email,
+          res.user.providerData[0].uid
+        );
+        let email = res.user.providerData[0].email
+          ? res.user.providerData[0].email
+          : `${res.user.providerData[0].uid}@facebook.com`;
+        var login = {
           id: res.user.providerData[0].uid,
           email: email,
-          first_name: res._tokenResponse.firstName ? res._tokenResponse.firstName : '-',
-          last_name: res._tokenResponse.lastName ? res._tokenResponse.lastName : '-',
+          first_name: res._tokenResponse.firstName
+            ? res._tokenResponse.firstName
+            : "-",
+          last_name: res._tokenResponse.lastName
+            ? res._tokenResponse.lastName
+            : "-",
           name: email,
         };
         // console.log(login);
-        this.CleckEmail(login)
-      }catch(error){
-          // alert('Email ถูกใช้งานไปแล้วใน บัญชี ' + error.customData._tokenResponse.verifiedProvider[0],"success")
-          console.log(error);
-          console.log(JSON.parse(error.customData._tokenResponse.rawUserInfo).id);
-          var loginErr = {
-            id: JSON.parse(error.customData._tokenResponse.rawUserInfo).id,
-            email: error.customData.email,
-            first_name: error.customData._tokenResponse.firstName ? error.customData._tokenResponse.firstName : '-',
-            last_name: error.customData._tokenResponse.lastName ? error.customData._tokenResponse.firstName : '-',
-            name: error.customData.email,
+        this.CleckEmail(login);
+      } catch (error) {
+        // alert('Email ถูกใช้งานไปแล้วใน บัญชี ' + error.customData._tokenResponse.verifiedProvider[0],"success")
+        console.log(error);
+        console.log(JSON.parse(error.customData._tokenResponse.rawUserInfo).id);
+        var loginErr = {
+          id: JSON.parse(error.customData._tokenResponse.rawUserInfo).id,
+          email: error.customData.email,
+          first_name: error.customData._tokenResponse.firstName
+            ? error.customData._tokenResponse.firstName
+            : "-",
+          last_name: error.customData._tokenResponse.lastName
+            ? error.customData._tokenResponse.firstName
+            : "-",
+          name: error.customData.email,
         };
         console.log(loginErr);
         // //   localStorage.setItem("social_auth",JSON.parse(error.customData._tokenResponse.rawUserInfo));
         // // localStorage.setItem("imagefacebook", error.customData._tokenResponse.photoUrl);
-          this.CleckEmail(loginErr)
+        this.CleckEmail(loginErr);
       }
-
-  
     },
-    async CleckEmail(item){
-        const resfacebook = await Gatway.postService("/login-facebook", item )
-        let token = resfacebook.data.data.token;
-        let status = true;
-        this.$store.commit("login", { token, status });
+    async CleckEmail(item) {
+      const resfacebook = await Gatway.postService("/login-facebook", item);
+      let token = resfacebook.data.data.token;
+      let status = true;
+      this.$store.commit("login", { token, status });
     },
 
     async logingoogle() {
       const provider = new GoogleAuthProvider();
-      provider.setCustomParameters({ prompt: 'select_account' });
-      const res = await signInWithPopup(getAuth(),provider)
+      provider.setCustomParameters({ prompt: "select_account" });
+      const res = await signInWithPopup(getAuth(), provider);
       const data = {
-        ...res.user.providerData[0], 
-        first_name: res._tokenResponse.firstName ? res._tokenResponse.firstName : '-', 
-        last_name:res._tokenResponse.lastName ? res._tokenResponse.lastName : '-'}
-      const resgmail = await Gatway.postService("/login-gmail", data) 
+        ...res.user.providerData[0],
+        first_name: res._tokenResponse.firstName
+          ? res._tokenResponse.firstName
+          : "-",
+        last_name: res._tokenResponse.lastName
+          ? res._tokenResponse.lastName
+          : "-",
+      };
+      const resgmail = await Gatway.postService("/login-gmail", data);
       let token = resgmail.data.data.token;
       let status = true;
       this.$store.commit("login", { token, status });
-     
     },
   },
 });
@@ -274,7 +383,28 @@ export default Vue.extend({
   transition: 0.3s;
   pointer-events: none;
 }
-
+figure {
+  width: intrinsic;
+}
+.layout-iconcheck {
+  display: flex;
+  justify-content: center;
+}
+.icon-check {
+  color: green;
+  font-size: 30px;
+}
+img.img-no-data {
+  width: 130px;
+  height: 120px;
+  object-fit: cover;
+  padding-bottom: 10px;
+}
+.img-dragon {
+  // widows: fit-content;
+  display: flex;
+  justify-content: center;
+}
 .login-crad {
   transition: 0.3s;
   border-radius: 15px;
@@ -357,7 +487,7 @@ export default Vue.extend({
   font-size: 13px;
   align-items: center;
   grid-gap: 7px;
-  margin-top:15px;
+  margin-top: 15px;
 }
 
 .login-crad-show {
@@ -403,7 +533,7 @@ export default Vue.extend({
   width: 30px;
   // position: absolute;
 }
-.imagefacebook-con{
+.imagefacebook-con {
   display: flex;
   // position: absolute;
   cursor: pointer;
@@ -416,11 +546,11 @@ export default Vue.extend({
   font-size: 13px;
   color: #fff;
   width: 100%;
-      padding: 2px 0px;
+  padding: 2px 0px;
 }
-.imagefacebook-con:hover{
+.imagefacebook-con:hover {
   border: 2px solid #a3bff4;
-background: rgba(100, 148, 237, 0.595);
+  background: rgba(100, 148, 237, 0.595);
 }
 @media (max-width: 1024px) {
   .login-crad {

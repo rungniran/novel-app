@@ -56,7 +56,7 @@
           <div class="title">แท็ก</div>
           <input  @keydown.enter='addTag'/>
            <div class="con-tag">  
-             <div v-for="item,index in data.tag" :key="index" class="tag" @click="del(index)">#{{item}}<i class="fas fa-times-circle" @click="del(index)"></i></div>
+             <div v-for="item,index in data.tags" :key="index" class="tag" @click="del(index)">#{{item}}<i class="fas fa-times-circle" @click="del(index)"></i></div>
             </div>
         </div>
         <div v-if="!checkupdate" class="contai-checkbox">
@@ -75,7 +75,7 @@
             ยอมรับ
             <span
               class="btn-conditions"
-              @click="$base.openmodal('modal-conditions', 'modal-animation', 0)"
+              @click="$refs.Conditions.open()"
               >ข้อกำหนดและเงื่อนไขการใช้บริการ</span
             >
           </div>
@@ -100,7 +100,7 @@
       </div>
     </div>
     <div class="alert"></div>
-    <Conditions :confirm="confirm" @confirmConditions="confirmConditions"/>
+    <Conditions :confirm="confirm" @confirmConditions="confirmConditions" ref="Conditions"/>
   </div>
 </template>
 <script >
@@ -134,10 +134,10 @@ export default Vue.extend({
         detail: "",
         publisher: "",
 				translated_by:"",
-        tag:[]
+        tags:[]
       },
       file:{},
-      tag:[],
+      tags:[],
       disabled:false
     };
   },
@@ -176,7 +176,7 @@ export default Vue.extend({
       if (Validation(arrvalidate) === true) {
         this.confirm === true
           ? this.createnovel()
-          : this.$base.openmodal("modal-conditions", "modal-animation", 0);
+          : this.$refs.Conditions.open()
       }
     },
     submitMy() {
@@ -184,7 +184,7 @@ export default Vue.extend({
       if (Validation(arrvalidate) === true) {
         this.confirm === true
           ? this.createnovel()
-          : this.$base.openmodal("modal-conditions", "modal-animation", 0);
+          : this.$refs.Conditions.open()
       }
     },
     async createnovel() {
@@ -239,11 +239,11 @@ export default Vue.extend({
 		addTag(event){
 			console.log(event.target.value);
       
-      this.data.tag.push(event.target.value)
+      this.data.tags.push(event.target.value)
       event.target.value = ''
 		},
     del(index){
-      this.data.tag.splice(index, 1)
+      this.data.tags.splice(index, 1)
       }
   },
   mounted() {

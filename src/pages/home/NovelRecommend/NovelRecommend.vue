@@ -23,7 +23,7 @@
         <img
         
           class="item-banner"
-          :src="items.novel_data.image_data ? items.novel_data.image_data.url  : $path.image('loading.png')"
+           v-lazy="items.novel_data.image_data ? items.novel_data.image_data.url  : $path.image('loading.png')"
            onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
            :alt="items.title"
           

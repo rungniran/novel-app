@@ -1,6 +1,6 @@
 <template>
   <div class="modalcreate-novel">
-    <NovelModal classlist="create-novel" animation="create-novel-show">
+    <NovelModal2 ID="createNovel" IDCrad="createNovelCrad" ref="createNovel" :Close="true">
       <template v-slot:body>
         <div class="box-create-novel">
           <router-link
@@ -17,13 +17,14 @@
           >
         </div>
       </template>
-    </NovelModal>
+    </NovelModal2>
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
 import { Gatway } from '../../../shares/services'
 import { CreateNovel } from "@/shares/constants";
+import NovelModal2 from "@/components/widget/NovelModal2.vue";
 export default Vue.extend({
   name: "NodalCreateNovel",
   data() {
@@ -34,14 +35,18 @@ export default Vue.extend({
     };
   },
   components: {
-    NovelModal: () => import("@/components/widget/NovelModal.vue"),
+    // NovelModal: () => import("@/components/widget/NovelModal.vue"),
+    NovelModal2
   },
   methods:{
     novel_data_type_id(){
         Gatway.getService('/miscellaneous/fetch/novel_data/novel_data_type_id').then((res:any) =>{
         this.item = res.data.data
       })
-    }
+    },
+    open(){
+      (this as any).$refs.createNovel.open()
+    },
   },
   mounted(){
     this.novel_data_type_id()

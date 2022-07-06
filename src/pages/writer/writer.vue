@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div  :class="data_type() === false  ? 'b-mo' : 'close'">
+    <div  :class="data_type() === false ? 'b-mo' : 'close'">
       <!-- * คุณยังไม่เพิ่มข้อมูลนักเขียน หากมีข้อมูลนักเขียนเราตัดยอดหรียญทุก 30 วัน <router-link c to="/writer/WriterWithdrawMoney">คลิกที่นี้เพิ่มข้อมูลเขียน</router-link> -->
       * คำแนะนำ หากคุณต้องการถอนเหรียญ  &nbsp; &nbsp; <router-link class="blink" to="/writer/WriterWithdrawMoney">"ให้คลิกที่นี่เพิ่มข้อมูลนักเขียน"</router-link>&nbsp; &nbsp;  จึงจะสามารถทำการถอนเหรียญได้
     </div>
@@ -28,9 +28,9 @@
             </div>
           </div>
           <div class="box-follow" style="margin-top: 10px">
-            <button
-              class="nv-btn-yellow"
-              @click="$base.openmodal('create-novel', 'create-novel-show', 0)"
+            <button 
+              class="nv-btn-yellow custom-font"
+              @click="$refs.ModalCreateNovel.open()"
             >
               เพิ่มผลงาน
             </button>
@@ -89,12 +89,12 @@
         </div>
         <div class="nv-mt-30 component">
           <!-- {{current}} -->
-          <component v-if="current !== 'Statistics' " :is="current" :wraning="wraning"></component>
+          <component :is="current" :wraning="wraning"></component>
           <div :class="current === 'Statistics' ? ' ':'close' " >
-               <Statistics   :wraning="wraning"/>
+               <!-- <Statistics   :wraning="wraning"/> -->
           </div>
         </div>
-        <ModalCreateNovel />
+        <ModalCreateNovel ref="ModalCreateNovel" />
         <!-- <Statistics :wraning="wraning"/> -->
       </div>
     </div>
@@ -133,7 +133,9 @@ export default Vue.extend({
       this.wraning = res.data.data.length !== 0   ?  true  : false
     },
     data_type(){
-      if((this as any).profile.user_profile_datas[0].user_profile_data_type_id === user_profile_data_type_id.writer){
+      console.log((this as any).profile);
+      // return true
+      if((this as any).profile.user_profile_datas.user_profile_data_type_id === user_profile_data_type_id.writer){
         return true    
       }else{
         return false
@@ -155,6 +157,9 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss" scoped>
+.custom-font{
+  font-family: Kanit;
+}
   .b-mo{
   background:  #f4ba40;
   width: 100%;
@@ -251,8 +256,8 @@ $radiustap: 5px;
   border-right: 1px solid rgb(220, 220, 220);
 }
 .s-active2 {
-  // border-radius: 5px 0px 0px 5px;
-  // border-right: 0px solid;
+  border-radius: 0px 0px 0px 0px;
+  border-right: 0px solid;
   border-left: 0px solid;
 }
 .s-active3 {

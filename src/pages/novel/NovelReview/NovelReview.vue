@@ -10,8 +10,8 @@
             เขียนรีวิว
           </button>
         </div>
-          <div v-if="dataReview.length === 0" class="not">
-            ไม่มีความคิดเห็น
+          <div v-if="dataReview.length === 0">
+            <EmptyContent pathName="8.png" text="นิยายเรื่องนี้ยังไม่มีผู้รีวิว" :isSearch=false fontSize=30px></EmptyContent>
           </div>
           <div
             v-for="(item, index) in dataReview.slice(0, reviwe)"
@@ -62,12 +62,14 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
+import EmptyContent from '../../empty/empty.vue'
 import {Gatway} from '@/shares/services'
 export default Vue.extend({
   name:"NovelReview",
   components:{
     ReviewModal:()=>import("../reviewmodal/ReviewModal.vue"),
     NovelStar:()=> import("@/components/widget/NovelStar.vue"),
+    EmptyContent,
   },
   props:{
     dataPreview:[]

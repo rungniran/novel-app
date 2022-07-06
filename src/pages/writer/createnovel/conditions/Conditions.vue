@@ -1,6 +1,6 @@
 <template>
   <div class="Conditions">
-    <NovelModal classlist="modal-conditions" animation="modal-animation">
+    <NovelModal2 ID="ModalConditions" IDCrad="ModalConditionsCrad" ref="ModalConditions" :Close="true">
       <template v-slot:body>
         <div class="con-conditions">
        <div class="col-md-12">
@@ -22,7 +22,7 @@
           ยอมรับ
           </div>
       </template>
-    </NovelModal>
+    </NovelModal2>
   </div>
 </template>
 <script lang="ts">
@@ -33,7 +33,12 @@ export default Vue.extend({
     confirm:Boolean
   },
   components:{
-    NovelModal:()=> import('@/components/widget/NovelModal.vue')
+    NovelModal2:()=> import('@/components/widget/NovelModal2.vue')
+  },
+  methods:{
+    open(){
+      (this as any).$refs.ModalConditions.open()
+    }
   }
 });
 </script>

@@ -42,6 +42,16 @@ const routes: Array<RouteConfig> = [
     component: () => import('../pages/About.vue')
   },
   {
+    path: '/contact',
+    name: 'contact',
+    component: () => import('../pages/pagefooter/contact.vue')
+  },
+  {
+    path: '/terms-conditions',
+    name: 'TermsConditions',
+    component: () => import('../pages/pagefooter/TermsConditions.vue')
+  },
+  {
     path: '/privacy',
     name: 'privacy',
     component: () => import('../pages/pagefooter/PolicyPrivacy.vue')
@@ -61,7 +71,11 @@ const routes: Array<RouteConfig> = [
     name:'Read',
     component: () => import('../pages/read/Read.vue')
   },
-
+  {
+    path:'/howtousepromotion',
+    name:'Howtousepromotion',
+    component: () => import('../pages/writer/howtousepromotion/HowTousePromotion.vue')
+  },
   // ________________________________________________auth__________________________________________________________
 
   {
@@ -76,6 +90,12 @@ const routes: Array<RouteConfig> = [
     component: () => import('../pages/wallet/Wallet.vue'),
     meta:{ requiresAuth: true }
   },
+  {
+    path:'/wallet/howtopayment',
+    name:'Howtopayment',
+    component: () => import('../pages/wallet/howtopayment/HowToPayment.vue')
+  },
+
   // {
   //   path:'/wallet',
   //   name:'Wallet',
@@ -187,8 +207,6 @@ router.beforeEach( async (to, from, next)=>{
       login.classList.add("show")
     }else{
       await  next()
-      console.log(to.hash);
-      
       if(to.hash === ""){
         window.scrollTo(0, 0);
       }

@@ -54,7 +54,10 @@ const mutations = {
       localStorage.setItem("StoryRead", JSON.stringify(item));
       
     }
-    const res = await Gatway.postService('/customers/cookie', {item} as any) 
+    setTimeout(async () => {
+      await Gatway.postService('/customers/cookie', {item} as any) 
+    }, 10000);
+    // const res = 
     // console.log('dffffffffffffff', res);
      
     

@@ -7,7 +7,7 @@
           background: url(https://cdn-icons-png.flaticon.com/512/149/149071.png) center center/cover;
         "
       >
-        <div class="Lv">Level 1</div>
+        <!-- <div class="Lv">Level 1</div> -->
       </div>
     </div>
     <div class="contant">
@@ -17,12 +17,12 @@
                <span v-else>{{ data.user_profile_datas[0].first_name}} {{ data.user_profile_datas[0].last_name}}</span>
             </div>
             <div v-if="profile" >#นักรบมังกร</div>
-            <div class="level">
+            <!-- <div class="level">
                 <div class="teb-level"></div>
             </div>
             <div class="nv-mt-10">
                 Exp 1/ 100
-            </div>
+            </div> -->
         </div>
     </div>
   </div>

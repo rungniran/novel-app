@@ -20,7 +20,7 @@ export const writer = [
     },
   
     {
-      path:'howtonovel',
+      path:'/writer/howtonovel',
       name:'HowToNovel',
       component: () => import('../pages/writer/howtonovel/HowToNovel.vue'),
       meta:{ requiresAuth: true, writerAuth:true }
@@ -37,6 +37,11 @@ export const writer = [
       name:'NovelEp',
       component: () => import('../pages/writer/novelpreview/novelep/NovelEp.vue'),
       meta:{ requiresAuth: true, writerAuth:true }
+    },
+    {
+      path:'/howtopromotion',
+      name:'howtopromotion',
+      component: () => import('../pages/writer/howtousepromotion/HowTousePromotion.vue'),
     },
     {
       path:'novelpreview/:id/novelep/:idEP',

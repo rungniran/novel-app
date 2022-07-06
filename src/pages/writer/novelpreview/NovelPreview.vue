@@ -18,7 +18,7 @@
           <div>
             <div class="nv-title line-1">{{ getNover.title }}</div>
             <div style="color: #fb9750">
-              {{ getNover.publisher_novel_data_id }}
+              {{ getNover.penname_preview }}
             </div>
             <div class="con-review">
               <NovelStar :rating="Math.round(getNover.avg_star)" />
@@ -48,9 +48,9 @@
             </div>
           </div>
           <div class="grud-btn">
-            <button class="nv-btn-orange" @click="Views">
+            <!-- <button class="nv-btn-orange" @click="Views">
               <i class="fas fa-chart-line"></i> ดูสถิติ
-            </button>
+            </button> -->
             <router-link
               :to="
                 '/writer/editnovel/' +
@@ -74,7 +74,7 @@
         </div>
       </div>
     </div>
-    <div class="nv-box-white nv-mt-40">
+    <div class="nv-box-white nv-mt-40" v-if="moment">
       <div>
         <div class="nv-col-2" style="padding-bottom: 20px">
           <div class="nv-title">สารบัญ</div>
@@ -170,61 +170,6 @@
       </div>
       <PromotionModal ref="PromotionModal"/>
     </div>
-    <!-- <div class="nv-box-white nv-mt-40" id="series">
-      <div class="series">
-        <select name="cars" id="cars" @change="test">
-          <option value="volvo">รวมทุกตอน</option>
-          <option
-            v-for="(item, index) in EpisodeData.data"
-            :key="index"
-            value="volvo"
-            
-          >
-          <span v-if="item.name.length > 50">  {{ item.name.slice(0, 50) }}...</span>
-          <span v-else>  {{ item.name }}</span>
-          </option>
-        </select>
-      </div>
-      <br />
-      <div>
-        <div>สถิติการขายรวม</div>
-        <div class="series">
-          <apexchart
-            width="100%"
-            type="bar"
-            :options="chartOptions"
-            :series="series"
-            ref="chartSell"
-          ></apexchart>
-          <apexchart
-            width="100%"
-            type="line"
-            :options="chartOptions"
-            :series="series"
-            ref="chartSell1"
-          ></apexchart>
-        </div>
-      </div>
-      <div>
-        <div>สถิติยอดวิวรวม</div>
-        <div class="series">
-          <apexchart
-            width="100%"
-            type="bar"
-            :options="chartOptions"
-            :series="series"
-            ref="chartView"
-          ></apexchart>
-          <apexchart
-            width="100%"
-            type="line"
-            :options="chartOptions"
-            :series="series"
-            ref="chartView1"
-          ></apexchart>
-        </div>
-      </div>
-    </div> -->
     <NovelConfirm
       color="#ffb900"
       title="ยืนยันการลบนิยาย"
@@ -281,7 +226,7 @@ export default Vue.extend({
     NovelConfirm: () => import("@/components/widget/NovelConfirm.vue"),
     // eslint-disable-next-line vue/no-unused-components
     NovelModal: () => import("@/components/widget/NovelModal.vue"),
-    PromotionModal:()=> import('./PromotionModal.vue')
+    PromotionModal:()=> import('./PromotionModal/PromotionModal.vue')
 
   },
   data() {
@@ -348,7 +293,6 @@ export default Vue.extend({
       const resEpisodeData = await Gatway.getService(
         `/customers/episode_data/index/${this.$route.params.id}`
       );
-      console.log("sdsd", resEpisodeData.data);
 
       this.EpisodeData = await resEpisodeData.data;
       this.eplength = resEpisodeData.data.length;
@@ -535,15 +479,19 @@ export default Vue.extend({
 }
 
 .box-price_range {
-  background: #61bcbe;
+  background: #71b6c2;
   display: flex;
   color: #fff;
   justify-content: space-between;
   padding: 20px 20px;
   border-radius: 5px;
-  margin: 5px 0px;
+  margin: 1px 0px;
   transition: 0.3s;
   cursor: pointer;
+}
+.box-price_range:hover {
+    background: #65a3af;
+  box-shadow: rgba(98, 145, 151, 0.8) 0px 3px 8px;
 }
 // .box-price_range:hover {
 //   transform: scale(1.01);
@@ -576,6 +524,7 @@ export default Vue.extend({
   display: none;
   margin: 0px 15px;
 }
+
 .fa-chevron-right {
   transition: 0.3s;
 }
@@ -606,9 +555,13 @@ export default Vue.extend({
   display: grid;
   grid-template-columns: 1.8fr 1fr;
 }
+.grud-btn-manager img{
+  cursor: pointer;
+}
+
 .p-con-detail {
   display: flex;
-  grid-gap: 40px;
+  // grid-gap: 40px;
   align-items: center;
   justify-content: space-between;
 }

@@ -47,10 +47,10 @@
         </div>
         <div class="leftmenu list-sub-menu" id="leftmenu">
              
-            <router-link class="list-sub-menu-mobile" @click.native="closeLeftmenu()"  to="/" exact><i class="fas fa-home"></i> หน้าหลัก</router-link>
-            <router-link class="list-sub-menu-mobile"   @click.native="closeLeftmenu()" to="/category" exact><i class="fas fa-list-alt"></i> ประเภท</router-link>
-            <router-link class="list-sub-menu-mobile"   @click.native="closeLeftmenu()" to="/bookshelf"  exact><i class="fas fa-book"></i> ชั้นหนังสือ</router-link>
-            <router-link class="list-sub-menu-mobile"   @click.native="closeLeftmenu()" to="/writer" exact><i class="fas fa-user-cog"></i> นักเขียน</router-link>
+            <router-link class="list-sub-menu-mobile"  active-class="active-submenu" @click.native="closeLeftmenu()"  to="/" exact><i class="fas fa-home"></i> หน้าหลัก</router-link>
+            <router-link class="list-sub-menu-mobile"  active-class="active-submenu" @click.native="closeLeftmenu()" to="/category" exact><i class="fas fa-list-alt"></i> ประเภท</router-link>
+            <router-link class="list-sub-menu-mobile"  active-class="active-submenu" @click.native="closeLeftmenu()" to="/bookshelf"  exact><i class="fas fa-book"></i> ชั้นหนังสือ</router-link>
+            <router-link class="list-sub-menu-mobile"  active-class="active-submenu" @click.native="closeLeftmenu()" to="/writer" exact><i class="fa fa-pencil"></i> นักเขียน</router-link>
                 
         </div>
 
@@ -156,7 +156,7 @@ $primary-yellow:#f4bb40c9;
 .topbar{
     transition: .3s;
     display: grid;
-    max-width: 1150px;
+    max-width: 1050px;
     // padding: 0px 10px;
     margin: auto;
     margin-top: 0px;
@@ -413,7 +413,7 @@ $primary-yellow:#f4bb40c9;
    background: #fff;
    position: fixed;
 //    border-radius: 0px 10px 10px 0px;
-   height: 100vh;
+   height: fit-content;
    margin-left: -250px;
    transition: 0.3s;
    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
@@ -423,7 +423,7 @@ $primary-yellow:#f4bb40c9;
    margin-left: 0px;
 }
 .list-sub-menu-mobile{
-    color: #9556fb;
+    color: #000000;
     font-size: 15px;
     // background: #241065;
     display: flex;
@@ -442,7 +442,10 @@ list-sub-menu-mobile,i,list-sub-menu{
 	}
 }
 @media (max-width: 768px){
-    
+    .active-submenu{
+        background: #f4bb4000 !important;
+        color: #8359FF !important;
+    }
     .leftmenu{
         display: flex;
     }

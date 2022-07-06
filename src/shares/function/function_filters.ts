@@ -143,7 +143,11 @@ const dynamic_path = {
 	imageCover(img:string):string{
 			const images = require.context('../../assets/images/image-cover')
 			return images('./' + img)
-	}
+	},
+	imageEmpty(img:string):string{
+		const images = require.context('../../assets/images/dragon')
+		return images('./' + img)
+	},
 	
 }
 
