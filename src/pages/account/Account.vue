@@ -8,6 +8,10 @@
             background: url(https://cdn-icons-png.flaticon.com/512/149/149071.png) center center/cover;
           "
         >
+        <!-- <NovelCropper type='image/jpeg'/> -->
+          <!-- <div class="edit-profile">
+            <i class="fa fa-camera" aria-hidden="true">
+            </i></div> -->
           <!-- <div class="Lv">LV.2 &nbsp; <small>( 70 exp )</small></div> -->
         </div>
       </div>
@@ -28,7 +32,8 @@
         >
           ข้อมูลผู้ใช้
         </router-link>
-        <!-- <router-link
+        <router-link 
+          v-if="profile.profile_writer "
           @click.native="changeComponent('writerinfo')"
           to="#writerinfo"
           :class="
@@ -36,7 +41,7 @@
           "
         >
           ข้อมูลนักเขียน
-        </router-link> -->
+        </router-link>
       </div>
       <div class="nv-mt-30">
         <component :is="current"></component>
@@ -57,6 +62,7 @@ export default Vue.extend({
   components: {
     userinfo: () => import("./componente/UserInfo.vue"),
     writerinfo: () => import("./componente/WriterInfo.vue"),
+    NovelCropper: () => import("@/components/widget/NovelCropper2.vue"),
   },
   methods: {
     changeComponent(component: string): void {
@@ -65,6 +71,7 @@ export default Vue.extend({
     cleckpath(): string {
       return this.$route.hash.slice(1);
     },
+    
   },
   mounted() {
     this.cleckpath() === ""
@@ -96,11 +103,24 @@ $topcover: 280px;
     #ab93f9 100%
   );
 }
+.edit-profile{
+  position: absolute;
+  bottom:5px;
+  right:5px;
+  background: #1d2044;
+  // width: 130px;
+  padding: 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  border-radius: 100%;
+}
 .contant {
   margin-top: $topcover + 35;
 }
 .img-profile {
-  position: absolute;
+  position: relative;
   width: 130px;
   height: 130px;
   border-radius: 100%;
@@ -109,6 +129,7 @@ $topcover: 280px;
   bottom: -60px;
   display: flex;
   justify-content: center;
+  transform: translate(0px,4rem);
 }
 .Lv {
   position: absolute;

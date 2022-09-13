@@ -204,7 +204,7 @@ input:disabled {
     padding-right: 20px;
   }
 }
-@media (max-width: 415px) {
+@media (max-width: 550px) {
   .image-box {
     text-align: center;
     grid-template-columns: 1fr;

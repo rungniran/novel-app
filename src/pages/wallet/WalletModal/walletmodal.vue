@@ -5,6 +5,7 @@
     IDCrad="wallletModalCard"
     ref="Modeal"
     :Close="true"
+    width="360px"
   >
     <template v-slot:body>
       <!-- :style="`height: ${Height}px`" -->
@@ -18,7 +19,20 @@
             class="walllet-list"
             @click="leftPage(2, item)"
           >
-            <div><i class="fas fa-money-check"></i></div>
+            <div>
+              <div v-if="item.name_preview === 'True Wallet'">
+                <img v-lazy="$path.image('truemoney-wallet.png')" class="img-payment-truewallet" alt="">
+              </div>
+              <div v-else-if="item.name_preview === 'Master Card'">
+                <img  v-lazy="$path.image('MasterCard.png')" class="img-payment" alt="">
+              </div>
+              <div v-if="item.name_preview === 'Rabbit LINE Pay'">
+                <img  v-lazy="$path.image('linepay.png')" class="img-payment-rabbitline" alt="">
+              </div>
+              <div v-if="item.name_preview === 'Prompt Pay'">
+                <img  v-lazy="$path.image('prompt-pay.png')" class="img-payment-rabbitline" alt="">
+              </div>
+            </div>
             <div>{{ item.name_preview }}</div>
           </div>
         </div>
@@ -199,10 +213,10 @@ export default Vue.extend({
         wallletConthai.style.marginLeft = w * 2 + "px";
       }
       let res = await Gatway.getIDService("/admin/topic-coin-data", item.id);
-      this.page2 = res.data.data.sort((a,b)=>{
-        return a.price_amount - b.price_amount 
-      })
-      console.log(res.data.data);
+      this.page2 = res.data.data.sort((a, b) => {
+        return a.price_amount - b.price_amount;
+      });
+
       // this.page2 = await res.data.data;
       this.titlePage2 = await item.name_preview;
       this.dataObj.typeHowto = await item.name;
@@ -211,12 +225,11 @@ export default Vue.extend({
 
     async getadd() {
       let res = await Gatway.getService("/admin/topic-coin-data ");
-      console.log(res.data.data);
       this.page1 = res.data.data;
     },
     async heightBox(page) {
       let Height = await document.getElementById("page" + page);
-      console.log(Height);
+
       this.Height = await Height.clientHeight;
     },
 
@@ -262,7 +275,6 @@ export default Vue.extend({
         currency: "THB",
         defaultPaymentMethod: "credit_card",
         onCreateTokenSuccess: (nonce) => {
-          console.log(nonce);
           if (nonce.startsWith("tokn_")) {
             this.omiseToken = nonce;
             var pay = {
@@ -298,7 +310,6 @@ export default Vue.extend({
           currency: "THB",
         },
         (statusCode, response) => {
-          console.log(response);
           var pay = {
             amount: price,
             id: item.id,
@@ -309,7 +320,6 @@ export default Vue.extend({
           this.dataPay = item;
           Gatway.postService("/customers/payment-gateway/payment", pay).then(
             (res) => {
-              console.log(res.data.data);
               this.qrcode = res.data.data[0]["qr-code"];
               this.cleckpp(res);
             }
@@ -319,13 +329,12 @@ export default Vue.extend({
     },
 
     cleckpp(res) {
-      console.log(this.$route);
+
       if (this.$route.name === "Wallet") {
         setTimeout(() => {
           Gatway.postService("/customers/payment-gateway/prompt-pay/check", {
-            id: res.data.data.id,
+            id: res.data.data[0].id,
           }).then((rescheck) => {
-            console.log(rescheck.data);
             if (rescheck.data.data.status === true) {
               this.$store.commit("reset");
               this.$router.push(`/wallet/walletconfirm/${res.data.data.id}`);
@@ -333,11 +342,11 @@ export default Vue.extend({
               this.cleckpp(res);
             }
           });
-        }, 8000);
+        }, 5000);
       }
     },
+
     open() {
-      // console.log("openModal")
       this.$refs.Modeal.open();
     },
 
@@ -353,7 +362,6 @@ export default Vue.extend({
           phone_number: this.phoneNumber,
         },
         (statusCode, response) => {
-          console.log(response);
           var pay = {
             amount: price,
             id: item.id,
@@ -365,6 +373,7 @@ export default Vue.extend({
             (res) => {
               this.$store.commit("reset");
               window.location.href = res.data.data[0].authorize_uri;
+              // window.open(res.data.data[0].authorize_uri, "MsgWindow", "width=200,height=100")
             }
           );
         }
@@ -415,24 +424,23 @@ $sizePage: 360px;
   align-items: center;
   flex-direction: column;
   align-items: stretch;
-  overflow-y:scroll;
+  overflow-y: scroll;
   height: 500px;
   width: $sizePage;
   padding: 0px;
 }
-// .walllet-title{
-//   font-size: 22px;
-//   text-align: center;
-// }
+.walllet-title{
+  font-size: 18px;
+  text-align: center;
+}
 .walllet-list {
   display: flex;
   justify-content: space-between;
-  padding: 20px;
+  padding: 30px;
   margin: 7px 0px;
   border-radius: 7px;
-  // box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.08);
-  background: #f3f3f3;
-  // box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(35, 34, 27, 0.15) 0px 0px 0px 1px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.08);
+  background: white;
   cursor: pointer;
   transition: 0.3s;
 }
@@ -453,7 +461,26 @@ $sizePage: 360px;
   height: 100%;
   overflow-y: scroll;
 }
-
+.img-payment{
+   position: absolute;
+  width: 20%;
+  object-fit: cover;
+  transform: translate(0px,-10px);
+}
+.img-payment-truewallet{
+     position: absolute;
+  width: 20%;
+  object-fit: cover;
+  transform: translate(0px,-15px);
+  
+}
+.img-payment-rabbitline{
+       position: absolute;
+  width: 30%;
+  object-fit: cover;
+  transform: translate(0px,-5px);
+  
+}
 .walllet-page::-webkit-scrollbar {
   display: none;
 }

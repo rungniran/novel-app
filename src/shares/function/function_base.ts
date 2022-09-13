@@ -19,7 +19,30 @@ const base:any | null | undefined = {
     closealert(id:string, idCon:string):void |null | undefined {
         document.getElementById(idCon)?.classList.remove("NovelConfirm-show")
         document.getElementById(id)?.classList.remove("con-confirm-show")
-     }
+     },
+     cleckhostname() {
+        const hostname = window.location.hostname 
+        // if (hostname === 'novelkingdom.co' || hostname === 'www.novelkingdom.co') {
+        //   return false
+        // }else 
+        if(hostname === 'localhost'){
+          return true
+        }else{
+          return false
+        }
+      }
+     
 }
 
+// export const cleckhostname =()=> {
+//     const hostname = window.location.hostname 
+//     // if (hostname === 'novelkingdom.co' || hostname === 'www.novelkingdom.co') {
+//     //   return false
+//     // }else 
+//     if(hostname === 'localhost'){
+//       return true
+//     }else{
+//       return false
+//     }
+//   }
 export default base as any | null | undefined 

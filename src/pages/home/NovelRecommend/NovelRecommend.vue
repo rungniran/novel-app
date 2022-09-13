@@ -1,6 +1,9 @@
 <template>
   <div class="Carousel">
-    <!-- {{opject}}  :lazyLoad="false"-->
+    <!-- <pre>
+
+    {{opject}} 
+    </pre> -->
     <carousel
       :items="1"
       :loop="loop"
@@ -13,13 +16,14 @@
       :responsive="responsive"
       v-if="opject"
     >
+    
       <router-link
         v-for="(items, index) in opject"
         :key="index"
         :to="'/novel/' + items.novel_data.id"
-        class="nv-box-carousel carousel"
+        class="nv-box-carousel carousel "
       >
- <!-- :src="items.image_data.url" :alt="items.title"-->
+
         <img
         
           class="item-banner"
@@ -43,7 +47,7 @@
               <i class="fas fa-list"></i>
               <div class="count-numble-view">
                 {{ $filter.NumbertoText(items.novel_data.novel_episode_data_total) }}
-                       <!-- {{items.image_data}} -->
+                       {{items.image_data}}
               </div>
             </div>
           </div>
@@ -68,7 +72,7 @@ export default Vue.extend({
 
   components: {
     carousel,
-    NovelStar,
+    // NovelStar,
   },
   data() {
     return {
@@ -122,6 +126,7 @@ $second-grayLight: #cfd4d9;
   font-size: 15px;
   color: rgb(182, 182, 182);
 }
+
 // .owl-stage-outer {
 //   padding: 15px 0px;
 // }

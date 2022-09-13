@@ -1,6 +1,6 @@
 <template>
     <div class="CheerUp">
-        <NovelModal classlist="modal-xl" animation="modal-animation">
+        <NovelModal2 classlist="modal-xl" animation="modal-animation">
             <template v-slot:body>
                 <div class="close" @click="$base.closemodal('modal-xl', 'modal-animation', 0)"><i class="fas fa-times-circle"></i></div>
                 <div class="title">ส่งกำลังใจ</div>
@@ -16,7 +16,7 @@
                     </div>
                 </div>
             </template>
-        </NovelModal>
+        </NovelModal2>
     </div>
 </template>
 <script lang="ts">
@@ -30,7 +30,7 @@ export default Vue.extend({
      };
  },
  components:{
-    NovelModal:()=> import('@/components/widget/NovelModal.vue')
+    NovelModal2:()=> import('@/components/widget/NovelModal2.vue')
  }
 })
 </script>

@@ -83,9 +83,6 @@ export default Vue.extend({
 }
 
 .bg-color-buy {
-  padding: 20px;
-  background-color: rgba(230, 222, 255, 0.22);
-  border: 1px solid rgba(224, 175, 243, 0.977);
   border-radius: 12px;
 }
 

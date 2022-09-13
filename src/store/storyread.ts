@@ -35,7 +35,6 @@ const mutations = {
       const index = item.findIndex(object => {
         return object.id === EPopj.id;
       });
-      console.log(index);
       if(index !== -1){
          item.splice(index, 1)
          item.unshift(EPopj)
@@ -56,7 +55,7 @@ const mutations = {
     }
     setTimeout(async () => {
       await Gatway.postService('/customers/cookie', {item} as any) 
-    }, 10000);
+    }, 100000);
     // const res = 
     // console.log('dffffffffffffff', res);
      

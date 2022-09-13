@@ -52,18 +52,14 @@
           <div class="title">เรื่องย่อ <span class="is-valid">*</span></div>
 					<NovelEditor @Editor="func_Editor" :valueWay="this.data.description"/>
         </div>
-        <div class="nv-mt-30">
+        <div class="nv-mt-40">
           <div class="title">แท็ก</div>
-          <input  @keydown.enter='addTag'/>
-           <div class="con-tag">  
-             <div v-for="item,index in data.tags" :key="index" class="tag" @click="del(index)">#{{item}}<i class="fas fa-times-circle" @click="del(index)"></i></div>
-            </div>
+          <input @keydown.enter='addTag'/>
         </div>
         <div v-if="!checkupdate" class="contai-checkbox">
           <div class="round">
             <input
               type="checkbox"
-              :checked="confirm"
               :value="confirm"
               @change="funcConfirm()"
               class="checkbox"
@@ -75,7 +71,7 @@
             ยอมรับ
             <span
               class="btn-conditions"
-              @click="$refs.Conditions.open()"
+              @click="$base.openmodal('modal-conditions', 'modal-animation', 0)"
               >ข้อกำหนดและเงื่อนไขการใช้บริการ</span
             >
           </div>
@@ -89,7 +85,6 @@
                 ? submit()
                 : submitMy()
             "
-            :disabled="disabled"
           >
             ยืนยัน
           </button>
@@ -100,7 +95,7 @@
       </div>
     </div>
     <div class="alert"></div>
-    <Conditions :confirm="confirm" @confirmConditions="confirmConditions" ref="Conditions"/>
+    <Conditions />
   </div>
 </template>
 <script >
@@ -133,12 +128,9 @@ export default Vue.extend({
         description: "",
         detail: "",
         publisher: "",
-				translated_by:"",
-        tags:[]
+				translated_by:""
       },
-      file:{},
-      tags:[],
-      disabled:false
+      file:{}
     };
   },
   methods: {
@@ -176,7 +168,7 @@ export default Vue.extend({
       if (Validation(arrvalidate) === true) {
         this.confirm === true
           ? this.createnovel()
-          : this.$refs.Conditions.open()
+          : this.$base.openmodal("modal-conditions", "modal-animation", 0);
       }
     },
     submitMy() {
@@ -184,16 +176,14 @@ export default Vue.extend({
       if (Validation(arrvalidate) === true) {
         this.confirm === true
           ? this.createnovel()
-          : this.$refs.Conditions.open()
+          : this.$base.openmodal("modal-conditions", "modal-animation", 0);
       }
     },
     async createnovel() {
       let formData = new FormData();
       this.data = {...this.data,  formData } 
-      this.disabled = true
       let res = this.data.detail.length < 500 ? await  Gatway.postService("/customers/novel", this.data) : null
       if(res.data.code === 200){
-        this.disabled = false
         formData.append('file', this.data.img);
         formData.append('novel_data_id',  res.data.data.id)
         await Gatway.postService("/upload/image/novel-data", formData)
@@ -212,9 +202,6 @@ export default Vue.extend({
     async novelCategoryDataId() {
       const res = await ListService.listCategory()
       this.dropdownCategory = await res.data.data;
-    },
-    confirmConditions(){
-       this.funcConfirm()
     },
     funcConfirm() {
       this.confirm === false ? (this.confirm = true) : (this.confirm = false);
@@ -238,13 +225,7 @@ export default Vue.extend({
 		},
 		addTag(event){
 			console.log(event.target.value);
-      
-      this.data.tags.push(event.target.value)
-      event.target.value = ''
-		},
-    del(index){
-      this.data.tags.splice(index, 1)
-      }
+		}
   },
   mounted() {
     this.novelRatingDataId();
@@ -259,7 +240,7 @@ export default Vue.extend({
 </script>
 <style lang="scss" scoped>
 .nv-box-white {
-  // max-width: 950px;
+  max-width: 950px;
   position: relative;
   overflow: hidden;
 }
@@ -386,32 +367,5 @@ textarea:focus-visible {
 }
 .texterr{
   color: red;
-}
-.con-tag{
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-.tag{
-  margin-top: 10px;
-  padding: 5px;
-  border-radius: 10px;
-  background: #cecece;
-  position: relative;
-  
-}
-.fa-times-circle{
-  position: absolute;
-  top: -3px;
-  cursor: pointer;
-  transform: scale(0.0);
-  transition: 0.3s;
-  
-}
-.tag:hover{
-  cursor: pointer;
-}
-.tag:hover .fa-times-circle {
-  transform: scale(1.0);
-}
+ }
 </style>

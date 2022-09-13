@@ -1,3 +1,32 @@
+$second-blue: #1e2046;
+$second-gray: #444349;
+$second-grayLight: #cfd4d9;
+.owl-carousel .owl-item img {
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+.nv-box-carousel {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+.nv-box-carousel .grod-detail {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 5px;
+  justify-content: center;
+  align-items: center;
+}
+.nv-box-carousel .grod-detail .name {
+  color: #1e2046;
+  font-size: 18px;
+}
+.subname {
+  font-size: 15px;
+  color: rgb(182, 182, 182);
+}
 .content {
   padding-top: 59px;
 }

@@ -2,7 +2,7 @@
 import { Gatway } from '@/shares/services'
 
 const state = {
-  monent:[],
+  sarabunID:null,
   sarabun:null
 }
 const getters = {
@@ -16,14 +16,11 @@ const actions = {
 
 const mutations = {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  async setSarabun(state:any,{key}:{key:any}):Promise<void>{
-    console.log(key);
-    
+  async setSarabun(state:any,{Sarabun, id}):Promise<void>{
     // const resGetNovel = await Gatway.getIDService('/guest/novel/novel-data',key);
     // console.log(resGetNovel);
-    state.sarabun = key
-    
-    
+    state.sarabun = Sarabun
+    state.sarabunID = id
   }
 }
 

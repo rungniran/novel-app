@@ -7,7 +7,6 @@
           background: url(https://cdn-icons-png.flaticon.com/512/149/149071.png) center center/cover;
         "
       >
-        <!-- <div class="Lv">Level 1</div> -->
       </div>
     </div>
     <div class="contant">

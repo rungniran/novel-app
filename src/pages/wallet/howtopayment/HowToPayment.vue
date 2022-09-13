@@ -220,7 +220,7 @@ figure {
   }
 }
 
-@media (max-width: 415px) {
+@media (max-width: 500px) {
   .box-content {
     display: grid;
     grid-template-columns: 1fr;

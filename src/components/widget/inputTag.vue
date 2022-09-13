@@ -43,7 +43,7 @@ export default {
     const newTag = ref("");
     const id = Math.random().toString(36).substring(7);
     const addTag = (tag) => {
-      console.log('dfdf');
+
       // if (!tag) return;
       // if (!props.allowCustom && !props.options.includes(tag)) return;
       // if (tags.value.includes(tag)) {

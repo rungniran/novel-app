@@ -1,0 +1,317 @@
+<template>
+	<div id="NovelCropper">
+	<div class="size">	
+	<!-- resize =	{{size.size}} {{size.value}}<br>
+
+	defail =	{{size_defail.size}} {{size_defail.value}} -->
+  <!-- {{imgupdata}} -->
+	</div>
+    <span id="NovelCropper" v-if="img != ''">
+		<div class="con-zoom">
+			<div @click="zoom" class="zoom"><i class="fas fa-search-plus"></i></div>
+			<div @click="move" class="move"><i class="fas fa-search-minus"></i></div>
+		</div>
+		<cropper
+			ref="cropper"
+			class="cropper"
+			:src="img"
+			:auto-zoom="true"
+			:default-size="defaultSize"
+			image-restriction="stencil"
+			:stencil-size="{
+				width: 	500,
+				height: 707
+			}"
+			:stencil-props="{
+				aspectRatio: 500/707,
+				scalable: false, 
+				movable: false,
+
+			}"
+			@change="change"
+		/>
+
+		
+        <div  class="reset" @click="reset">X</div>
+        </span>
+        <span class="NovelCropper-input" v-else>
+		<input  type="file" class="file" @change="previewFiles" accept="image/png, image/jpeg, image/jpg">
+        <img src="https://lh3.googleusercontent.com/EbXw8rOdYxOGdXEFjgNP8lh-YAuUxwhOAe2jhrz3sgqvPeMac6a6tHvT35V6YMbyNvkZL4R_a2hcYBrtfUhLvhf-N2X3OB9cvH4uMw=w1064-v0" class="edit-profile">
+        </span>
+
+		<!-- <img :src="test"> scalable: false, movable: false,	handlers: {},-->
+    <!-- <img :src="tests"> -->
+	</div>
+
+</template>
+<script >
+import Vue from 'vue';
+import { Cropper } from 'vue-advanced-cropper';
+import 'vue-advanced-cropper/dist/style.css';
+
+export default Vue.extend({
+  name:"NovelCropper",
+  components: {
+		Cropper,
+
+	},
+  props:{
+    imgupdata:{
+			type:String,
+			default:'https://119.59.97.111/storage/novel_image/BB16BA7F-2D9A-428F-9CD7-68231B086EAB.png'
+		},
+		type:{
+			type:String,
+			default:'image/png'
+		}
+	},
+	data: () => {
+		return {
+			img: '',
+			test: '',
+			size:'',
+			size_defail:'',
+			tests:''
+			
+		};
+   },
+	methods: {
+		change({ canvas }) {
+			this.test = canvas.toDataURL()
+			const date = new Date
+			var file = this.dataURLtoFile(canvas.toDataURL(),Date.parse(date));
+			this.resize(file)
+			// console.log(file);
+			// this.$emit("imgCropper" , file)
+		},
+		defaultSize({ imageSize, visibleArea }) {
+			return {
+				width: (visibleArea || imageSize).width,
+				height: (visibleArea || imageSize).height,
+			};
+		},
+		previewFiles(event) {
+			var reader = new FileReader()
+			this.size_defail = this.$filter.formatBytes(event.target.files[0].size)
+			reader.readAsDataURL(event.target.files[0])
+			reader.onload = () => {
+				this.img = reader.result
+			};
+		},
+		resize(file){
+			  const MAX_WIDTH = 	500  ;
+        const MAX_HEIGHT = 707;
+				const MIME_TYPE = this.$props.type;
+				const QUALITY = 0.7;
+				const blobURL = URL.createObjectURL(file);
+				const img = new Image();
+				img.src = blobURL;
+				img.onload =  () => {
+				// URL.revokeObjectURL(this.src);
+				const [newWidth, newHeight] = this.calculateSize(img, MAX_WIDTH, MAX_HEIGHT);
+				const canvas = document.createElement("canvas");
+				canvas.width = newWidth;
+				canvas.height = newHeight;
+				const ctx = canvas.getContext("2d");
+				ctx.drawImage(img, 0, 0, newWidth, newHeight);
+				canvas.toBlob(
+					(blob) => {
+						this.bade64(blob)
+					},
+					MIME_TYPE,
+					QUALITY
+				);
+			};
+		},
+
+		bade64(blob){
+			// console.log('sdfsdf',blob);
+			var file = new File([blob], "name");
+			this.size = this.$filter.formatBytes(file.size)
+			var reader = new FileReader()
+		  reader.readAsDataURL(blob)
+			reader.onload = () => {
+				this.tests =reader.result
+				var file = this.dataURLtoFile(reader.result,"dffddf");
+				this.size = this.$filter.formatBytes(file.size)
+				this.$emit("imgCropper" , file)
+				
+			};
+		},
+
+		calculateSize(img, maxWidth, maxHeight) {
+			let width = img.width;
+			let height = img.height;
+
+			// calculate the width and height, constraining the proportions
+			if (width > height) {
+				if (width > maxWidth) {
+					height = Math.round((height * maxWidth) / width);
+					width = maxWidth;
+				}
+			} else {
+				if (height > maxHeight) {
+					width = Math.round((width * maxHeight) / height);
+					height = maxHeight;
+				}
+			}
+			return [width, height];
+    },
+
+		dataURLtoFile(dataurl, filename) {
+			var arr = dataurl.split(','),
+				mime = arr[0].match(/:(.*?);/)[1],
+				bstr = atob(arr[1]),
+				n = bstr.length,
+				u8arr = new Uint8Array(n);
+			while(n--){
+				u8arr[n] = bstr.charCodeAt(n);
+			}
+			return new File([u8arr], filename, {type:mime});
+		},
+		
+
+		reset(){
+			this.img = ''
+		},
+		zoom() {
+			this.$refs.cropper.zoom(2);
+		},
+		move() {
+			this.$refs.cropper.zoom(0.5);
+		}
+		
+	},
+});
+</script>
+
+<style scoped>
+#NovelCropper{
+	height: 130px;
+	width: 130px;
+	border-radius: 100px;
+	position: relative;
+	display: flex;
+	justify-content: center;
+}
+.edit-profile{
+  position: absolute;
+  bottom:10px;
+  right:7px;
+  /* background: #1d2044; */
+  /* width: 130px; */
+  padding: 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* color: #fff; */
+  border-radius: 100%;
+  width: 40px;
+    height: 40px;
+    margin: auto;
+    pointer-events: none;
+    top: 120px;
+}
+.vue-advanced-cropper__background, .vue-advanced-cropper__foreground{
+	background: #ffffff00;
+	/* width: 130px;
+	height: 130px; */
+}
+
+.cropper-crop-box, .cropper-view-box {
+    border-radius: 50%;
+}
+
+.cropper-view-box {
+    box-shadow: 0 0 0 1px #39f;
+    outline: 0;
+}
+
+.cropper-face {
+  background-color:inherit !important;
+}
+
+.cropper-dashed, .cropper-point.point-se, .cropper-point.point-sw, .cropper-point.point-nw,   .cropper-point.point-ne, .cropper-line {
+  display:none !important;
+}
+
+.cropper-view-box {
+  outline:inherit !important;
+}
+
+.vue-preview__wrapper {
+	border-radius: 12px;
+	border: 2px solid #F4BA40;
+	overflow: hidden;
+}
+.cropper {
+	position: relative;
+	max-height: 130px;
+	display: flex;
+}
+::-webkit-file-upload-button {
+  display: none;
+}
+.file{
+	background: #dfdfdf00;
+	width: 130px;
+	height: 130px;
+	border-radius: 100%;
+	cursor: pointer;
+}
+.vue-preview__wrapper{
+	border-radius: 100px !important;
+	/* background-color: #39f; */
+}
+.reset{
+	padding: 0px 5px;
+	border-radius: 5px;
+	color: #fff;
+	background: #F4BA40;
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	z-index: 1000;
+	cursor: pointer;
+}
+.con-zoom{
+	position: absolute;
+	z-index: 2000;
+	top: 100px;
+	left: 150px;
+}
+.zoom, .move{
+    cursor: pointer;
+}
+.camera{
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    margin: auto;
+    pointer-events: none;
+    top: 120px;
+}
+.NovelCropper-input{
+    height: 130px;
+	width: 130px;
+	border-radius: 100%;
+	position: relative;
+	display: flex;
+	justify-content: center;
+}
+.size{
+	width: 130px;
+	position: absolute;
+	left: -140px;
+	z-index: 100;
+	border-radius: 100%;
+
+}
+
+.vue-simple-handler {
+    display: block;
+    background: #f4ba40;
+    height: 10px;
+    width: 10px;
+}
+</style>

@@ -1,6 +1,6 @@
 <template>
   <div class="banner">
-    <!-- {{imgitem}} -->
+    <!-- {{item}} -->
     <carousel
       class="banner-box"
       :items="1"
@@ -15,8 +15,8 @@
       v-if="item"
     >
       <div  v-for="(items, index) in item" :key="index">
-        <router-link v-if="items.ref" :to="'novel/'+ items.ref"> <img :src="items.image_preview" alt /></router-link>
-        <img v-else :src="items.image_preview" alt />
+        <router-link v-if="items.ref" :to="items.url ? items.url  :'novel/'+ items.ref"> <img :src="items.image_data.url" alt /></router-link>
+        <img v-else :src="items.image_data.url" alt />
       </div>
       <!-- <div>
         <img :src="$path.imageCover('คุณหนูสี่.jpg')" alt />
@@ -76,6 +76,9 @@ export default Vue.extend({
         1024: {
           items: 2.4,
         },
+        2000:{
+          items:3.8
+        }
       },
       imgitem:null,
     };
@@ -83,11 +86,9 @@ export default Vue.extend({
   methods:{
    async  getlist(){
        let banner = await Gatway.getService("/guest/banner");
-      console.log(banner);
       let statusname = banner.data.data.filter((element:any)=>{
         return !element.table
       })
-      console.log(statusname);
       this.imgitem = statusname
       // this.banner = banner.data.data.sort((a, b) => {
       //   return a.ranking - b.ranking;
@@ -118,6 +119,9 @@ export default Vue.extend({
 }
 
 @media (max-width: 768px) {
+    .banner {
+    margin-top: 50px;
+  }
 }
 
 @media (max-width: 415px) {
@@ -125,7 +129,7 @@ export default Vue.extend({
     border-radius: 0px;
   }
   .banner {
-    margin-top: 36px;
+    margin-top: 48px;
   }
 }
 </style>

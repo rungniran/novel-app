@@ -4,23 +4,55 @@ interface formatBytes {
 }
 
 const filters = {
-    NumbertoText(num: number):string{
-        const digits = 0
-        const lookup = [
-            { value: 1, symbol: "" },
-            { value: 1e3, symbol: "K" },
-            { value: 1e6, symbol: "M" },
-            { value: 1e9, symbol: "G" },
-            { value: 1e12, symbol: "T" },
-            { value: 1e15, symbol: "P" },
-            { value: 1e18, symbol: "E" }
-          ];
-          const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
-          const item = lookup.slice().reverse().find(function(item) {
-            return num >= item.value;
-          });
-          return item ? (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol : "0";
-    },
+	// NumbertoText(num) {
+	// 	const si = [
+	// 		{ value: 1, symbol: "" },
+	// 		{ value: 1E3, symbol: "k" },
+	// 		{ value: 1E6, symbol: "M" },
+	// 		{ value: 1E9, symbol: "G" },
+	// 		{ value: 1E12, symbol: "T" },
+	// 		{ value: 1E15, symbol: "P" },
+	// 		{ value: 1E18, symbol: "E" }
+	// 	];
+	// 	const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+	// 	const i = 0 as any;
+	// 	for (let i = si.length - 1; i > 0; i--) {
+	// 		if (num >= si[i].value) {
+	// 			break;
+	// 		}
+	// 	}
+	// 	return (num / si[i].value).toFixed(0).replace(rx, "$1") + si[i].symbol;
+	// },
+	NumbertoText(num:any):string {
+		if (num >= 1000000000) {
+			 return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
+		}
+		if (num >= 1000000) {
+			 return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+		}
+		if (num >= 1000) {
+			 return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+		}
+		return num;
+},
+    // NumbertoText(num: number):string{
+    //     const digits = 0
+    //     const lookup = [
+    //         { value: 1, symbol: "" },
+    //         { value: 1e3, symbol: "K" },
+    //         { value: 1e6, symbol: "M" },
+    //         { value: 1e9, symbol: "G" },
+    //         { value: 1e12, symbol: "T" },
+    //         { value: 1e15, symbol: "P" },
+    //         { value: 1e18, symbol: "E" }
+    //       ];
+    //       const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+    //       const item = lookup.slice().reverse().find(function(item) {
+    //         return num >= item.value;
+    //       });
+    //       return item ? (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol : "0";
+    // },
+
     Ago(day:Date):string{
 		const end = new Date(day).getTime();
 		const seconds:number = Math.floor((new Date().valueOf() - end) / 1000);
@@ -64,7 +96,6 @@ const filters = {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 withCommas(number:any):any {
 	 const temp = parseFloat(number).toFixed(2).split('.')
-	 console.log(temp);
 	  if(temp[1] === '00'){
 			return number + '.00'
 		}else{
@@ -79,19 +110,18 @@ NumberToString(x:string):string{
 	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 },
 
+
 toThaiDateString(date:Date):string {
-	console.log(typeof date);
   const data2 =	new Date(date)
-	console.log(data2);
+
 	
 	const monthNames = [
-			"มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน",
-			"พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม.",
-			"กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+			"ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.",
+			" พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.",
+			"ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."
 	];
 
 	const year = data2.getFullYear() + 543;
-	console.log(year);
 	
 	const month = monthNames[data2.getMonth()];
 	const numOfDay = data2.getDate();
@@ -126,7 +156,6 @@ toThaiDateString(date:Date):string {
 // 	return 0
 // },
 }
-
 const dynamic_path = {
 	image(img:string):string{
 		const images = require.context('../../assets/images', false)
@@ -140,10 +169,10 @@ const dynamic_path = {
 		const images = require.context('../../assets/images/cheerup', false, /\.png$/)
 		return images('./' + img)
 	},
-	imageCover(img:string):string{
-			const images = require.context('../../assets/images/image-cover')
-			return images('./' + img)
-	},
+	// imageCover(img:string):string{
+	// 		const images = require.context('../../assets/images/image-cover')
+	// 		return images('./' + img)
+	// },
 	imageEmpty(img:string):string{
 		const images = require.context('../../assets/images/dragon')
 		return images('./' + img)

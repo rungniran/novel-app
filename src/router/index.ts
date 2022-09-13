@@ -7,14 +7,14 @@ import { writer } from './writer'
 import { profile } from './profile'
 
 
-// import Meta from 'vue-meta'
-// Vue.use(Meta, {
-//   keyName: 'metaInfo',
-//   attribute: 'data-vue-meta',
-//   ssrAttribute: 'data-vue-meta-server-rendered',
-//   tagIDKeyName: 'vmid',
-//   refreshOnceOnNavigation: true
-// })
+import Meta from 'vue-meta'
+Vue.use(Meta, {
+  keyName: 'metaInfo',
+  // attribute: 'data-vue-meta',
+  // ssrAttribute: 'data-vue-meta-server-rendered',
+  // tagIDKeyName: 'vmid',
+  // refreshOnceOnNavigation: true
+})
 Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
@@ -35,6 +35,18 @@ const routes: Array<RouteConfig> = [
     path: '/about',
     name: 'About',
     component: () => import('../pages/About.vue')
+  },
+  {
+    path:'/password/reset',
+    name:'resetpassword',
+    component: () => import('../pages/account/ResetPassword.vue'),
+    // meta:{ requiresAuth: true }
+  },
+  {
+    path:'/submitpassword',
+    name:'resetpassword',
+    component: () => import('../pages/account/Submitpassword.vue'),
+    // meta:{ requiresAuth: true }
   },
   {
     path: '/about',
@@ -65,6 +77,11 @@ const routes: Array<RouteConfig> = [
     path:'/novel/:id',
     name:'Novel',
     component: () => import('../pages/novel/Novel.vue')
+  },
+  {
+    path:'/listdragonhouse',
+    name:'ListDragonHouse',
+    component: () => import('../pages/novel/dragonhouse/ListDragonHouse.vue')
   },
   {
     path:'/read/:slug',
@@ -196,9 +213,8 @@ const router = new VueRouter({
 })
 
 router.beforeEach( async (to, from, next)=>{
+  document.title = 'Novel Kingdom'
   const loggedIn: boolean | undefined =  store.getters.loggedIn
-  console.log(to.meta);
-  
   if(to.meta?.requiresAuth === true ){
     if(loggedIn === false){
       const login_crad = document.getElementsByClassName("login-crad")[0] as HTMLElement
@@ -208,13 +224,13 @@ router.beforeEach( async (to, from, next)=>{
     }else{
       await  next()
       if(to.hash === ""){
-        window.scrollTo(0, 0);
+        // window.scrollTo(0, 0);
       }
       
     }
   }else{
     await next()
-    window.scrollTo(0, 0);
+    // window.scrollTo(0, 0);
     
   }
 })

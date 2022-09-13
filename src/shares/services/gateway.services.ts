@@ -3,21 +3,8 @@ import api from './baseURL';
 import { status } from '../modules/alert'
 const tokenStr = localStorage.getItem("token")
 const Authorization =  { headers: {"Authorization" : `Bearer ${tokenStr}`} }
-// const logout = () => {
-//     localStorage.removeItem("loggedIn")
-//     localStorage.removeItem("token")
-//     localStorage.removeItem("dataset");
-// }
 
-// const status = (key:any) => {
-//     if(key === 401){
-//         const login_crad = document.getElementsByClassName("login-crad")[0] as HTMLElement
-//         const login = document.getElementsByClassName("login")[0] as HTMLElement
-//         login_crad.classList.add("login-crad-show")
-//         login.classList.add("show")
 
-//     }  
-// }
 
 export const Gatway = {
     getService(url:string):any{

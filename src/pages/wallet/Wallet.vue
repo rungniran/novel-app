@@ -22,7 +22,12 @@
               width="25px"
               height="25px"
             />
-            {{ $filter.NumberToString($store.state.auth.coin) }}
+             {{
+          $filter.NumberToString(
+            this.$store.state.auth.dataset.coin_balance_sandbox
+          )
+        }}
+            <!-- {{ $filter.NumberToString($store.state.auth.coin) }} -->
           </div>
           <button class="nv-btn-yellow custom-font" @click="$refs.walletModal.open()">
             เติมเหรียญ
@@ -33,7 +38,7 @@
         </div>
       </div>
     </div>
-    <Coin></Coin>
+    <Coin/>
     <!-- <div class="nv-box-white Coin nv-mt-40">
       <div class="tap-writer" >
                 <router-link @click.native="changeComponent('Coin')" to="#Coin" :class="current === 'Coin' ? 'nv-s nv-s1 nv-s-active' : 'nv-s nv-s1'">
@@ -120,6 +125,8 @@ export default Vue.extend({
 }
 .custom-font{
   font-family: Kanit;
+  // width: 100%;
+
 }
 .nv-con-coin {
   // color: #e49b2b;
@@ -128,7 +135,7 @@ export default Vue.extend({
 }
 @media (max-width: 768px) {
 }
-@media (max-width: 415px) {
+@media (max-width: 500px) {
   // .add-coin{
   //         flex-direction: column;
   //         gap: 10px;

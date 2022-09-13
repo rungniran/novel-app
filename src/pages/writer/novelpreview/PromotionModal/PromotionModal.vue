@@ -6,338 +6,315 @@
       IDCrad="PromotionModalCard"
       ref="Modeal"
       :Close="true"
+      width="600px"
     >
       <template v-slot:body>
-        <h1 class="title-promo">จัดการโปรโมชันนิยาย</h1>
-        <div class="btn-add-promo">
-          <button class="nv-btn-light-blue" @click="openSelectPromo()">
-            เพิ่มโปรโมชัน
-          </button>
-        </div>
-        <div v-if="object.length !== 0" class="card">
-          <div class="card-detail">
-            <p>
-              1.1 โปรโมชัน ซื้อครบ 100 ตอนหรือมากกว่า ลดเหลือตอนละ 1.5 เหรียญ
-              <span style="color: green">{{ `( กำลังใช้งาน )` }}</span>
-            </p>
-            <div class="button-layout">
-              <button class="nv-btn-blue">ตั้งค่า</button>
-              <button class="nv-btn-red">ลบ</button>
-            </div>
-          </div>
-        </div>
-        <div v-else class="add-more-promo">
-          <button class="nv-btn-orange add-promo" @click="openSelectPromo()">
-            เพิ่มโปรโมชันนิยายของคุณ
-          </button>
-        </div>
-      </template>
-    </NovelModal2>
-    <NovelModal2
-      ID="SelectModal"
-      IDCrad="SelectModalCard"
-      ref="select"
-      :Close="true"
-    >
-      <template v-slot:body>
-        <h1 style="text-align: center" class="title-promo">โปรโมชันนิยาย</h1>
-        <div class="btn-promo">
-          <router-link to="/howtopromotion" class="nv-btn-light-blue btn-link"
-            >คู่มือเติมเงิน</router-link
-          >
-        </div>
-        <div class="card-select">
-          <div class="card-detail">
-            <p>
-              1.1 โปรโมชัน ซื้อตั้งแต่ตอน XXX ถึงตอนที่ XXX ลดเหลือตอนละ XXX
-              เหรียญ
-            </p>
-            <div class="button-layout">
-              <button class="nv-btn-blue" @click="openSettingPromoOne()">
-                เลือก
+        <div class="conthianer-pro">
+          <div id="page1" class="page">
+            <div class="hh">
+              <h1 class="title-promo">จัดการโปรโมชันนิยาย</h1>
+              <button class="nv-btn-light-blue " @click="page(1)">
+                เพิ่มโปรโมชัน
               </button>
             </div>
+            <br />
+            <div v-if="itempromotion" class="promotion-ch">
+              <div
+                v-for="(item, index) in itempromotion"
+                :key="index"
+                class="promotion-c"
+              >
+              <span>
+                 {{
+                  novel_promotion_type_fix_data_id[item.novel_promotion_type_fix_data_id].name_preview
+                }}
+                <span
+                  v-if="
+                    item.novel_promotion_type_fix_data_id ===
+                    promotionfix.epTo
+                  "
+                >
+                  {{ item.ep_start }} ถึงตอนที่
+                  {{ item.ep_end }}
+                </span>
+                <span
+                  v-else-if="
+                    item.novel_promotion_type_fix_data_id ===
+                    promotionfix.over
+                  "
+                >
+                  {{ item.ep_end }} ตอนหรือมากกว่า
+                </span>
+                {{
+                  novel_promotion_type_data_id[item.novel_promotion_type_data_id].name_preview
+                }}
+                {{ item.amount }}
+                {{
+                  novel_promotion_type_data_id[item.novel_promotion_type_data_id].value
+                }}
+                </span>
+                <span class="del" @click="delpromotion(item,'sd')">
+                  ลบ
+                </span>
+              </div>
+             
+              <div class="notice">
+              <h1>*คำเตือน ขอให้นักเขียนโปรดใช้ความระมัดระวังในการใช้ Feature โปรโมชั่น เนืองจากโปรโมชั่นในแต่ละแบบสามารถทำงานซ้อนทับกันได้ 
+              ทางแพลตฟอร์มแนะนำเป็นอย่างยิ่งว่านักเขียน 'ควรศึกษาคู่มือก่อนการใช้งาน' ข้อนี้สำคัญมาก
+              หมายเหตุ: หากมีข้อสงสัยใด ๆ สามารถติดต่อสอบถามได้ทาง Page Facebook Novelkingdom*
+              </h1>
+              </div>
+
+            </div>
+            
+            <div v-else>ไม่มีโปรโมชั่น</div>
           </div>
-        </div>
-        <div class="card-select">
-          <div class="card-detail">
-            <p>
-              1.2 โปรโมชัน <span class="red-color">ซื้อนิยายยกชุด</span> XXX
-              ตอนหรือมากกว่า ได้ส่วนลด XXX เหรียญ
-            </p>
-            <div class="button-layout">
-              <button class="nv-btn-blue" @click="openSettingPromoTwo()">
-                เลือก
+          <div id="page2" class="page">
+            <!-- {{promotion_type_fix}} -->
+            <div class="h">
+              <i @click="page(0)" class="fas fa-arrow-left"></i>
+              <h1 class="title-promo">โปรโมชันนิยาย</h1>
+                <button class="nv-btn-light-blue " style="float: left;" @click="mannual()">
+                คู่มือโปรโมชั่น
               </button>
             </div>
-          </div>
-        </div>
-        <div class="card-select">
-          <div class="card-detail">
-            <p>
-              1.3 โปรโมชัน <span class="red-color">ซื้อนิยายยกชุด</span> XXX
-              ตอนหรือมากกว่า ได้ส่วนลด XXX%
-            </p>
-            <div class="button-layout">
-              <button class="nv-btn-blue" @click="openSettingPromoThree()">
-                เลือก
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="card-select">
-          <div class="card-detail">
-            <p>
-              1.4 โปรโมชัน
-              <span class="red-color">ครบทุกตอน</span> (ถึงตอนล่าสุดของนิยาย)
-              ได้ส่วนลด XXX%
-            </p>
-            <div class="button-layout">
-              <button class="nv-btn-blue" @click="openSettingPromoFour()">
-                เลือก
-              </button>
-            </div>
-          </div>
-        </div>
-      </template>
-    </NovelModal2>
-    <NovelModal2
-      ID="OneSettingModal"
-      IDCrad="OneSettingModalCard"
-      ref="Onesetting"
-      :Close="true"
-    >
-      <template v-slot:body>
-        <h1 class="title-promo">ตั้งค่าโปรโมชัน</h1>
-        <div class="card-setting">
-          <div class="card-detail-setting">
-            <div>
-              <p>
-                1.1 โปรโมชัน ซื้อตั้งแต่ตอน XXX ถึงตอนที่ XXX ลดเหลือตอนละ XXX
-                เหรียญ
-              </p>
-            </div>
-            <div class="buy1">
-              <div>กำหนดตอนเริ่มต้น <input type="text" /></div>
-              <div>กำหนดตอนสิ้นสุด <input type="text" /></div>
-              <div>เหลือตอนละ (เหรียญ) <input type="text" /></div>
-              <div>วันสิ้นสุดโปรโมชัน <input type="date" /></div>
-              <div class="btn-addpromo">
-                <p>&nbsp;</p>
-                <button class="nv-btn nv-btn-light-blue">
-                  เพิ่มช่วงโปรโมชันตอนนิยาย
-                </button>
+              
+
+            <div
+              v-for="(item, index) in promotion_type_fix"
+              :key="index"
+              class="card-select"
+            >
+              <div class="card-detail">
+                <p>
+                  {{ item.name_preview }}
+                  <!-- {{item.id}} -->
+                  <!-- 1.1 โปรโมชัน ซื้อตั้งแต่ตอน XXX ถึงตอนที่ XXX ลดเหลือตอนละ XXX
+                เหรียญ -->
+                </p>
+                <div class="button-layout">
+                  <button
+                    class="nv-btn-blue"
+                    @click="openSettingPromoOne(item)"
+                  >
+                    เลือก
+                  </button>
+                </div>
               </div>
             </div>
+               <br>
+              <div class="notice">
+              <h1>*คำเตือน ขอให้นักเขียนโปรดใช้ความระมัดระวังในการใช้ Feature โปรโมชั่น เนืองจากโปรโมชั่นในแต่ละแบบสามารถทำงานซ้อนทับกันได้ 
+              ทางแพลตฟอร์มแนะนำเป็นอย่างยิ่งว่านักเขียน 'ควรศึกษาคู่มือก่อนการใช้งาน' ข้อนี้สำคัญมาก
+              หมายเหตุ: หากมีข้อสงสัยใด ๆ สามารถติดต่อสอบถามได้ทาง Page Facebook Novelkingdom*
+              </h1>
+              </div>
           </div>
-          <table style="width: 100%">
+        </div>
+      </template>
+    </NovelModal2>
+    <NovelModal2
+      ID="be084528-696d-40ea-ba35-2fb23e5e28ab"
+      IDCrad="be084528-696d-40ea-ba35-2fb23e5e28abModalCard"
+      ref="be084528-696d-40ea-ba35-2fb23e5e28ab"
+      :Close="true"
+    >
+      <template v-slot:body>
+        <div class="con-protion">
+          <h1 class="title-promo">โปรโมชัน ซื้อตั้งแต่ตอนที่ xx ถึงตอนที่ xx </h1>
+          <div class="from-col">
+            <div>
+              ตอนที่
+              <input type="text" v-model="objData.ep_start" />
+            </div>
+            <div>
+              ถึงตอนที่
+              <input type="text" v-model="objData.ep_end" />
+            </div>
+            <div>
+              <!-- จำนวนที่ลด -->
+             {{novel_promotion_type_data_id[objData.novel_promotion_type_data_id].name_preview}}
+             <!-- {{novel_promotion_type_data_id[objData.novel_promotion_type_data_id].value}}  -->
+              <input type="text" v-model="objData.amount" />
+            </div>
+            <!-- <div>
+              ประเภทที่ลด
+              <select
+                :disabled="ispromotion_type"
+                v-model="objData.novel_promotion_type_data_id"
+              >
+                <option
+                  v-for="(item, index) in promotion_type"
+                  :value="item.id"
+                  :key="index"
+                >
+                  {{ item.name_preview }}
+                </option>
+              </select>
+            </div> -->
+          </div>
+          <table v-if="itempromotion">
             <tr>
-              <th>ตอนเริ่มต้นโปรโมชัน</th>
-              <th>ตอนสิ้นสุดโปรโมชัน</th>
-              <th>จำนวนเหรียญ</th>
-              <th>เริ่มต้น/สิ้นสุด</th>
+              <th>ตอนแรก</th>
+              <th>ตอนสุดท้าย</th>
+              <th>จำนวน</th>
+              <th>ประเภท</th>
+              <th>สถานะ</th>
               <th>จัดการ</th>
             </tr>
-            <tr style="text-align: center">
-              <td>1</td>
-              <td>100</td>
-              <td>50</td>
-              <td>20/06/65 27/06/65</td>
+            <tr
+              style="text-align: center"
+              v-for="(item, index) in itempromotion"
+              :key="index"
+            >
+              <td>{{ item.ep_start }}</td>
+              <td>{{ item.ep_end }}</td>
+              <th>{{ item.amount }}</th>
+              <td>{{ item.novel_promotion_type_data_preview }}</td>
+              <td>{{ item.status }}</td>
               <td>
-                <button>แก้ไข</button>
-                <button>ลบ</button>
+                <!-- <button>แก้ไข</button> -->
+                <button @click="delpromotion(item)">ลบ</button>
               </td>
             </tr>
+            <tr v-if="itempromotion.length === 0">
+              <td colspan="6">ไม่มีข้อมูล</td>
+            </tr>
           </table>
-          <div class="detail-promo">
-            ตัวอย่างโปรโมชัน
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Aspernatur explicabo quam quisquam, suscipit excepturi perferendis
-              expedita? Commodi neque voluptates laborum natus, aspernatur modi
-              laudantium, architecto numquam suscipit eius, necessitatibus in.
-            </p>
-          </div>
-           <div class="btn-save">
-            <button class="nv-btn-light-blue">บันทึกข้อมูล</button>
+          <div>
+            <button class="nv-btn-light-blue" @click="addpromotion()">
+              บันทึกข้อมูล
+            </button>
           </div>
         </div>
       </template>
     </NovelModal2>
     <NovelModal2
-      ID="TwoSettingModal"
-      IDCrad="TwoSettingModalCard"
-      ref="Twosetting"
+      ID="4d0e3f6d-b458-458d-8e31-81c4a9d17836"
+      IDCrad="4d0e3f6d-b458-458d-8e31-81c4a9d17836ModalCard"
+      ref="4d0e3f6d-b458-458d-8e31-81c4a9d17836"
       :Close="true"
     >
       <template v-slot:body>
-        <h1 class="title-promo">ตั้งค่าโปรโมชัน</h1>
-        <div class="card-setting">
-          <div class="card-detail-setting">
+        <div class="con-protion">
+          <h1 class="title-promo">โปรโมชัน ซื้อนิยายยกชุด xx ตอน</h1>
+          <div class="from-col">
             <div>
-              <p>
-                1.2 โปรโมชัน <span class="red-color">ซื้อนิยายยกชุด</span> XXX
-                ตอนหรือมากกว่า ได้ส่วนลด XXX เหรียญ
-              </p>
+              จำนวนตอนที่ครบ
+              <input type="text" v-model="objData.ep_end" />
             </div>
-            <div class="buy2">
-              <div>ซื้อครบ <input type="text" /></div>
-              <div>ลด (เหรียญ) <input type="text" /></div>
-              <div>วันสิ้นสุดโปรโมชัน <input type="date" /></div>
-              <div class="btn-addpromo">
-                <p>&nbsp;</p>
-                <button class="nv-btn nv-btn-light-blue">
-                  เพิ่มช่วงโปรโมชันตอนนิยาย
-                </button>
-              </div>
-            </div>
-          </div>
-          <table style="width: 100%">
-            <tr>
-              <th>ซื้อครบ</th>
-              <th>ลด (เหรียญ)</th>
-              <th>เริ่มต้น/สิ้นสุด</th>
-              <th>จัดการ</th>
-            </tr>
-            <tr style="text-align: center">
-              <td>100</td>
-              <td>50</td>
-              <td>20/06/65 27/06/65</td>
-              <td>
-                <button>แก้ไข</button>
-                <button>ลบ</button>
-              </td>
-            </tr>
-          </table>
-          <div class="detail-promo">
-            ตัวอย่างโปรโมชัน
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Aspernatur explicabo quam quisquam, suscipit excepturi perferendis
-              expedita? Commodi neque voluptates laborum natus, aspernatur modi
-              laudantium, architecto numquam suscipit eius, necessitatibus in.
-            </p>
-          </div>
-           <div class="btn-save">
-            <button class="nv-btn-light-blue">บันทึกข้อมูล</button>
-          </div>
-        </div>
-      </template>
-    </NovelModal2>
-    <NovelModal2
-      ID="ThreeSettingModal"
-      IDCrad="ThreeSettingModalCard"
-      ref="Threesetting"
-      :Close="true"
-    >
-      <template v-slot:body>
-        <h1 class="title-promo">ตั้งค่าโปรโมชัน</h1>
-        <div class="card-setting">
-          <div class="card-detail-setting">
             <div>
-              <p>
-                1.3 โปรโมชัน <span class="red-color">ซื้อนิยายยกชุด</span> XXX
-                ตอนหรือมากกว่า ได้ส่วนลด XXX%
-              </p>
+              {{novel_promotion_type_data_id[objData.novel_promotion_type_data_id].name}} 
+              {{novel_promotion_type_data_id[objData.novel_promotion_type_data_id].value}} 
+              <input type="text" v-model="objData.amount" />
             </div>
-            <div class="buy3">
-              <div>ซื้อครบ <input type="text" /></div>
-              <div>ลด (%) <input type="text" /></div>
-              <div>วันสิ้นสุดโปรโมชัน <input type="date" /></div>
-              <div class="btn-addpromo">
-                <p>&nbsp;</p>
-                <button class="nv-btn nv-btn-light-blue">
-                  เพิ่มช่วงโปรโมชันตอนนิยาย
-                </button>
-              </div>
-            </div>
+            <!-- <div>
+              ประเภทที่ลด
+              <select
+                v-model="objData.novel_promotion_type_data_id"
+                :disabled="ispromotion_type"
+              >
+                <option
+                  v-for="(item, index) in promotion_type"
+                  :value="item.id"
+                  :key="index"
+                  selected
+                >
+                  {{ item.name_preview }}
+                </option>
+              </select>
+            </div> -->
           </div>
-          <table style="width: 100%">
+          <table style="width: 100%" v-if="itempromotion">
             <tr>
               <th>ซื้อครบ</th>
-              <th>ลด (%)</th>
-              <th>เริ่มต้น/สิ้นสุด</th>
+              <th>จำนวน</th>
+              <th>ประเภท</th>
+              <th>สถานะ</th>
               <th>จัดการ</th>
             </tr>
-            <tr style="text-align: center">
-              <td>100</td>
-              <td>50</td>
-              <td>20/06/65 27/06/65</td>
+            <tr
+              style="text-align: center"
+              v-for="(item, index) in itempromotion"
+              :key="index"
+            >
+              <td>{{ item.ep_end }}</td>
+              <td>{{ item.amount }}</td>
+              <td>{{ item.novel_promotion_type_data_preview }}</td>
+              <td>{{ item.status }}</td>
               <td>
-                <button>แก้ไข</button>
-                <button>ลบ</button>
+                <!-- <button>แก้ไข</button> -->
+                <button @click="delpromotion(item)">ลบ</button>
               </td>
             </tr>
+            <tr v-if="itempromotion.length === 0">
+              <td colspan="5">ไม่มีข้อมูล</td>
+            </tr>
           </table>
-          <div  class="detail-promo">
-            ตัวอย่างโปรโมชัน
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Aspernatur explicabo quam quisquam, suscipit excepturi perferendis
-              expedita? Commodi neque voluptates laborum natus, aspernatur modi
-              laudantium, architecto numquam suscipit eius, necessitatibus in.
-            </p>
-          </div>
-         <div class="btn-save">
-            <button class="nv-btn-light-blue">บันทึกข้อมูล</button>
+          <div>
+            <button class="nv-btn-light-blue" @click="addpromotion()">
+              บันทึกข้อมูล
+            </button>
           </div>
         </div>
       </template>
     </NovelModal2>
     <NovelModal2
-      ID="FourSettingModal"
-      IDCrad="FourSettingModalCard"
-      ref="Foursetting"
+      ID="ff37897a-4c02-4ba2-9849-b79ae51bff5f"
+      IDCrad="ff37897a-4c02-4ba2-9849-b79ae51bff5fModalCard"
+      ref="ff37897a-4c02-4ba2-9849-b79ae51bff5f"
       :Close="true"
     >
       <template v-slot:body>
-        <h1 class="title-promo">ตั้งค่าโปรโมชัน</h1>
-        <div class="card-setting">
-          <div class="card-detail-setting">
+        <div class="con-protion">
+          <h1 class="title-promo">โปรโมชัน ซื้อครบทุกตอน (ถึงตอนล่าสุดของนิยาย) </h1>
+          <div class="from-col">
             <div>
-              <p>
-                1.4 โปรโมชัน
-                <span class="red-color">ครบทุกตอน</span> (ถึงตอนล่าสุดของนิยาย)
-                ได้ส่วนลด XXX%
-              </p>
+              {{novel_promotion_type_data_id[objData.novel_promotion_type_data_id].name}} 
+              {{novel_promotion_type_data_id[objData.novel_promotion_type_data_id].value}} 
+              <input type="text" v-model="objData.amount" />
             </div>
-            <div class="buy4">
-              <div>ลด (%) <input type="text" /></div>
-              <div>วันสิ้นสุดโปรโมชัน <input type="date" /></div>
-              <div class="btn-addpromo" >
-                <p>&nbsp;</p>
-                <button class="nv-btn nv-btn-light-blue ">
-                  เพิ่มช่วงโปรโมชันตอนนิยาย
-                </button>
-              </div>
-            </div>
+            <!-- <div>
+              ประเภทที่ลด
+              <select :disabled="ispromotion_type"  v-model="objData.novel_promotion_type_data_id">
+                <option
+                  v-for="(item, index) in promotion_type"
+                  :value="item.id"
+                  :key="index"
+                >
+                  {{ item.name_preview }}
+                </option>
+              </select>
+            </div> -->
           </div>
-          <table style="width: 100%">
+          <table v-if="itempromotion">
             <tr>
-              <th>ลด %</th>
-              <th>เริ่มต้น/สิ้นสุด</th>
+              <th>จำนวน</th>
+              <th>ประเภท</th>
+              <th>สถานะ</th>
               <th>จัดการ</th>
             </tr>
-            <tr style="text-align: center">
-              <td>50</td>
-              <td>20/06/65 27/06/65</td>
+            <tr
+              style="text-align: center"
+              v-for="(item, index) in itempromotion"
+              :key="index"
+            >
+              <td>{{ item.amount }}</td>
+              <td>{{ item.novel_promotion_type_data_preview }}</td>
+              <td>{{ item.status }}</td>
               <td>
-                <button>แก้ไข</button>
-                <button>ลบ</button>
+                <!-- <button>แก้ไข</button> -->
+                <button @click="delpromotion(item)">ลบ</button>
               </td>
             </tr>
+            <tr v-if="itempromotion.length === 0">
+              <td colspan="4">ไม่มีข้อมูล</td>
+            </tr>
           </table>
-          <div class="detail-promo">
-            ตัวอย่างโปรโมชัน
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Aspernatur explicabo quam quisquam, suscipit excepturi perferendis
-              expedita? Commodi neque voluptates laborum natus, aspernatur modi
-              laudantium, architecto numquam suscipit eius, necessitatibus in.
-            </p>
-          </div>
-          <div class="btn-save">
-            <button class="nv-btn-light-blue">บันทึกข้อมูล</button>
+          <div>
+            <button class="nv-btn-light-blue" @click="addpromotion()">
+              บันทึกข้อมูล
+            </button>
           </div>
         </div>
       </template>
@@ -348,67 +325,204 @@
 <script>
 import Vue from "vue";
 /* eslint-disable no-undef */
+import { Gatway } from "@/shares/services";
+import { promotion, promotion_type } from "@/shares/constants/enum";
+import { novel_promotion_type_data_id, novel_promotion_type_fix_data_id } from "@/shares/constants/constant";
 export default Vue.extend({
   components: {
     NovelModal2: () => import("@/components/widget/NovelModal2.vue"),
   },
+  props: {
+    epcount: {
+      type: Number,
+      default: 0,
+    },
+  },
   data() {
     return {
       object: ["1"],
+      promotionfix: promotion,
+      ispromotion_type: false,
+      promotion_type_fix: null,
+      promotion: null,
+      promotion_type: null,
+      itempromotion: null,
+      objData: {
+        amount: "",
+        ep_end: "",
+        ep_start: "",
+        novel_data_id: this.$route.params.id,
+        novel_promotion_type_data_id: "",
+        novel_promotion_type_fix_data_id: "",
+      },
+      novel_promotion_type_data_id:novel_promotion_type_data_id,
+      novel_promotion_type_fix_data_id:novel_promotion_type_fix_data_id,
     };
   },
   methods: {
     open() {
-      // console.log("openModal")
+      this.getpomotiom();
+      this.page(0)
       this.$refs.Modeal.open();
     },
-    openSelectPromo() {
-      this.$refs.select.open();
-      this.$refs.Modeal.close();
+
+    mannual() {
+      this.$router.push("/howtopromotion")
     },
-    openSettingPromoOne() {
-      this.$refs.Onesetting.open();
-      this.$refs.Modeal.close();
-      this.$refs.select.close();
-      this.$refs.Twosetting.close();
-      this.$refs.Threesetting.close();
-      this.$refs.Foursetting.close();
+
+    async gelmi() {
+      let res = await Gatway.getService(
+        "/miscellaneous/fetch/novel_promotion_datas/novel_promotion_type_fix_data_id"
+      );
+      this.promotion_type_fix = res.data.data;
+      let promotion_type = await Gatway.getService(
+        "/miscellaneous/fetch/novel_promotion_datas/novel_promotion_type_data_id"
+      );
+      //  console.log(promotion_type.data.data);
+      this.promotion_type = promotion_type.data.data;
     },
-    openSettingPromoTwo() {
-      this.$refs.Twosetting.open();
-      this.$refs.Modeal.close();
-      this.$refs.select.close();
-      this.$refs.Onesetting.close();
-      this.$refs.Threesetting.close();
-      this.$refs.Foursetting.close();
+    async getpomotiom() {
+      let res = await Gatway.getIDService(
+        "/guest/novel-promotion-data",
+        this.$route.params.id
+      );
+      this.itempromotion = res.data.data;
+      this.$emit('reface')
     },
-    openSettingPromoThree() {
-      this.$refs.Threesetting.open();
-      this.$refs.Modeal.close();
-      this.$refs.select.close();
-      this.$refs.Twosetting.close();
-      this.$refs.Onesetting.close();
-      this.$refs.Foursetting.close();
+    async getpomotiomfilter(uuid) {
+      let res = await Gatway.getIDService(
+        "/guest/novel-promotion-data",
+        this.$route.params.id
+      );
+      this.itempromotion = res.data.data.filter((item) => {
+        return item.novel_promotion_type_fix_data_id === uuid;
+      });
+      this.$emit('reface')
+      // this.itempromotion = res.data.data
     },
-    openSettingPromoFour() {
-      this.$refs.Foursetting.open();
-      this.$refs.Modeal.close();
-      this.$refs.select.close();
-      this.$refs.Twosetting.close();
-      this.$refs.Onesetting.close();
-      this.$refs.Threesetting.close();
+    page(p) {
+      if (p === 1) {
+        this.gelmi();
+      } else if (p === 0) {
+        this.getpomotiom();
+      }
+      let conthianer = document.getElementsByClassName("conthianer-pro")[0];
+      conthianer.style.marginLeft = -600 * p + "px";
     },
+    async openSettingPromoOne(item) {
+      this.reset();
+      this.itempromotion = null;
+      if (promotion.epTo === item.id) {
+        this.ispromotion_type = true;
+        this.objData.novel_promotion_type_data_id = promotion_type.reduced;
+      } else if (promotion.over === item.id) {
+        this.ispromotion_type = true;
+        this.objData.ep_start = 1;
+        this.objData.novel_promotion_type_data_id = promotion_type.percentage;
+      } else if (promotion.buySet === item.id) {
+        this.ispromotion_type = true;
+        this.objData.novel_promotion_type_data_id = promotion_type.percentage;
+        this.objData.ep_start = 1;
+        this.objData.ep_end = this.$props.epcount;
+      }
+      await this.getpomotiomfilter(item.id);
+      this.objData.novel_promotion_type_fix_data_id = item.id;
+
+      this.$refs[item.id].open();
+    },
+    async addpromotion() {
+      await Gatway.postService(
+        "/customers/novel-promotion",
+        this.objData
+      );
+
+      this.getpomotiomfilter(this.objData.novel_promotion_type_fix_data_id);
+    },
+    async delpromotion(item, filters= undefined) {
+      await Gatway.DelService(
+        "/customers/novel-promotion/" + item.id
+      );
+      filters === undefined
+      ? this.getpomotiomfilter(item.novel_promotion_type_fix_data_id)
+      : this.getpomotiom()
+    },
+    reset() {
+      this.objData = {
+        amount: "",
+        ep_end: "",
+        ep_start: "",
+        novel_data_id: this.$route.params.id,
+        novel_promotion_type_data_id: "",
+        novel_promotion_type_fix_data_id: "",
+      };
+    },
+  },
+  mounted() {
+    // this.gelmi()
   },
 });
 </script>
-<style lang="scss">
-.detail-promo{
-  margin:20px 0px;
+<style lang="scss" scoped>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td,
+th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+.del{
+  // color: red;
+  // color: #000;
+  cursor: pointer;
+  padding: 1px 5px;
+  background: #db6060;
+  border-radius: 5px;
+  font-size: 14px;
+}
+.con-protion {
+  display: grid;
+  gap: 20px;
+}
+.PromotionModal {
+  width: 600px;
+}
+.page {
+  width: 600px;
+  padding: 20px;
+}
+.detail-promo {
+  margin: 20px 0px;
+}
+.conthianer-pro {
+  transition: 0.3s;
+  // overflow: hidden;
+  width: 600px;
+  //  padding: 20px;
+  display: grid;
+  grid-template-columns: 600px 600px;
+  width: 600px;
+}
+.from-col {
+  display: flex;
+  gap: 10px;
 }
 .btn-add-promo {
   margin-bottom: 5px;
   display: flex;
   justify-content: end;
+}
+.promotion-ch{
+  display: grid;
+  gap: 10px;
 }
 .btn-save {
   display: flex;
@@ -423,15 +537,7 @@ export default Vue.extend({
   justify-content: end;
   margin-bottom: 10px;
 }
-table,
-th,
-td {
-  border: 1px solid black;
-}
 
-table {
-  margin-top: 20px;
-}
 .add-more-promo {
   margin-top: 150px;
   display: flex;
@@ -483,12 +589,23 @@ table {
   display: flex;
   align-items: center;
 }
-
+.promotion-c{
+      padding: 20px;
+    background: #6a70aa;
+    font-family: "Sarabun", sans-serif;
+    border-radius: 5px;
+    font-size: 15px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+}
 .card-select {
-  border-radius: 12px;
-  border: 1px solid #ab93f9;
+  border-radius: 7px;
+  // border: 2px solid #ab93f9;
   padding: 15px;
-  margin-bottom: 10px;
+  color: #ffffff;
+  background: #6a70aa;
+  margin-bottom: 5px;
 }
 
 .card {
@@ -501,11 +618,10 @@ table {
 .title-promo {
   text-align: center;
   font-size: 20px;
-  margin-bottom: 10px;
 }
 .contai-modal-crad {
-  height: 550px !important;
-  width: 1150px !important;
+  // height: 550px !important;
+  // width: 1150px !important;
   overflow-y: scroll;
 }
 .contai-modal-crad::-webkit-scrollbar {
@@ -514,22 +630,45 @@ table {
 
 @media (max-width: 1024px) {
 }
-@media (max-width: 768px) {
+@media (max-width: 630px) {
+    .PromotionModal {
+  width: 500px;
+}
+.page {
+  width: 500px;
+  padding: 20px;
+}
+}
+@media (max-width: 500px) {
+    .PromotionModal {
+  width: 430px;
+}
+.page {
+  width: 430px;
+  padding: 20px;
+}
 }
 @media (max-width: 415px) {
-  .card-detail {
-  display: grid;
-  grid-template-columns: 1fr;
-  justify-content: space-between;
-  align-items: center;
+  // .card-detail {
+  //   display: grid;
+  //   grid-template-columns: 1fr;
+  //   justify-content: space-between;
+  //   align-items: center;
+  // }
+  .PromotionModal {
+  width: 410px;
 }
-.button-layout{
-  margin-top: 10px;
-  display: flex;
-  justify-content: center;
-  gap: 20px;
+.page {
+  width: 410px;
+  padding: 20px;
 }
-  .mobile{
+  .button-layout {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  .mobile {
     display: none;
   }
   .add-more-promo {
@@ -537,41 +676,37 @@ table {
     justify-content: center;
   }
   .buy4 {
-  display: grid;
-  gap: 10px;
-  grid-template-columns: 1fr;
-  align-items: center;
-  text-align: center;
-}
-.btn-addpromo{
-  display: flex;
-  justify-content: center;
-
-}
-.buy1 {
-  display: grid;
-  gap: 10px;
-  grid-template-columns: 1fr;
-  align-items: center;
-  text-align: center;
-
-}
-.buy2 {
-  display: grid;
-  gap: 10px;
-  grid-template-columns: 1fr;
-  align-items: center;
-  text-align: center;
-
-}
-.buy3 {
-  display: grid;
-  gap: 10px;
-  grid-template-columns: 1fr;
-  align-items: center;
-  text-align: center;
-
-}
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr;
+    align-items: center;
+    text-align: center;
+  }
+  .btn-addpromo {
+    display: flex;
+    justify-content: center;
+  }
+  .buy1 {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr;
+    align-items: center;
+    text-align: center;
+  }
+  .buy2 {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr;
+    align-items: center;
+    text-align: center;
+  }
+  .buy3 {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr;
+    align-items: center;
+    text-align: center;
+  }
 }
 
 .layout-main {
@@ -594,11 +729,11 @@ table {
   grid-auto-rows: 0.3fr auto;
 }
 
-.search {
-  display: grid;
-  grid-template-columns: 3.5fr 1fr;
-  gap: 20px;
-}
+// .search {
+//   display: grid;
+//   grid-template-columns: 3.5fr 1fr;
+//   gap: 20px;
+// }
 
 .layout-img {
   display: grid;
@@ -623,5 +758,34 @@ table {
 .nv-btn-yellow {
   width: fit-content;
   font-size: 16px;
+}
+.h {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.hh {
+  display: flex;
+  justify-content: space-between;
+}
+.notice {
+  width: 100%;
+  background: #f8e0d7;
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 5px;
+  color: #db6060;
+  border: 1px solid #db6060;
+}
+@media (max-width: 390px) {
+
+  .PromotionModal {
+  width: 375px;
+}
+.page {
+  width: 375px;
+  padding: 20px;
+}
 }
 </style>

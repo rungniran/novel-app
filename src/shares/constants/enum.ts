@@ -34,6 +34,19 @@ export enum transaction_type_data {
   SellingNovels = 'c5b2a2a5-fda2-4415-9577-10dded75b122',
 
 }
+export enum promotion {
+  buySet = 'ff37897a-4c02-4ba2-9849-b79ae51bff5f',
+  over = '4d0e3f6d-b458-458d-8e31-81c4a9d17836',
+  epTo = 'be084528-696d-40ea-ba35-2fb23e5e28ab'
+}
+
+
+export enum promotion_type {
+  percentage='9e6e98e6-e77f-4522-ae95-0d964ce6973f',
+  reduced ='e214ff72-35fa-4d68-b0c3-9786f3925324',
+  discount ='ac123486-d555-41a3-bc69-671266b7f547'
+}
+
 
 // ['id' => 'd9f29607-1a36-4b6f-be37-a702268d3387', 'table' => 'user_transaction_datas', 'tag' => 'transaction_type_data_id', 'name' => 'เติ่มเงินผ่าน Omise',     'name_preview' => 'เติ่มเงินผ่าน Omise',     'value' => '+'],
 // ['id' => '90199222-cb3e-4bcd-ba2b-806ca0f7d6f6', 'table' => 'user_transaction_datas', 'tag' => 'transaction_type_data_id', 'name' => 'เติ่มเงิน',     'name_preview' => 'เติ่มเงิน',     'value' => '+'],

@@ -1,26 +1,38 @@
 <template>
   <div>
     <div class="nv-box-white nv-mt-40">
-      <!-- <div class="img-cover">
-                <div class="img-profile" style="background: url(https://cdn-icons-png.flaticon.com/512/149/149071.png) center center/cover ;">
-                    <div class="Lv">
+      <div class="img-cover">
+        <div
+          class="img-profile"
+          style="
+            background: url(https://cdn-icons-png.flaticon.com/512/149/149071.png) center center/cover;
+          "
+        >
+          <!-- <div class="Lv">
                         Level 1
-                    </div>
-                </div>
-            </div> -->
-      <cover  :data="gatitemProfile"/>
-      <!-- <div class="contant">
-                  <div class="box-username">
-                    <div v-if="profile" class="nv-username">{{profile.username}}</div>
-                    <div v-if="profile" >#{{profile.dragon}}</div>
-                    <div class="level">
+                    </div> -->
+        </div>
+      </div>
+      <div class="contant">
+        <div class="box-username">
+          <div class="nv-username">
+            <span v-if="gatitemProfile.user_profile_datas[0].user_nickname">
+              {{ gatitemProfile.user_profile_datas[0].user_nickname }}
+            </span>
+            <span v-else
+              >{{ gatitemProfile.user_profile_datas[0].first_name }}
+              {{ gatitemProfile.user_profile_datas[0].last_name }}</span
+            >
+          </div>
+          <div v-if="profile">#นักรบมังกร</div>
+          <!-- <div class="level">
                         <div class="teb-level"></div>
-                    </div>
-                    <div class="nv-mt-10">
+                    </div> -->
+          <!-- <div class="nv-mt-10">
                         Exp {{lv}} / 100
-                    </div>
-                </div>
-            </div> -->
+                    </div> -->
+        </div>
+      </div>
       <div>
         <div class="nv-mt-10">
           <div style="display: flex; grid-gap: 10px; justify-content: center">
@@ -34,18 +46,37 @@
               ><i class="far fa-edit"></i> ตั้งค่า</router-link
             > -->
           </div>
-          <div class="nv-mt-10">
-            <div>
+             <!-- <pre> {{treasureBoxDatas}}</pre> -->
+          <div class="nv-mt-10" v-if="treasureBoxDatas">
+            <div v-if="treasureBoxDatas.length !==0">
               <div class="title">ของสะสมหายาก</div>
               <div class="con-all">
-                <div class="box-all"></div>
-                <div class="box-all"></div>
-                <div class="box-all"></div>
-                <div class="box-all"></div>
+                <div
+                  class="box-all"
+                  v-for="(item, index) in treasureBoxDatas"
+                  :key="index"
+                >
+                  <!-- {{item.system_note}} -->
+                  <img
+                    :src="
+                      item.image_url
+                        ? item.image_url
+                        : $path.image('loading.png')
+                    "
+                    width="100%"
+                    class="nv-img-item"
+                    @error="$event.target.src = $path.image('loading.png')"
+                  />
+
+                  <!-- https://119.59.97.111/storage/novel_image/0A369541-7823-403B-9A0B-13C144652C01. -->
+                  <!-- {{item.ref}}
+                   <img :src="' https://119.59.97.111/storage/novel_image/' +item.ref +'.'" width="100%" class="nv-img-novel"> -->
+                </div>
               </div>
             </div>
+            <!-- <div v-else>ไม่มีข้อมูล</div> -->
           </div>
-          <div class="nv-mt-20">
+          <!-- <div class="nv-mt-20">
             <div>
               <div class="title">นักเขียนคนโปรด</div>
               <div class="con-all">
@@ -55,46 +86,73 @@
                 <div class="box-all"></div>
               </div>
             </div>
-          </div>
-          <div class="nv-mt-20">
-            <div>
+          </div> -->
+          <div class="nv-mt-20"  v-if="bookShelfData">
+            <div v-if="bookShelfData.length !== 0">
               <div class="title">เรื่องที่ติดตาม</div>
               <div class="con-all">
-                <div class="box-all"></div>
-                <div class="box-all"></div>
-                <div class="box-all"></div>
-                <div class="box-all"></div>
+                <router-link
+                  class="box-all"
+                  v-for="(item, index) in bookShelfData"
+                  :key="index"
+                  :to="'/novel/'+ item.id"
+                >
+                  <img
+                    :src=" item.image_data 
+                ? item.image_data.url
+                : $path.image('loading.png')"
+                    width="100%"
+                    class="nv-img-novel"
+                  />
+                </router-link>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <!-- <img :src="$path.svg('test.svg')"> -->
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Gatway } from "@/shares/services"
+import { Gatway } from "@/shares/services";
+import cover from "@/components/Cover.vue";
 export default Vue.extend({
   name: "Account",
-  data(){
-    return{
-      gatitemProfile:{}
-    }
+  data() {
+    return {
+      gatitemProfile: {},
+      bookShelfData: null as any,
+      treasureBoxDatas: null as any,
+    };
   },
   components: {
-    cover: () => import("@/components/Cover.vue"),
+    // cover
   },
-  methods:{
-    async getdata(){
-      let res = await Gatway.getIDService('/customers/profile-data/index', this.$route.params.username)
-      this.gatitemProfile = res.data.data
-    }
+  methods: {
+    async getdata() {
+      let res = await Gatway.getIDService(
+        "/guest/profile-data/index",
+        this.$route.params.username
+      );
+      this.gatitemProfile = res.data.data;
+      let profile = await Gatway.getIDService(
+        "/guest/profile",
+        this.$route.params.username
+      );
+      this.bookShelfData = profile.data.data.bookShelfData;
+      console.log(profile.data.data.treasureBoxDatas);
+      this.treasureBoxDatas = profile.data.data.treasureBoxDatas;
+      // let follow = await Gatway.getService("/customers/follow-datas");
+      // console.log(follow);
+      
+    },
   },
-  mounted(){
-    this.getdata()
-  }
+  mounted() {
+    this.getdata();
+  },
 });
 </script>
 
@@ -188,14 +246,15 @@ $topcover: 280px;
 }
 .con-all {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+      align-items: center;
   grid-gap: 20px;
 }
 
 .box-all {
-  height: 200px;
-  border: 1px solid #9d9d9d;
-  background: #1d2044;
+  // height: 200px;
+  // border: 1px solid #9d9d9d;
+  // background: #1d2044;
   border-radius: 7px;
 }
 .viewprofile {
@@ -203,29 +262,31 @@ $topcover: 280px;
   top: 300px;
   left: 20px;
 }
-@media (max-width: 1024px){
-	
+.nv-img-novel {
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 }
-@media (max-width: 768px){
-	.con-mywork {
+@media (max-width: 1024px) {
+}
+@media (max-width: 768px) {
+  .con-mywork {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-gap: 30px;
   }
-	.con-mywork{
-      grid-template-columns: 1fr 1fr 1fr 1fr;
-    }
+  .con-mywork {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
 }
 
-@media (max-width: 415px){
-	.viewprofile {
+@media (max-width: 415px) {
+  .viewprofile {
     position: unset;
   }
-	.con-mywork{
-      grid-template-columns: 1fr 1fr ;
-    }
-		.con-all{
-			  grid-template-columns: 1fr 1fr ;
-		}
+  .con-mywork {
+    grid-template-columns: 1fr 1fr;
+  }
+  .con-all {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 </style>

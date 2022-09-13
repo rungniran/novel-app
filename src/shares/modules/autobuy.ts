@@ -8,12 +8,10 @@ export function setAutoBuy(key: string):boolean {
       const index = setArrayBuy.indexOf(key)
       setArrayBuy.splice(index, 1 )
       localStorage.setItem("setAutoBuy", JSON.stringify(setArrayBuy))
-      console.log(setArrayBuy);
       return false
     }else{
       setArrayBuy.push(key)
       localStorage.setItem("setAutoBuy", JSON.stringify(setArrayBuy))
-      console.log(setArrayBuy);
       return true
     }
   }else{

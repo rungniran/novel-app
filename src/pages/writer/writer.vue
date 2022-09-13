@@ -4,6 +4,11 @@
       <!-- * คุณยังไม่เพิ่มข้อมูลนักเขียน หากมีข้อมูลนักเขียนเราตัดยอดหรียญทุก 30 วัน <router-link c to="/writer/WriterWithdrawMoney">คลิกที่นี้เพิ่มข้อมูลเขียน</router-link> -->
       * คำแนะนำ หากคุณต้องการถอนเหรียญ  &nbsp; &nbsp; <router-link class="blink" to="/writer/WriterWithdrawMoney">"ให้คลิกที่นี่เพิ่มข้อมูลนักเขียน"</router-link>&nbsp; &nbsp;  จึงจะสามารถทำการถอนเหรียญได้
     </div>
+    <div  v-if="this.$store.state.auth.dataset.profile_writer">
+    <div class="b-mo red" v-if="this.$store.state.auth.dataset.profile_writer.note && this.$store.state.auth.dataset.profile_writer.status_approve !== true ">
+     <i class="fas fa-exclamation-circle"></i> &nbsp; &nbsp;  <router-link class="blink" to="/writer/WriterWithdrawMoney">ข้อมูลนักเขียนของคุณไม่ผ่านการอนุมัติ กรุณาเเก้ไขข้อมูลใหม่อีกครั้ง</router-link>   
+    </div>
+    </div>
     <div class="nv-box-white nv-mt-40">
       <div class="box-profile">
         <div class="con-profile">
@@ -19,7 +24,7 @@
         <div class="data-info nv-mt-30">
           <div class="box-follow">
             <div class="follow">
-              <span>0</span>
+              <span>{{follow.length}}</span>
               <div>กำลังติดตาม</div>
             </div>
             <div class="follow">
@@ -105,12 +110,14 @@
 <script lang="ts">
 import Vue from "vue";
 import { ListService } from "@/shares/services";
+import { Gatway } from "@/shares/services";
 import { user_profile_data_type_id } from "@/shares/constants/enum"
 export default Vue.extend({
   data() {
     return {
       current: "Mywork",
-      wraning: false
+      wraning: false,
+      follow:''
     };
   },
   components: {
@@ -131,11 +138,12 @@ export default Vue.extend({
       let res = await ListService.listNovel();
       
       this.wraning = res.data.data.length !== 0   ?  true  : false
+       let follow = await Gatway.getService("/customers/follow-datas");
+      console.log(follow);
+      this.follow = follow.data.data
     },
     data_type(){
-      console.log((this as any).profile);
-      // return true
-      if((this as any).profile.user_profile_datas.user_profile_data_type_id === user_profile_data_type_id.writer){
+      if(this.$store.state.auth.dataset.profile_writer){
         return true    
       }else{
         return false
@@ -149,6 +157,7 @@ export default Vue.extend({
     // }
   },
   mounted() {
+    this.$store.commit("reset");
     this.listNovel()
     this.cleckpath() === ""
       ? this.changeComponent("Mywork")
@@ -159,6 +168,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .custom-font{
   font-family: Kanit;
+  width: 100%;
 }
   .b-mo{
   background:  #f4ba40;
@@ -173,6 +183,8 @@ font-family: "Sarabun", sans-serif;
 font-size: 14px;
       top: 56px;
     position: sticky;
+}.red{
+   background:  #f45840;
 }
 .blink{
   text-decoration: underline;

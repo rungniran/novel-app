@@ -9,3 +9,8 @@
 //   margin-top: 5px;
 //   padding: 5px 10px;
 // }
+@for $i from 0 through 20 {
+    .ql-indent-#{$i} {
+      padding-left: #{$i*3}em;
+    }
+  }

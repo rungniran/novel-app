@@ -1,20 +1,20 @@
 <template>
   <div class="customize">
-    <div class="box-cuttom">
-      <div class="con-fonrsize">
+    <div class="box-cuttom ">
+      <div class="con-fonrsize ">
         <div class="con-title">
-          <span>ขนาดตัวอักษร</span> <small>{{ fonrsize }} px</small>
+          <span class="inside-customize">ขนาดตัวอักษร</span> <small class="inside-customize">{{ fonrsize }} px</small>
         </div>
-        <div class="font-size">
-          <li @click="fallsize" class="cuttom-size">-</li>
-          <li @click="addsize" class="cuttom-size">+</li>
+        <div class="font-size inside-customize">
+          <li @click="fallsize" class="cuttom-size inside-customize">-</li>
+          <li @click="addsize" class="cuttom-size inside-customize">+</li>
         </div>
       </div>
       <div class="con-fonrsize">
         <div>พื้นหลัง</div>
         <div class="con-changback">
-          <li
-            :class="
+          <li class="inside-customize"
+            :class=" 
               Theme === 'default'
                 ? 'changback default changback-active'
                 : 'changback default'
@@ -23,7 +23,7 @@
           >
             Aa
           </li>
-          <li
+          <li class="inside-customize"
             :class="
               Theme === 'fzooss'
                 ? 'changback fzooss changback-active'
@@ -33,7 +33,7 @@
           >
             Aa
           </li>
-          <li
+          <li class="inside-customize"
             :class="
               Theme === 'dark'
                 ? 'changback dark changback-active'
@@ -48,7 +48,7 @@
       <div class="con-fonrsize">
         <div>แบบตัวอักษร</div>
         <div class="box-font-style">
-          <li
+          <li class="inside-customize"
             :class="
               fontStyle === 'Sarabun'
                 ? 'font-style changback-active'
@@ -58,7 +58,7 @@
           >
             แบบที่ 1
           </li>
-          <li
+          <li class="inside-customize"
             :class="
               fontStyle === 'Kodchasan'
                 ? 'font-style changback-active'
@@ -68,7 +68,7 @@
           >
             แบบที่ 2
           </li>
-          <li
+          <li class="inside-customize"
             :class="
               fontStyle === 'Kanit'
                 ? 'font-style changback-active'
@@ -104,9 +104,10 @@ export default Vue.extend({
     addsize(): void {
       let story = document.getElementsByClassName("story")[0] as HTMLElement;
       let fonrsize = this.fonrsize + 1;
-      if (fonrsize < 28) {
+      if (fonrsize < 51) {
         story.style.fontSize = fonrsize + "px";
         this.fonrsize = fonrsize;
+         this.$emit('clickFonrSize', fonrsize)
         localStorage.setItem("fontSize", fonrsize.toString());
       }
     },
@@ -115,7 +116,9 @@ export default Vue.extend({
       let fonrsize = this.fonrsize - 1;
       if (fonrsize > 16) {
         story.style.fontSize = fonrsize + "px";
+        
         this.fonrsize = fonrsize;
+        this.$emit('clickFonrSize', fonrsize)
         localStorage.setItem("fontSize", fonrsize.toString());
       }
     },
@@ -133,6 +136,30 @@ export default Vue.extend({
     localStorage.getItem("fontFamily")
       ? this.fontfamily(localStorage.getItem("fontFamily") as string)
       : this.fontfamily("Sarabun");
+    document.addEventListener("click", (event: any) => {
+      if (!event.target.matches(".cuttom")) {
+        if (!event.target.matches(".inside-customize")) {
+          let dropdowns = document.getElementsByClassName("box-cuttom");
+          let i = 0;
+          for (i; i < dropdowns.length; i++) {
+            let openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains("box-cuttom-show")) {
+              openDropdown.classList.remove("box-cuttom-show");
+            }
+          }
+        }else{
+          return "inside";
+        }
+        var dropdowns = document.getElementsByClassName("box-cuttom");
+        var i = 0;
+        for (i; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains("box-cuttom-show")) {
+            openDropdown.classList.remove("box-cuttom-show");
+          }
+        }
+      }
+    });
   },
 });
 </script>

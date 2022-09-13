@@ -31,34 +31,92 @@
           </div>
         </div>
       </div>
-      <div class="nv-box-white Exchangetable">
+      <!-- <pre> {{list}} </pre> -->
+      <div class="nv-box-white Exchangetable" v-if="list">
         <div class="card">
-          <div v-for="(item, index) in list" :key="index" class="card-content">
+          <div v-for="(item, index) in list" :key="index" class="card-content pc-view">
+            <img
+              v-lazy="
+                item.image_url
+                  ? item.image_url
+                  : item.system_note.image_preview
+              "
+              class="img-exchange"
+            />
+            
+              <div>
+                {{ $filter.toThaiDateString(item.created_at) }}
+              </div>
+              <div class="detail-content-name">
+                <p class="mobile">ชื่อ:</p>
+                <p class="line-1">{{ item.system_note.name }}</p>
+              </div>
+              <div class="detail-content-diamond">
+                <p class="mobile">เพชร:</p>
+                <p>
+                  {{ item.system_note.diamond }}
+                  <img
+                    class="diamond"
+                    :src="$path.image('diamond.png')"
+                    alt="diamond"
+                  />
+                </p>
+              </div>
+              <div >
+     
+                <div v-if="item.delivery_status.name_preview === 'ไม่จัดส่ง'">
+                  <p class="nonedisplay"></p>
+                </div>
+                <div v-else class="detail-content-status">
+                <p class="mobile">สถานะ:</p>
+
+                <p>{{ item.delivery_status.name_preview }}</p>
+                </div>
+              </div>
+              </div>
+            
+          </div>
+          <div v-for="(item, index) in list" :key="index" class="card-content mobile-view">
+            <img
+              v-lazy="
+                item.image_url
+                  ? item.image_url
+                  : item.system_note.image_preview
+              "
+              class="img-exchange"
+            />
             <div>
-              {{ $filter.toThaiDateString(item.created_at) }}
-            </div>
-            <div class="detail-content-name">
-              <p class="mobile">ชื่อสินค้า:</p>
-              <p>{{ item.system_note.name }}</p>
-            </div>
-            <div class="detail-content-diamond">
-              <p class="mobile">จำนวนเพชร:</p>
-              <p class="mobile">
-                {{ item.system_note.diamond }}
-                <img
-                  class="diamond"
-                  :src="$path.image('diamond.png')"
-                  alt="diamond"
-                />
-              </p>
-            </div>
-            <div class="detail-content-status">
-              <p class="mobile">สถานะจัดส่ง:</p>
-              <p>{{ item.delivery_status.name_preview }}</p>
+              <div>
+                {{ $filter.toThaiDateString(item.created_at) }}
+              </div>
+              <div class="detail-content-name">
+                <p class="mobile">ชื่อ:</p>
+                <p class="line-1">{{ item.system_note.name }}</p>
+              </div>
+              <div class="detail-content-diamond">
+                <p class="mobile">เพชร:</p>
+                <p>
+                  {{ item.system_note.diamond }}
+                  <img
+                    class="diamond"
+                    :src="$path.image('diamond.png')"
+                    alt="diamond"
+                  />
+                </p>
+              </div>
+              <div >
+                <div v-if="item.delivery_status.name_preview === 'ไม่จัดส่ง'">
+                  <p class="nonedisplay"></p>
+                </div>
+                <div v-else class="detail-content-status">
+                <p class="mobile">สถานะ:</p>
+
+                <p>{{ item.delivery_status.name_preview }}</p>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div v-if="list.length === 0" class="boxno">
+          <div v-if="list.length === 0" class="boxno">
           <EmptyContent
             class="image"
             pathName="1.png"
@@ -66,10 +124,11 @@
             fontSize="36px"
           ></EmptyContent>
         </div>
-        <div v-else>loading...</div>
+        </div>
+        
       </div>
+      <div v-else>loading...</div>
     </div>
-  </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
@@ -96,11 +155,9 @@ export default Vue.extend({
           data.push({ ...res, system_note: note });
           // }
         });
-        console.log(data);
 
         this.list = data;
       }
-      console.log(res);
     },
   },
   components: {
@@ -122,17 +179,22 @@ export default Vue.extend({
 }
 
 .card-content {
-  width: auto;
-  display: grid;
-  grid-template-columns: 1fr 1.5fr 1fr 1fr;
+  // width: auto;
+  display: flex;
+  justify-content: space-between;
+  // grid-template-columns: 1fr 1fr 1.5fr 1fr 1fr;
   border: 1px solid rgba(224, 175, 243, 0.977);
   margin: 7px;
-  padding: 15px 20px;
-  padding-left: 100px;
+  padding: 10px;
+  padding-left: 20px;
   background-color: white;
   border-radius: 12px;
+  align-items: center;
+  gap: 30px;
 }
-
+.nonedisplay{
+  display: none;
+}
 .add-coin {
   display: flex;
   justify-content: space-between;
@@ -141,6 +203,12 @@ export default Vue.extend({
 .box-coin {
   display: flex;
   grid-gap: 20px;
+}
+.img-exchange {
+  width: 10%;
+  height: 30%;
+  object-fit: cover;
+  border-radius: 10px;
 }
 .diamond {
   position: absolute;
@@ -163,11 +231,15 @@ export default Vue.extend({
   gap: 5px;
   grid-template-columns: auto auto;
 }
+.nonedisplay{
+  display: none;
+}
 
 .detail-content-status {
   display: grid;
   display: flex;
-  justify-content: start;
+  margin-right: 10px;
+  // justify-content: start;
   gap: 5px;
   grid-template-columns: auto auto;
 }
@@ -185,36 +257,83 @@ export default Vue.extend({
 .Exchangetable {
   padding: 0px;
 }
+.mobile-view{
+  display: none;
+}
 @media (max-width: 1024px) {
-  .card-content {
-    padding-left: 20px;
-    grid-template-columns: 1fr 1.2fr 1fr 1fr;
+  // .card-content {
+  //   padding-left: 20px;
+  //   grid-template-columns: 1fr 1.2fr 1fr 1fr;
+  // }
+}
+
+@media (max-width: 820px) {
+  // .detail-content-diamond {
+  //   display: none;
+  // }
+  .detail-content-status {
+    margin-left: 0px;
+    // justify-content: start;
+  }
+  .img-exchange {
+    width: 15%;
+    height: 35%;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  .mobile{
+    display: none;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 550px) {
+  .mobile-view{
+    display: inline-flex;
+  }
+  .card-content{
+    display: flex;
+    justify-content: flex-start;
+  }
+    .detail-content-diamond {
+    display: inline-flex !important;
+  }
+  .mobile{
+    display: contents;
+  }
+  .pc-view{
+    display: none;
+  }
+  .img-exchange {
+    width: 20%;
+    height: 40%;
+    object-fit: cover;
+    border-radius: 10px;
+  }
 }
 
 @media (max-width: 415px) {
-  .card-content {
-    padding-left: 10px;
-    display: grid;
-    display: flex;
-    justify-content: space-between;
-    grid-template-columns: 1.5fr 1fr 1fr;
-  }
-  .mobile {
-    display: none;
-  }
-
-  .detail-content-status {
-    display: grid;
-    grid-template-columns: 1fr;
+  // .card-content {
+  //   padding-left: 10px;
+  //   display: grid;
+  //   display: flex;
+  //   justify-content: space-between;
+  //   grid-template-columns: 1.5fr 1fr 1fr;
+  // }
+  // .mobile {
+  //   display: none;
+  // }
+    .detail-content-diamond {
+    display: inline-flex !important;
   }
 
-  .detail-content-name {
-    display: grid;
-    grid-template-columns: 1fr;
-  }
+  // .detail-content-status {
+  //   display: grid;
+  //   grid-template-columns: 1fr;
+  // }
+
+  // .detail-content-name {
+  //   display: grid;
+  //   grid-template-columns: 1fr;
+  // }
 }
 </style>

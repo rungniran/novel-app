@@ -11,7 +11,7 @@ export default {
   methods: {
     async logingoogle() {
      let g = await this.$gAuth.signIn()
-     console.log(g);
+
     }
 
   }

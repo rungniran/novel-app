@@ -1,28 +1,32 @@
 <template>
   <div class="HistoryBuy">
+    <!-- <pre>{{dataitem}}</pre> -->
     <div v-if="dataitem">
       <router-link
         v-for="(item, index) in dataitem"
         :key="index"
-        :to="'/read/' + item.novel_episode_datas[0]['id']"
+        :to="item.novel_episode_datas[0]  ? '/read/' + item.novel_episode_datas[0].id :  '/novel/' +item.id"
         class="con-storyBuy"
       >
         <img
           class="img-history-read"
-          :src="'https://119.59.97.111/storage/novel_image/' + item.id + '.png'"
+          :src="item.image_data? item.image_data.url:  $path.image('loading.png')"
           @error="$event.target.src = $path.image('loading.png')"
           alt
         />
-        <div class="detail-novel">
-          <p class="name line-1">{{ item.detail.title }}</p>
-          <br />
+         <div class="detail-novel">
+          <p class="name line-1">{{ item.title }}</p>
+          <br  class="pc"/>
           <p class="line-1 sub-title">
-            {{ item.novel_episode_datas[0]["name"] }}
+            <span v-if="item.novel_episode_datas[0]"> {{ item.novel_episode_datas[0]["name"] }} </span>
+            <span v-else>นิยายตอนนี้ถูกลบไปแล้ว</span>
           </p>
           <div class="date-novel">
-            <p>{{ item.timestamp }} น.</p>
+            <!-- {{item}} -->
+            <p v-if="item.timestamp_update">{{ $filter.toThaiDateString(item.timestamp_update) }}</p>
           </div>
         </div>
+       
       </router-link>
       <div v-if="dataitem.length === 0">
         <EmptyContent
@@ -55,7 +59,6 @@ export default Vue.extend({
         "/customers/remembers/novel-data",
         this.$store.state.storyread.story_Read as any
       );
-      console.log(res);
       if (res.data.data.length === 0) {
         this.dataitem = res.data.data;
       } else {
@@ -64,12 +67,11 @@ export default Vue.extend({
           res.data.data.forEach((elementres: any) => {
             if (elementres) {
               if (elementres.id === element.id) {
-                data.push({ ...elementres, datail: elementres });
+                data.push({ ...elementres, datail: elementres, timestamp_update:element.timestamp_update });
               }
             }
           });
         });
-        console.log(data);
         this.dataitem = data;
       }
     },
@@ -80,6 +82,10 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss" scoped>
+.img-history-read {
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+}
+
 .HistoryBuy {
   width: 100%;
   height: 50%;
@@ -90,13 +96,10 @@ export default Vue.extend({
 }
 
 .con-storyBuy {
-  display: grid;
-  grid-template-columns: 0.7fr 2fr;
+  display: flex;
   align-items: center;
-  justify-content: space-between;
   margin-bottom: 20px;
   gap: 15px;
-  border: 1px solid rgba(224, 175, 243, 0.977);
   border-radius: 12px;
   background-color: white;
 }
@@ -105,13 +108,14 @@ export default Vue.extend({
   justify-content: space-between;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  width: 100%;
 }
 .name {
   font-size: 25px;
 }
 
 p {
-  font-size: 18px;
+  font-size: 20px;
 }
 
 .buy-coin {
@@ -120,48 +124,69 @@ p {
   gap: 10px;
 }
 
-.img-history-read {
-  height: auto;
-  width: 50%;
-  object-fit: cover;
-  border-radius: 12px;
-  margin: 15px;
-}
+
 
 .date-novel {
-  text-align: center;
+  text-align: end;
   display: grid;
   // grid-template-columns: 1fr 1fr;
 }
+  .name {
+    width: 200%;    
+  }
+    .img-history-read {
+    height: auto;
+    width: 15%;
+    object-fit: cover;
+    border-radius: 10px;
+
+  }
 
 @media (max-width: 1024px) {
-  p {
-    font-size: 20px;
-  }
+
 }
 @media (max-width: 768px) {
   .img-history-read {
     height: auto;
-    width: 60%;
+    width: 15%;
     object-fit: cover;
   }
   p {
     font-size: 17px;
   }
+  .name {
+  font-size: 20px;
+}
 }
 
-@media (max-width: 415px) {
-  .img-history-read {
+@media (max-width: 520px) {
+  
+  .name {
+    font-size: 17px;
+    line-height: 1.6;
+    width: 100%;
+  }
+      .img-history-read {
     height: auto;
-    width: 70%;
+    width: 26%;
     object-fit: cover;
   }
-  .name {
-    font-size: 13px;
+  .pc{
+    display: none;
   }
 
   p {
-    font-size: 11px;
+    font-size: 15px;
+    text-align: start;
   }
+  .con-storyBuy {
+ 
+  // gap: 30px;
+ 
+}
+  .detail-novel {
+  display: grid;
+  grid-template-columns: 1fr;
+}
 }
 </style>

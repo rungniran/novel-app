@@ -108,5 +108,6 @@ export default Vue.extend({
     box-sizing: border-box;
     line-height: 1.42;
     min-height: 300px;
+       font-size: 16px !important;
 }
   </style>

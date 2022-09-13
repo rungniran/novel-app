@@ -60,6 +60,15 @@
       <img v-lazy="$path.image('star.png')" width="20px" />
       ผลงานของฉัน
     </router-link>
+     <router-link
+      class="con-list "
+      active-class="active-submenu"
+      to="/exchange"
+
+    >
+      <img class="shop-icon" v-lazy="$path.image('shop.png')" width="20px" />
+      ร้านค้า
+    </router-link>
     <router-link
       class="con-list"
       to="/bookshelf"
@@ -78,7 +87,7 @@
       <img v-lazy="$path.image('history.png')" width="20px" />
       ประวัติการใช้งาน
     </router-link>
-    <router-link
+    <!-- <router-link
       class="con-list"
       active-class="active-submenu"
       to="/reportproblem"
@@ -86,7 +95,7 @@
     >
       <img v-lazy="$path.image('info.png')" width="20px" />
       แจ้งปัญหา
-    </router-link>
+    </router-link> -->
     <router-link
       class="con-list"
       active-class="active-submenu"
@@ -115,6 +124,7 @@ export default Vue.extend({
       window.location.href = "/";
     },
     opanmenu(){
+      this.$store.commit("reset");
       document
         .getElementsByClassName("profile-menu")[0]
         .classList.toggle("profile-show");
@@ -127,19 +137,33 @@ export default Vue.extend({
     },
   },
   mounted(){
-     window.onclick = function(event) {
-   if (!event.target.matches('.user-active')) {
-    var dropdowns = document.getElementsByClassName("profile-menu");
-    var i = 0;
-    for (i ; i < dropdowns.length; i++) {
-      var openDropdown = dropdowns[i];
-      if (openDropdown.classList.contains('profile-show')) {
-        openDropdown.classList.remove('profile-show');
+    document.addEventListener('click', (event)=>{
+      if (!event.target.matches('.user-active')) {
+        var dropdowns = document.getElementsByClassName("profile-menu");
+        var i = 0;
+        for (i ; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('profile-show')) {
+            openDropdown.classList.remove('profile-show');
+          }
+        }
       }
-    }
-  }
-}
-  }
+    })
+  },
+  // beforeDestroy() {
+  //   document.addEventListener('click', (event)=>{
+  //      if (!event.target.matches('.user-active')) {
+  //       var dropdowns = document.getElementsByClassName("profile-menu");
+  //       var i = 0;
+  //       for (i ; i < dropdowns.length; i++) {
+  //         var openDropdown = dropdowns[i];
+  //         if (openDropdown.classList.contains('profile-show')) {
+  //           openDropdown.classList.remove('profile-show');
+  //         }
+  //       }
+  //     }
+  //   })
+  // },
 });
 </script>
 <style lang="scss" scoped>
@@ -236,5 +260,8 @@ export default Vue.extend({
 }
 .active-submenu {
   background: #e6e6e6;
+}
+.shop-icon{
+  opacity: 0.5;
 }
 </style>

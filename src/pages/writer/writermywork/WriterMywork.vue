@@ -42,7 +42,12 @@ export default Vue.extend({
 </script>
 <style lang="scss" scoped>
   .wbox {
-    margin-top: 85px;
+    margin-top: 30px;
   }
+  @media (max-width: 415px) {
+  .wbox {
+    margin-top: 20px;
+  }
+}
 </style>> 
 

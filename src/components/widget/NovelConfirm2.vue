@@ -32,7 +32,6 @@ export default Vue.extend({
     },
     methods: {
         show(opts = {}) {
-            console.log(opts);
             this.title = opts.title
             this.message = opts.message
             this.okButton = opts.okButton

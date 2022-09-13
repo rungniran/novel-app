@@ -39,7 +39,7 @@
         <div class="card">
           <div class="card-detail">
             <p>
-              1.1 โปรโมชัน ซื้อตั้งแต่ตอน XXX ถึงตอนที่ XXX ลดเหลือตอนละ XXX เหรียญ
+              1.1 โปรโมชัน ตั้งแต่ตอน XXX ถึงตอนที่ XXX ลดราคาตอนละ XXX เหรียญ
             </p>
             <div class="button-layout">
               <button class="nv-btn-blue" @click="openSettingPromoOne()">
@@ -98,7 +98,7 @@
           <div class="card-detail-setting">
             <div>
               <p>
-                 1.1 โปรโมชัน ซื้อตั้งแต่ตอน XXX ถึงตอนที่ XXX ลดเหลือตอนละ XXX เหรียญ
+                 1.1 โปรโมชัน ตั้งแต่ตอน XXX ถึงตอนที่ XXX ลดราคาตอนละ XXX เหรียญ
               </p>
             </div>
             <div class="buy">
@@ -480,11 +480,11 @@ table {
   grid-auto-rows: 0.3fr auto;
 }
 
-.search {
-  display: grid;
-  grid-template-columns: 3.5fr 1fr;
-  gap: 20px;
-}
+// .search {
+//   display: grid;
+//   grid-template-columns: 3.5fr 1fr;
+//   gap: 20px;
+// }
 
 .layout-img {
   display: grid;

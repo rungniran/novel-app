@@ -6,29 +6,29 @@
           <!-- <input type="number"> -->
           <div class="rating">
   <label>
-    <input type="radio" name="stars" value="1" @change="stars(1)"/>
+    <input type="radio"  name="stars" value="1"  v-model="Obj.star"/>
     <span class="icon"><i class="fas fa-star "></i></span>
   </label>
   <label>
-    <input type="radio" name="stars" value="2" @change="stars(2)"/>
+    <input type="radio" name="stars" value="2" v-model="Obj.star"/>
     <span class="icon"><i class="fas fa-star "></i></span>
     <span class="icon"><i class="fas fa-star "></i></span>
   </label>
   <label>
-    <input type="radio" name="stars" value="3" @change="stars(3)"/>
+    <input type="radio" name="stars" value="3" v-model="Obj.star"/>
     <span class="icon"><i class="fas fa-star "></i></span>
     <span class="icon"><i class="fas fa-star "></i></span>
     <span class="icon"><i class="fas fa-star "></i></span>   
   </label>
   <label>
-    <input type="radio" name="stars" value="4" @change="stars(4)"/>
+    <input type="radio" name="stars" value="4" v-model="Obj.star"/>
     <span class="icon"><i class="fas fa-star "></i></span>
     <span class="icon"><i class="fas fa-star "></i></span>
     <span class="icon"><i class="fas fa-star "></i></span>
     <span class="icon"><i class="fas fa-star "></i></span>
   </label>
   <label>
-    <input type="radio" name="stars" value="5" @change="stars(5)"/>
+    <input type="radio" name="stars" value="5" v-model="Obj.star"/>
     <span class="icon"><i class="fas fa-star "></i></span>
     <span class="icon"><i class="fas fa-star "></i></span>
     <span class="icon"><i class="fas fa-star "></i></span>
@@ -39,6 +39,36 @@
           <textarea v-model="Obj.html" rows="10" cols="50">ssd</textarea>
           <button class="nv-btn-yellow" @click="comment('create-comment-review')">ยืนยัน</button>
         </div>
+        <div class="loading" v-show="isloading"> 
+          <svg
+              version="1.1"
+              id="loader-1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="70px"
+              height="70px"
+              viewBox="0 0 50 50"
+              style="enable-background:new 0 0 50 50;"
+              xml:space="preserve"
+            >
+              <path
+                fill="#fff"
+                d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z"
+              >
+                <animateTransform
+                  attributeType="xml"
+                  attributeName="transform"
+                  type="rotate"
+                  from="0 25 25"
+                  to="360 25 25"
+                  dur="0.6s"
+                  repeatCount="indefinite"
+                />
+              </path>
+            </svg>
+          </div>
       </template>
   </NovelModal2>
 </template>
@@ -57,7 +87,8 @@ export default Vue.extend({
         star:'0',
         html:'',
         novel_data_id: this.$route.params.id
-      }
+      },
+      isloading:false
     }
   },
   methods:{
@@ -65,14 +96,27 @@ export default Vue.extend({
         this.$emit('click', {e, Obj:this.Obj});
     },
     async comment(action:any){
+      this.isloading = true
       this.Obj.action = action;
-      console.log(this.Obj);
       
-      await Gatway.postService('/customers/comments/post', this.Obj as any);
-      this.$emit('ResetReviwe',{});
-      (this as any).$refs.Modeal.close()
+      let res = await Gatway.postService('/customers/comments/post', this.Obj as any);
+      if(res.data.code === 200){
+        this.isloading = false
+        this.reset()
+        this.$emit('ResetReviwe',{});
+        (this as any).$refs.Modeal.close()
+      }
+      
       // (this as any).$base.closemodal('review-modal', 'review-modal-amination', 1)
 
+    },
+    reset(){
+     this.Obj={
+        action:'',
+        star:'0',
+        html:'',
+        novel_data_id: this.$route.params.id
+      }
     },
 
     open(){
@@ -80,7 +124,6 @@ export default Vue.extend({
     },
 
     stars(value:any){
-      console.log(value);
       this.Obj.star = value
     }
   }
@@ -161,6 +204,23 @@ export default Vue.extend({
 .rating label input:focus:not(:checked) ~ .icon:last-child {
   color: #000;
   text-shadow: 0 0 5px #09f;
+}
+.loading{
+  position: absolute;
+  background: #4d4d4d;
+  color: #fff;
+  z-index: 2000;
+  width: 100%;
+  height: 100%;
+  border-radius: 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 0;
+  top: 0;
+}
+.none{
+  display: none;
 }
 
 </style>

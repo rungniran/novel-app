@@ -1,16 +1,19 @@
 <template>
   <div class="NovelPreview">
-    <div class="nv-box-white nv-mt-40">
+    <!-- <pre>
+      {{getNover}}
+    </pre> -->
+    <div class="nv-box-white nv-mt-40" v-if="getNover">
       <div class="box-nove">
         <div class="image-nv">
           <img
             :src="
               getNover.image_data
                 ? getNover.image_data.url
-                : $path.svg('imgload.svg')
+                : $path.image('loading.png')
             "
             class="nv-img-novel"
-            onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
+            @error="$event.target.src = $path.image('loading.png')"
             width="100%"
           />
         </div>
@@ -29,10 +32,10 @@
                 getNover.novel_category_data_preview
               }}</router-link>
             </div>
-            <div class="story-sub" style="margin-top: 15px; line-height: 1.6">
+            <div class="story-sub line-5" style="margin-top: 15px; line-height: 1.6">
               {{ getNover.detail }}
             </div>
-            <div class="view-list nv-mt-10">
+            <!-- <div class="view-list nv-mt-10">
               <div class="view">
                 <i class="far fa-eye"></i>
                 <div class="count-numble-view">
@@ -41,11 +44,9 @@
               </div>
               <div class="list">
                 <i class="fas fa-list"></i>
-                <div class="count-numble-view">
-                  {{ $filter.NumbertoText(EpisodeData.data.length) }}
-                </div>
+               
               </div>
-            </div>
+            </div> -->
           </div>
           <div class="grud-btn">
             <!-- <button class="nv-btn-orange" @click="Views">
@@ -62,7 +63,14 @@
               "
               ><button class="nv-btn-yellow">แก้ไข</button></router-link
             >
-            <button class="nv-btn-orange btn-promotion" @click="$refs.PromotionModal.open()">โปรโมชัน</button>
+            <button
+              class="nv-btn-light-blue PromotionModal"
+              @click="$refs.PromotionModal.open()"
+              :disabled='eplength ? false : true'
+            >
+              โปรโมชัน
+              <div class="numbel-p" v-if="itempromotion">{{itempromotion.length}}</div>
+            </button>
             <!-- <button class="nv-btn-light-blue">โปรโมชั่น</button> -->
             <button
               class="nv-btn-blue"
@@ -74,11 +82,33 @@
         </div>
       </div>
     </div>
+    
+    <!-- <div class="nv-box-white nv-mt-40 promotioncon" v-if="itempromotion">
+      <div class="promotion-c">
+          นิยายนี้ติดโปรโมชันอยู่
+      </div>
+    </div> -->
+  <!-- <pre>
+
+    {{moment}}
+  </pre> -->
     <div class="nv-box-white nv-mt-40" v-if="moment">
-      <div>
+      <div v-if="moment.length === 0" class="nv-col-2">
+        <span></span>
+        <router-link :to="'/writer/novelpreview/' + novelUuid + '/novelep'">
+              <button class="nv-btn-yellow">เพิ่มตอนใหม่</button>
+            </router-link>
+      </div>
+      <div v-else>
         <div class="nv-col-2" style="padding-bottom: 20px">
-          <div class="nv-title">สารบัญ</div>
+          <div class="nv-title">สารบัญ 
+             <span>
+                  <span v-if="eplength !== null">  ( {{ $filter.NumbertoText(eplength) }} ) </span>
+                  <span v-else> รอสักครู่ </span>
+                </span>
+          </div>
           <div class="grud-btn">
+            <button @click="test()" class="nv-btn-light-blue " :disabled="isSort">เรียงชื่อตอน</button>
             <router-link :to="'/writer/novelpreview/' + novelUuid + '/novelep'">
               <button class="nv-btn-yellow">เพิ่มตอนใหม่</button>
             </router-link>
@@ -136,7 +166,7 @@
                     {{ item.coin }}
                   </div>
                   <div v-else class="coin"></div>
-                  {{ item.timestamp }}
+                    {{ $filter.toThaiDateString(item.publisher_episode_data.date_time) }} น.
                   <div class="grud-btn-manager">
                     <router-link
                       :to="
@@ -168,10 +198,45 @@
           </div>
         </div>
       </div>
-      <PromotionModal ref="PromotionModal"/>
+      
+    </div>
+    <div
+      class="nv-box-white nv-mt-40 con-Sarabun"
+      style="display: flex; justify-content: center; align-items: center"
+      v-else
+    >
+      <svg
+        version="1.1"
+        id="loader-1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        x="0px"
+        y="0px"
+        width="40px"
+        height="40px"
+        viewBox="0 0 50 50"
+        style="enable-background: new 0 0 50 50"
+        xml:space="preserve"
+      >
+        <path
+          fill="#000"
+          d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z"
+        >
+          <animateTransform
+            attributeType="xml"
+            attributeName="transform"
+            type="rotate"
+            from="0 25 25"
+            to="360 25 25"
+            dur="0.6s"
+            repeatCount="indefinite"
+          />
+        </path>
+      </svg>
+      กำลังโหลดสารบัญ...
     </div>
     <NovelConfirm
-      color="#ffb900"
+      color="#ab93f9"
       title="ยืนยันการลบนิยาย"
       :button="true"
       @confirm="deleteConfirm($event)"
@@ -196,7 +261,7 @@
       </template>
     </NovelConfirm>
     <NovelConfirm
-      color="#ffb900"
+      color="#ab93f9"
       title="ยืนยันการลบ"
       @confirm="deleteConfirm($event)"
       id="deleteEP"
@@ -207,18 +272,20 @@
         <button
           @click="deleteEP"
           class="confirm"
-          style="background: #ffb900; border: 1px solid #ffb900"
+          style="background: #ab93f9; border: 1px solid #ab93f9"
         >
           ยืนยัน
         </button>
       </template>
     </NovelConfirm>
+    <PromotionModal v-if="eplength" ref="PromotionModal" :epcount='eplength' @reface="getpomotiom()"/>
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
 import { Gatway, GetService } from "../../../shares/services";
 import { alert, loadbtn, closealert } from "@/shares/modules/alert";
+import { sms_alert_DelNovelep } from "@/shares/constants/smsalert";
 export default Vue.extend({
   name: "NovelPreview",
   components: {
@@ -226,11 +293,11 @@ export default Vue.extend({
     NovelConfirm: () => import("@/components/widget/NovelConfirm.vue"),
     // eslint-disable-next-line vue/no-unused-components
     NovelModal: () => import("@/components/widget/NovelModal.vue"),
-    PromotionModal:()=> import('./PromotionModal/PromotionModal.vue')
-
+    PromotionModal: () => import("./PromotionModal/PromotionModal.vue"),
   },
   data() {
     return {
+      isSort:false,
       review: [...Array(6).keys()],
       price_range: [...Array(6).keys()],
       img: "https://pbs.twimg.com/media/EsBPBp1XEAMVZxC.jpg",
@@ -242,9 +309,10 @@ export default Vue.extend({
       nameEP: "" as string,
       epObj: {} as any,
       epIndex: 0,
-      moment: [] as any[],
+      moment: null as any,
       momentIndex: 0,
-      eplength: "",
+      eplength: null as any,
+      itempromotion: null as any,
       options: {
         chart: {
           id: "vuechart-example",
@@ -285,23 +353,44 @@ export default Vue.extend({
     };
   },
   methods: {
-    async getnNovel() {
-      const resGetNovel = await GetService.getNovel(this.$route.params.id);
-      this.getNover = await resGetNovel.data.data;
+    async test(){
+      this.isSort = true
+      let res = await Gatway.postService('/customers/user-info/novel-episode-data/sort',{novel_data_id:this.$route.params.id} as any)
+      // setTimeout
+      // const myTimeout = setTimeout(myGreeting, 5000);
+      setTimeout(() => {
+        // console.log("Delayed for 1 second.");
+        this.isSort = false
+      }, 30000)
+      alert("เรียงตอนใหม่", "success");
+             
     },
+    async getnNovel() {
+      // const resGetNovel = await GetService.getNovel(this.$route.params.id);
+      let res = await Gatway.getIDService(
+        "/guest/fetch-novel-header",
+        this.$route.params.id
+      );
+      this.getNover = await res.data.data;
+    },
+
     async getListEp() {
       const resEpisodeData = await Gatway.getService(
         `/customers/episode_data/index/${this.$route.params.id}`
       );
-
+      
       this.EpisodeData = await resEpisodeData.data;
-      this.eplength = resEpisodeData.data.length;
-      this.momentEp(resEpisodeData.data.data);
+      this.eplength = resEpisodeData.data.data.length;
+      let res = resEpisodeData.data.data.sort((a, b) => {
+        return a.ep_no - b.ep_no
+      } )
+      this.momentEp(res);
     },
     confirmDelete() {
       this.confirm === "ลบนิยาย"
         ? this.delete()
         : document.getElementById("confirm")?.classList.add("err");
+        
     },
     deleteConfirm(value: any) {
       value.value === true
@@ -315,7 +404,7 @@ export default Vue.extend({
       );
       if (res) {
         loadbtn("remove");
-        alert(res.data.data, "success");
+        alert("ลบนิยายสำเร็จ", "success");
         this.$router.push("/writer");
       }
     },
@@ -328,7 +417,6 @@ export default Vue.extend({
     async deleteEP() {
       // let moment:any[] = this.moment[0]
       // console.log(moment);
-      this.moment[this.momentIndex].ep.splice(this.epIndex, 1);
       const res = await Gatway.DelService(
         `/customers/episode_data/${this.epObj.id}`
       );
@@ -336,18 +424,25 @@ export default Vue.extend({
         this.moment[this.momentIndex];
         this.moment[this.momentIndex].ep.splice(this.epIndex, 1);
         // this.EpisodeData.splice(this.epIndex, 1);
-        alert(res.data.data, "success");
+        // alert(sms_alert_DelNovelep(this.res.epObj.name), "success");
+        alert("ลบตอนนิยายสำเร็จ", "success");
         closealert("deleteEp", "conDeleteEp");
       }
     },
-
+    async getpomotiom() {
+      let res = await Gatway.getIDService(
+        "/guest/novel-promotion-data",
+        this.$route.params.id
+      );
+      
+      this.itempromotion = res.data.data.length !== 0 ? res.data.data : null ;
+    },
     filterEp(key: any) {
       return this.EpisodeData.filter((item: any) => {
         return item.id.match(key);
       });
     },
     momentEp(countEp: any) {
-      console.log(countEp);
       let arraymoment = [] as any;
       let count = countEp.length / 50;
       let momentCount = count + 0.0;
@@ -374,77 +469,94 @@ export default Vue.extend({
       }
       this.moment = arraymoment;
     },
-    openEp(key: any) {
-      let containerEP = document.getElementsByClassName("container-ep")[
+    openEp(key: number): void {
+      const con_ep = document.getElementsByClassName("container-ep")[
         key
       ] as HTMLElement;
-      // containerEP.style.display = "block"
-      if (containerEP.style.display === "block") {
-        containerEP.style.display = "none";
+      const chevron = document.getElementsByClassName("fa-chevron-right")[
+        key
+      ] as HTMLElement;
+      if (con_ep.style.display === "block") {
+        con_ep.style.display = "none";
+        chevron.style.transform = "rotate(0deg)";
       } else {
-        containerEP.style.display = "block";
+        chevron.style.transform = "rotate(90deg)";
+        con_ep.style.display = "block";
       }
     },
     Views() {
       let series = document.getElementById("series") as HTMLElement;
-      console.log(series.offsetHeight);
       window.scrollTo({ top: series.offsetHeight, behavior: "smooth" });
     },
-    test() {
-      const limit = 100;
-      let Sell = [
-        Math.floor(Math.random() * limit),
-        Math.floor(Math.random() * limit),
-        Math.floor(Math.random() * limit),
-        Math.floor(Math.random() * limit),
-        Math.floor(Math.random() * limit),
-        Math.floor(Math.random() * limit),
-      ];
-      let View = [
-        Math.floor(Math.random() * limit),
-        Math.floor(Math.random() * limit),
-        Math.floor(Math.random() * limit),
-        Math.floor(Math.random() * limit),
-        Math.floor(Math.random() * limit),
-        Math.floor(Math.random() * limit),
-      ];
-      (this as any).$refs.chartSell.updateSeries([
-        {
-          data: Sell as any,
-        },
-      ]);
-      (this as any).$refs.chartSell1.updateSeries([
-        {
-          data: Sell as any,
-        },
-      ]);
-      (this as any).$refs.chartView.updateSeries([
-        {
-          data: View as any,
-        },
-      ]);
-      (this as any).$refs.chartView1.updateSeries([
-        {
-          data: View as any,
-        },
-      ]);
-    },
+    // test() {
+    //   const limit = 100;
+    //   let Sell = [
+    //     Math.floor(Math.random() * limit),
+    //     Math.floor(Math.random() * limit),
+    //     Math.floor(Math.random() * limit),
+    //     Math.floor(Math.random() * limit),
+    //     Math.floor(Math.random() * limit),
+    //     Math.floor(Math.random() * limit),
+    //   ];
+    //   let View = [
+    //     Math.floor(Math.random() * limit),
+    //     Math.floor(Math.random() * limit),
+    //     Math.floor(Math.random() * limit),
+    //     Math.floor(Math.random() * limit),
+    //     Math.floor(Math.random() * limit),
+    //     Math.floor(Math.random() * limit),
+    //   ];
+    //   (this as any).$refs.chartSell.updateSeries([
+    //     {
+    //       data: Sell as any,
+    //     },
+    //   ]);
+    //   (this as any).$refs.chartSell1.updateSeries([
+    //     {
+    //       data: Sell as any,
+    //     },
+    //   ]);
+    //   (this as any).$refs.chartView.updateSeries([
+    //     {
+    //       data: View as any,
+    //     },
+    //   ]);
+    //   (this as any).$refs.chartView1.updateSeries([
+    //     {
+    //       data: View as any,
+    //     },
+    //   ]);
+    // },
   },
   mounted() {
     this.getnNovel();
     this.getListEp();
+    this.getpomotiom()
   },
 });
 </script>
 <style lang="scss" scoped>
-.btn-promotion{
+.btn-promotion {
   background-color: #61bcbe;
-    border: 2px solid #61bcbe;
-
+  border: 2px solid #61bcbe;
 }
 
-.btn-promotion:hover{
-    box-shadow: #61bcbe 0px 3px 10px 0px;
+.btn-promotion:hover {
+  box-shadow: #61bcbe 0px 3px 10px 0px;
+}
+.numbel-p{
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  width: 20px;
+  display: flex;
+  font-size: 12px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #db3d3d;
+  color: white;
+  height: 20px;
 }
 
 .box-nove {
@@ -457,6 +569,9 @@ export default Vue.extend({
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
+}
+.PromotionModal{
+  position: relative;
 }
 .grud-btn {
   display: flex;
@@ -476,10 +591,11 @@ export default Vue.extend({
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 10px;
 }
 
 .box-price_range {
-  background: #71b6c2;
+  background: #6a70aa;
   display: flex;
   color: #fff;
   justify-content: space-between;
@@ -490,7 +606,7 @@ export default Vue.extend({
   cursor: pointer;
 }
 .box-price_range:hover {
-    background: #65a3af;
+   background: #545ca0;
   box-shadow: rgba(98, 145, 151, 0.8) 0px 3px 8px;
 }
 // .box-price_range:hover {
@@ -543,7 +659,7 @@ export default Vue.extend({
 }
 .confirm-waning {
   padding: 10px;
-  border: 2px solid #febc2a;
+  border: 2px solid #ab93f9;
   margin: 20px 0px;
   line-height: 1.6;
   font-size: 12px;
@@ -553,9 +669,9 @@ export default Vue.extend({
   padding: 20px 0px;
   border-top: 1px solid rgb(209, 209, 209);
   display: grid;
-  grid-template-columns: 1.8fr 1fr;
+  grid-template-columns: 1.2fr 1fr;
 }
-.grud-btn-manager img{
+.grud-btn-manager img {
   cursor: pointer;
 }
 
@@ -580,6 +696,16 @@ export default Vue.extend({
   gap: 10px;
   color: #febc2a;
 }
+// .promotion-c{
+//       padding: 20px;
+//     background: #6a70aa;
+//     font-family: "Sarabun", sans-serif;
+//     border-radius: 5px;
+//     font-size: 15px;
+//     color: white;
+//     display: flex;
+//     justify-content: space-between;
+// }
 .episode0 {
   border-top: 0px solid;
 }
@@ -587,9 +713,14 @@ export default Vue.extend({
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
-// .nv-img-novel{
-//   border-radius: 5px;
-// }
+.promotioncon{
+  padding: 0px;
+  
+}
+.nv-img-novel{
+  border-radius: 10px;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+}
 
 @media (max-width: 1024px) {
   .box-nove {

@@ -7,17 +7,16 @@
       <div class="container-from login-from">
         <div class="socail">
           <div class="center text-login">เข้าสู่ระบบ</div>
-
+                  <!-- <div class="contor-input">
+            <div class="title">test </div>
+            <input type="password" v-model="test" class="input" />
+          </div> -->
           <div class="google" @click="logingoogle()">
             <img src="../assets/images/image 5.png" width="18px" />
             เข้าสู่ระบบด้วย Google
           </div>
           <div @click="logInWithFacebook">
-            <!-- <div class="imagefacebook-con" v-if="datafacebook">
-              <img :src="imagefacebook" class="imagefacebook" />
-              <span>{{datafacebook.first_name}} {{datafacebook.last_name}}</span>
-              <div>เข้าสู่ระบบ</div>
-            </div> -->
+      
             <div class="facebook">
               <i class="fab fa-facebook" style="font-size: 20px"></i>
               เข้าสู่ระบบด้วย Facebook
@@ -33,7 +32,7 @@
             <div class="title">รหัสผ่าน</div>
             <input type="password" v-model="dataLogin.password" class="input" />
           </div>
-          <div class="forget-password title">ลืมรหัสผ่าน</div>
+          <div class="forget-password title" @click="forget()" >ลืมรหัสผ่าน</div>
           <button class="nv-btn-orange" @click="login">เข้าสู่ระบบ</button>
           <div class="aret">อีเมลหรือรหัสผ่าน ไม่ถูกต้อง</div>
         </div>
@@ -82,11 +81,12 @@
             />
           </div>
           <div class="contor-input">
-            <div class="title">รหัสผ่าน</div>
+            <div class="title">รหัสผ่าน (ไม่สามารถตั้งภาษาไทยได้)</div>
             <input
               type="password"
               class="input"
               v-model="resgister.password"
+              @keyup="isRTL"
               placeholder="รหัสผ่านต้องมากกว่า 8 ตัว"
             />
           </div>
@@ -161,6 +161,20 @@
         </div>
       </template>
     </NovelModal2>
+    <NovelModal2
+      IDCrad="SubmitemailCard"
+      ref="Submitemail"
+    >
+    <template v-slot:body>
+      <div class="center text-login">รีเซ็ตรหัสผ่านของคุณ</div>
+     <div class="from">
+          <div class="contor-input">
+            <div class="title">ชื่อผู้ใช้ หรืออีเมล</div>
+            <input type="text" class="input" />
+          </div>
+     </div>
+    </template>
+    </NovelModal2>
   </div>
 </template>
 
@@ -184,6 +198,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      test: localStorage.getItem("test"),
       isLogin: false,
       onmouse: false,
       dataLogin: {
@@ -214,23 +229,31 @@ export default Vue.extend({
     this.comlogin();
   },
   methods: {
-    login() {
+    login() { 
       Auth.login({
         usernameOrEmail: this.dataLogin.username,
         password: this.dataLogin.password,
       }).then((res) => {
-        console.log(res.data.status.toString());
         let token = res.data.data.token;
         let status = res.data.status.toString();
         if (res.data.status === true) {
-          this.$store.commit("login", { token, status });
+          // this.$store.commit("login", { token, status });
+          this.cleckTest(token,status)
         } else {
           const alert = document.getElementsByClassName("aret")[0];
           alert.style.transform = "scale(1.0)";
         }
       });
+      // }
     },
-
+    async forget(){
+      this.$router.push('/submitpassword')
+      this.close()
+      // this.$refs.Submitemail.open()
+      // let res = await Gatway.postService('/password/confirm-resetpassword', {} )
+      // console.log(res);
+      //  window.alert("ส่ง")
+    },
     openlogin() {
       document
         .getElementsByClassName("login-crad")[0]
@@ -296,10 +319,10 @@ export default Vue.extend({
       const provider = new FacebookAuthProvider();
       try {
         const res = await signInWithPopup(getAuth(), provider);
-        console.log(
-          res.user.providerData[0].email,
-          res.user.providerData[0].uid
-        );
+        // console.log(
+        //   res.user.providerData[0].email,
+        //   res.user.providerData[0].uid
+        // );
         let email = res.user.providerData[0].email
           ? res.user.providerData[0].email
           : `${res.user.providerData[0].uid}@facebook.com`;
@@ -317,9 +340,8 @@ export default Vue.extend({
         // console.log(login);
         this.CleckEmail(login);
       } catch (error) {
-        // alert('Email ถูกใช้งานไปแล้วใน บัญชี ' + error.customData._tokenResponse.verifiedProvider[0],"success")
-        console.log(error);
-        console.log(JSON.parse(error.customData._tokenResponse.rawUserInfo).id);
+        // console.log(error.customData);
+
         var loginErr = {
           id: JSON.parse(error.customData._tokenResponse.rawUserInfo).id,
           email: error.customData.email,
@@ -331,17 +353,31 @@ export default Vue.extend({
             : "-",
           name: error.customData.email,
         };
-        console.log(loginErr);
-        // //   localStorage.setItem("social_auth",JSON.parse(error.customData._tokenResponse.rawUserInfo));
-        // // localStorage.setItem("imagefacebook", error.customData._tokenResponse.photoUrl);
+  
         this.CleckEmail(loginErr);
       }
     },
+
+    isRTL(s){           
+      if (/^[\u0E00-\u0E7F]+$/.test(s.target.value)) {
+        s.target.value = s.target.value.substr(0, s.target.length - 1);
+        this.smserr = 'ห้ามเป็นภาษาไทย'
+      }else if (/^[a-zA-Z0-9]+$/.test(s.target.value)) {
+        this.smserr = 'รูปแบบถูกต้อง'
+      }else{
+        s.target.value = s.target.value.substr(0, s.target.length - 1);
+        this.smserr = 'ห้ามเป็นภาษาไทย'
+      }
+      
+    },
+
+
     async CleckEmail(item) {
       const resfacebook = await Gatway.postService("/login-facebook", item);
       let token = resfacebook.data.data.token;
       let status = true;
-      this.$store.commit("login", { token, status });
+      // this.$store.commit("login", { token, status });
+      this.cleckTest(token,status)
     },
 
     async logingoogle() {
@@ -360,8 +396,15 @@ export default Vue.extend({
       const resgmail = await Gatway.postService("/login-gmail", data);
       let token = resgmail.data.data.token;
       let status = true;
-      this.$store.commit("login", { token, status });
+      // this.$store.commit("login", { token, status });
+      this.cleckTest(token,status)
     },
+
+    cleckTest(token, status){
+      // if(this.test === '7695cfc2-5a7a-40b9-b4bf-5bdbd254197e'){
+        this.$store.commit("login", { token, status });
+      // }
+    }
   },
 });
 </script>
@@ -460,6 +503,10 @@ img.img-no-data {
 }
 .forget-password {
   text-align: right;
+  cursor: pointer;
+}
+.forget-password:hover{
+   color: red;
 }
 .from {
   display: flex;

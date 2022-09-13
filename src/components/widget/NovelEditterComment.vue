@@ -3,11 +3,39 @@
     <div class="option-icon">
       <!-- <i class="fas fa-bookmark" @click="spoler(index)"></i>
       <i class="fas fa-icons"></i> -->
-      <i class="fas fa-sticky-note" @click="opanstiker(Editer)"></i>
+      <div><i class="fas fa-sticky-note" @click="opanstiker(Editer)"></i></div>
+      <emoji-picker @emoji="insert">
+
+        <div
+          slot="emoji-invoker"
+          slot-scope="{ events: { click: clickEvent } }"
+          @click.stop="clickEvent"
+        >
+
+          <i class="fa fa-smile-o" @click="opanemoji(Editer)"></i>
+        </div>
+        <div slot="emoji-picker" slot-scope="{ emojis, insert }">
+          <div class="model-emoji">
+
+            <div>
+              <div v-for="(emojiGroup, category) in emojis" :key="category">
+                <h5>{{ category }}</h5>
+                <span
+                  class="emoji-space"
+                  v-for="(emoji, emojiName) in emojiGroup"
+                  :key="emojiName"
+                  @click="insert(emoji)"
+                  :title="emojiName"
+                  >{{ emoji }}</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </emoji-picker>
     </div>
     <div
       :contenteditable="true"
-      placeholder="oksdofmk"
       ondragenter="event.preventDefault(); event.dataTransfer.dropEffect = 'none'"
       ondragover="event.preventDefault(); event.dataTransfer.dropEffect = 'none'"
       class="Editer"
@@ -21,9 +49,10 @@
     </div>
     {{ test }}
     <div class="con-submit">
-      <div class="nv-btn-yellow submit" @click="submit($event)">ส่ง</div>
+      <button :disabled="issubmit" class="nv-btn-yellow submit" @click="cleck ? submit($event) : $base.openlogin()">ส่ง</button>
     </div>
     <div id="stiker">
+      <!-- {{sticker}} -->
       <div class="con-stiker">
         <div @click="close()" class="close">
           <i class="fas fa-times-circle"></i>
@@ -43,31 +72,34 @@
         <div class="con-item" v-if="stickerss">
           <div v-for="(item, index) in stickerss" :key="index">
             <div
-              v-if="item.image_preview"
-              @click="addstikerf(item.image_preview)"
+              v-if="item.image_data"
+              @click="addstikerf(item.image_data.url)"
             >
               <img
-                v-lazy="item.image_preview"
+                v-lazy="item.image_data.url"
                 :alt="item.name"
                 class="stiker-img"
               />
             </div>
           </div>
         </div>
-        <div v-else>
+        <div v-else class="no-sticker">
           <div class="layout-sticker-modal">
-            <p>คุณยังไม่มีสติ๊กเกอร์</p>
+            <p>คุณยังไม่มีสติ๊กเกอร์</p><br>
+            <router-link to="/exchange#sticker" class="nv-btn-yellow">ไปร้านสติ๊กเกอร์</router-link>
           </div>
         </div>
       </div>
     </div>
+    <!-- <textarea v-model="input"></textarea> -->
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
 import { Cheerup } from "@/shares/constants";
 import { Gatway } from "@/shares/services";
-import { shop_type_data_id } from "@/shares/constants/enum";
+// import { shop_type_data_id } from "@/shares/constants/enum";
+import EmojiPicker from "vue-emoji-picker";
 import carousel from "vue-owl-carousel";
 // import EmptyContent from "../../pages/empty/empty.vue";
 export default Vue.extend({
@@ -82,6 +114,7 @@ export default Vue.extend({
   },
   components: {
     carousel,
+    EmojiPicker,
     // EmptyContent,
   },
 
@@ -97,16 +130,21 @@ export default Vue.extend({
       test: "",
       sticker: null as any,
       stickerss: null as any,
+      issubmit:false
     };
   },
   methods: {
     async opanstiker(as: any) {
+
       await this.getListstiger();
-      let conModal = (await document.getElementById("stiker")) as HTMLElement;
 
       await this.filter(this.sticker[0]);
       await localStorage.setItem("s", as);
-      conModal.style.display = await "flex";
+      // let conModal = (await document.getElementById("stiker")) as HTMLElement;
+      // conModal.style.display = await "flex";
+    },
+    opanemoji(as: any) {
+      localStorage.setItem("s", as);
     },
     addstikerf(stiker: any) {
       const editer = document.getElementById(
@@ -119,6 +157,20 @@ export default Vue.extend({
       this.onInput();
       this.close();
     },
+    insert(moji) {
+      const editer = document.getElementById(
+        localStorage.getItem("s") as any
+      ) as any;
+      const element = document.createElement("span");
+      // var span = document.getElementById('my-span');
+      // console.log(span);
+
+      editer.appendChild(document.createTextNode(moji));
+      //  var my_text = element.createTextNode('Hello!');
+      //   editer.appendChild(my_text);
+
+      //   editer.createTextNode('dssd')
+    },
     close() {
       let conModal = document.getElementById("stiker") as HTMLElement;
       conModal.style.display = "none";
@@ -130,8 +182,6 @@ export default Vue.extend({
       return text;
     },
     async comment(Obj: any) {
-      console.log();
-
       let res = await Gatway.postService(
         "/customers/comments/post",
         Obj as any
@@ -139,51 +189,33 @@ export default Vue.extend({
       return res;
     },
     async submit(e: any) {
+      this.issubmit = true
       let html = this.onInput();
-      this.$emit("click", html, e);
-      this.reset();
+      if (html !== '') {
+        await this.$emit("click", html, e);
+        this.issubmit = false
+        await this.reset();
+      }
+      this.issubmit = false
       // this.$emit('fetch', this.obj, index)
       // this.fetchComment(uuid)
     },
     reset() {
+      
       let html = document.getElementById("Editer") as HTMLElement;
       html.innerHTML = "";
     },
     async getListstiger() {
       let res = await Gatway.getService("/customers/treasure-box-data/sticker");
-      console.log(res.data.data);
-      this.sticker = await res.data.data;
-      // res.data.data.filter((res: any) => {
-      //  console.log(JSON.parse(res.system_note));
+      // console.log(res.data.data);
+      this.sticker = res.data.data;
+      if (res) {
 
-      //   if(JSON.parse(res.system_note).shop_transaction_type_data_id === shop_type_data_id.sticker){
-      //     console.log(JSON.parse(res.system_note));
-
-      //     data.unshift({
-      //       id: JSON.parse(res.system_note).id,
-      //       name: JSON.parse(res.system_note).name,
-      //     });
-      //   }
-      // });
-      // this.sticker = await data
-      // let ressticker = await Gatway.postService("/guest/shop-data/lists", {
-      //   shop_type_data_id: "9c1c64df-3516-4098-8575-1c3470206710",
-      // } as any);
-      // ressticker.data.data.filter((res: any) => {
-      //   if (res.diamond === null || parseInt(res.diamond) === 0) {
-      //     data.push({
-      //       id: res.id,
-      //       name: res.name,
-      //     });
-      //   }
-      // });
-      // const uniq = new Set(data.map((e: any) => JSON.stringify(e)));
-      // const resa = Array.from(uniq).map((e: any) => JSON.parse(e));
-      // this.sticker = await resa;
-      // console.log(this.sticker);
+        let conModal = (await document.getElementById("stiker")) as HTMLElement;
+        conModal.style.display = await "flex";
+      }
     },
     async filter(item: any) {
-      console.log(item);
       item !== undefined ? (this.stickerss = item.shop_item_datas) : null;
     },
   },
@@ -193,10 +225,12 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss" scoped>
-.layout-sticker-modal{
-  display: flex;
-  justify-content: center;
-  align-items: center !important;
+.layout-sticker-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
 }
 .t-reply {
   font-size: 20px;
@@ -251,7 +285,7 @@ export default Vue.extend({
 .text-editer {
   padding: 20px;
   border: 1px solid #d7d7d7;
-  border-radius: 0 0 10px 10px !important;
+  // border-radius: 0 0 10px 10px !important;
   position: relative;
 }
 .option-icon {
@@ -292,6 +326,18 @@ export default Vue.extend({
   // justify-items: center;
   // align-items: center;
 }
+.model-emoji {
+  position: absolute;
+  right: 0px;
+  z-index: 1000;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 10px;
+  height: 500px;
+  width: 400px;
+  overflow-y: scroll;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
 .con-submit {
   display: flex;
 }
@@ -310,6 +356,10 @@ export default Vue.extend({
   border: 1px solid;
   margin: 10px;
 }
+[contenteditable] {
+    -webkit-user-select: text;
+    user-select: text;
+}
 .n-reply {
   background: #826527;
   display: flex;
@@ -320,7 +370,7 @@ export default Vue.extend({
   align-items: center;
 }
 .title {
-  padding: 10px;
+  padding: 10px 10px 5px 10px;
   // width: 100px;
   font-size: 13px;
   text-align: center;
@@ -333,6 +383,7 @@ export default Vue.extend({
   display: grid;
   margin-top: 10px;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      justify-items: center;
 }
 .stiker-img {
   height: 70px;
@@ -352,7 +403,16 @@ export default Vue.extend({
   z-index: 1000;
 }
 
+.emoji-space {
+  // padding-left: 3px;
+}
+
 @media (max-width: 415px) {
+  .model-emoji {
+    height: 350px;
+  width: 300px;
+
+  }
   .text-review {
     font-size: 17px;
 
@@ -365,7 +425,7 @@ export default Vue.extend({
     justify-items: center;
   }
   .con-stiker {
-    width: 100%;
+    width: 90%;
     padding: 0px;
   }
   .con-item {

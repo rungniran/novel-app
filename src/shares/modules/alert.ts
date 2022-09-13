@@ -1,4 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+import store from '../../store'
 export function alertSystem(error: any):void {
   // status(error.response.status)
   const err = document.getElementsByClassName("con-aler-system")[0] as any;
@@ -9,21 +10,27 @@ export function alertSystem(error: any):void {
   setTimeout(() => {
     element.remove();
   }, 5000);
-  console.log(error);
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const status = (error:any) => {
   if(error.response.status === 401){
-      const login_crad = document.getElementsByClassName("login-crad")[0] as HTMLElement
-      const login = document.getElementsByClassName("login")[0] as HTMLElement
-      login_crad.classList.add("login-crad-show")
-      login.classList.add("show")
-  }else if(error.response.status === 429){
-    // window.open(window.location.href,'_blank');
-  } 
+    store.commit('logout')
+    // localStorage.removeItem("loggedIn");
+    // localStorage.removeItem("token");
+    // localStorage.removeItem("dataset");
+    // localStorage.removeItem("StoryRead");
+    // window.location.reload() 
+    const login_crad = document.getElementsByClassName("login-crad")[0] as HTMLElement
+    const login = document.getElementsByClassName("login")[0] as HTMLElement
+    login_crad.classList.add("login-crad-show")
+    login.classList.add("show")
+      
+  }
   else{
-    alertSystem(error)
+    if(window.location.hostname === 'localhost'){
+      alertSystem(error)
+    }
   } 
 }
 
@@ -36,7 +43,6 @@ export function alert(messenger:string, typeclass:string):void {
   setTimeout(() => {
     element.remove();
   }, 5000);
-  console.log(messenger);
 }
 
 

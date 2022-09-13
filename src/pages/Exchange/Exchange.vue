@@ -24,15 +24,62 @@
               )
             }}
           </div>
+          
           <router-link to="exchange/story"
             ><button class="nv-btn-yellow">ดูประวัติ</button></router-link
           >
         </div>
       </div>
+      
     </div>
+    
     <div class="nv-box-white nv-mt-40 item-Exchange">
+      
       <!-- <div class="nv-title history-title" style="al"> แลกของรางวัล</div> -->
+      <h1 class="text-sticker" v-if="sticker.length !== 0"><i class="fa fa-puzzle-piece"></i> สติกเกอร์</h1>
       <div class="item">
+        <div
+          class="box-item"
+          v-for="(item, idex) in sticker"
+          :key="idex"
+          @click="sell(item)"
+        >
+          <!-- {{item.shop_item_datas[0].image_data.url}} -->
+          <!-- {{item.limit_status_item}} -->
+           <div class="limit-items" v-if="item.limit_status_item === true">{{item.amount}}</div>
+
+          <img class="img-sticker"
+            :src="
+              item.image_data 
+                ? item.image_data.url
+                : $path.image('loading.png')
+            "
+            onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
+            width="50%"
+          />
+          <div class="detail-item">
+            <div class="item-name line-1">{{ item.name }}</div>
+            <div class="line-1">
+              ใช้เพชร {{ $filter.NumberToString(item.diamond) }} ดวงแลก
+              {{ item.name }}
+            </div>
+            <div class="btn-item" v-if="item.diamond !== '0.00' ">
+              <img
+                :src="$path.image('diamond.png')"
+                width="25px"
+                height="25px"
+              />
+              {{ $filter.NumberToString(item.diamond) }}
+            </div>
+            <div class="btn-item"  v-else>
+              ฟรี
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <h1 class="text-sticker" v-if="Exchange.length !== 0"> <i class="fa fa-shopping-bag" aria-hidden="true"></i> ของที่ระลึก</h1>
+       <div class="item">
         <div class="box-item" v-for="(item, idex) in Exchange" :key="idex">
           <!-- {{item.image_data.url}} -->
 
@@ -45,7 +92,9 @@
           <div class="limit-items" v-else>สินค้าหมด</div>
 
           <div :class="item.limit_items !== 0 ? 'box-pd' : 'box-pd not-full'">
-            <img :src="item.image_data.url" width="50%" />
+            <img :src="item.image_data
+                  ? item.image_data.url
+                  : $path.image('loading.png')" width="50%" />
             <div class="detail-item">
               <div class="item-name line-1">{{ item.name }}</div>
               <small class="color line-1" v-if="item.diamond"
@@ -69,47 +118,6 @@
                   $filter.NumberToString(item.diamond)
                 }}</span>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <h1 class="text-sticker"><i class="fa fa-puzzle-piece"></i> สติกเกอร์</h1>
-      <div class="item">
-        <div
-          class="box-item"
-          v-for="(item, idex) in sticker"
-          :key="idex"
-          @click="sell(item)"
-        >
-          <!-- {{item.shop_item_datas[0].image_data.url}} -->
-          <!-- {{item.limit_status_item}} -->
-           <div class="limit-items" v-if="item.limit_status_item === true">{{item.amount}}</div>
-
-          <img class="img-sticker"
-            :src="
-              item.shop_item_datas[0]
-                ? item.shop_item_datas[0].image_data.url
-                : $path.image('loading.png')
-            "
-            onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
-            width="50%"
-          />
-          <div class="detail-item">
-            <div class="item-name">{{ item.name }}</div>
-            <div class="line-1">
-              ใช้เพชร {{ $filter.NumberToString(item.diamond) }} ดวงแลก
-              {{ item.name }}
-            </div>
-            <div class="btn-item" v-if="item.diamond !== '0.00'">
-              <img
-                :src="$path.image('diamond.png')"
-                width="25px"
-                height="25px"
-              />
-              {{ $filter.NumberToString(item.diamond) }}
-            </div>
-            <div class="btn-item"  v-else>
-              ฟรี
             </div>
           </div>
         </div>
@@ -142,7 +150,7 @@
         </button>
       </template>
     </NovelModal2>
-    <NovelModal2 ref="popup" :IDCrad="ExchangeCrad">
+    <NovelModal2 ref="popup"  IDCrad="ExchangeCrad"  :Close="true">
       <template v-slot:body>
         <div v-if="stickerr">
           <div class="name-st">{{ stickerr.name }}</div>
@@ -153,18 +161,21 @@
           </div>
           <div
             style="
-              margin-top: 20px;
               display: flex;
               gap: 10px;
               justify-content: flex-end;
             "
           >
-            <button class="nv-btn-yellow" @click="$refs.popup.close()">
+            <!-- <button class="nv-btn-yellow" @click="$refs.popup.close()">
               ยกเลิก</button
-            ><button class="nv-btn-orange" @click="sellST(stickerr)">
+            > -->
+            <button class="nv-btn-orange" @click="sellST(stickerr)" :disabled="issellST">
               ซื้อเลย
             </button>
           </div>
+        </div>
+        <div v-else>
+          londing...
         </div>
       </template>
     </NovelModal2>
@@ -184,8 +195,8 @@ export default Vue.extend({
     return {
       current: "Coin",
       Exchange: [],
-      sticker: [],
-      stickerr: null,
+      sticker: null as any,
+      stickerr: null as any,
       data: {
         name: "",
         address: "",
@@ -193,6 +204,7 @@ export default Vue.extend({
         shop_type_data_id: "",
       },
       itempd: {} as any,
+      issellST:false
     };
   },
   components: {
@@ -220,7 +232,6 @@ export default Vue.extend({
       let ressticker = await Gatway.postService("/guest/shop-data/lists", {
         shop_type_data_id: "9c1c64df-3516-4098-8575-1c3470206710",
       } as any);
-      console.log(ressticker);
       
       let resstickerdata = await [] as any;
       ressticker.data.data.filter((res: any) => {
@@ -230,7 +241,15 @@ export default Vue.extend({
           resstickerdata.push(res);
         // }
       });
+      
+      
       this.sticker = await resstickerdata;
+      let sticker = document.getElementsByClassName('text-sticker')[0] as HTMLElement
+      if (this.$route.hash ==='#sticker'){
+        window.scrollTo({ top: sticker.offsetTop +500, behavior: "smooth" });  
+      }
+      
+      
     },
     Address(item: any) {
       this.itempd = item;
@@ -257,12 +276,13 @@ export default Vue.extend({
       return Product;
     },
     async sell(item: any) {
+      this.stickerr = null;
+      (this as any).$refs.popup.open();
       let res = await Gatway.getIDService("admin/shop-data-topic", item.id);
-      console.log(item);
 
       // console.log(res.data.data.shop_item_datas);
       this.stickerr = await res.data.data;
-      (this as any).$refs.popup.open();
+      
 
       // let confirm = await (this as any).$refs.confirmDialogue.show({
       //     title: item.name,
@@ -281,19 +301,18 @@ export default Vue.extend({
     },
 
     async sellST(item: any) {
-      console.log(item);
-
+      this.issellST = true
       let res = await Gatway.postService("/customers/shop-data/buy", {
         shop_topic_data_id: item.id,
         shop_type_data_id: item.shop_type_data_id,
         shop_item_data_id: item.shop_type_data_id,
       } as any);
-      console.log(res.data);
       if (res.data.code === 200) {
         alert("ซื้อสำเร็จ", "success");
         this.$store.commit("reset");
         this.gitlist();
         (this as any).$refs.popup.close();
+        this.issellST = false
       }else if (res.data.code === 422){
         alert(res.data.data, "error");
       }
@@ -319,11 +338,11 @@ textarea {
   color: #8663ba;
 }
 
-.img-exchange{
-   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
+// .img-exchange{
+//    top: 50%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+// }
 
 .add-coin {
   display: flex;
@@ -365,6 +384,7 @@ textarea {
   background: #f7f8f9;
   padding: 25px;
   border-radius: 10px;
+  justify-items: center;
   position: relative;
   display: flex;
   display: grid;
@@ -384,11 +404,7 @@ textarea {
   border-radius: 7px;
 }
 
-.img-sticker{
-    top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
+
 .item-name {
   font-size: 20px;
   text-align: center;
@@ -462,23 +478,33 @@ textarea {
   width: 550px;
   background: #ffffff;
 }
-@media (max-width: 768px) {
+@media (max-width: 820px) {
   .item {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 15px;
   }
 }
-@media (max-width: 415px) {
+@media (max-width: 640px) {
   .item {
     grid-template-columns: 1fr 1fr;
     gap: 15px;
+  }
+}
+
+@media (max-width: 540px) {
+  .item {
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+  .item .box-item{
+    padding: 25px 15px 15px 15px;
   }
   .item-Exchange {
     padding: 20px 10px;
   }
   .con-st {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr ;
     gap: 10px;
     position: relative;
     overflow: hidden;

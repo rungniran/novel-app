@@ -13,7 +13,7 @@ $primary-purple:#AB93F9;
 @import 'button.scss';
 @import 'from.scss';
 @import 'editter.scss';
-
+@import 'autoformat.scss';
 *{
     box-sizing: border-box;
 }
@@ -60,6 +60,7 @@ body{
     color: red;
     font-size: 18px;
   }
+
 
   .nv-alert-confirm{
     position: fixed;
@@ -116,12 +117,33 @@ body{
    right: 0px;
    top: 200px;
    opacity: .7;
+  padding: 10px !important;
+
 }
+
 .HomeHot .owl-prev{
   position: absolute;
    left: -10px;
    top: 200px;
    opacity: .7;
+  padding: 10px !important;
+
+}
+.tags-end {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  // width: 70px;
+  border-radius: 10%;
+  height: 15px;
+  position: absolute;
+  // background: #fb5353;
+  right: 0px;
+  font-size: 13px;
+  // z-index: 100;
+  top: 5px;
+  padding: 5px;
+  color: #fff;
 }
 .NovelCarousel{
   position: relative;
@@ -132,6 +154,8 @@ body{
    top: 90px;
    opacity: 1.7;
    background: #5c5d5d !important;
+  padding: 10px !important;
+
 }
 .NovelCarousel .owl-next:hover{
   position: absolute;
@@ -139,6 +163,8 @@ body{
    top: 90px;
    opacity: 1.7;
    background: #869791 !important;
+  padding: 10px !important;
+
 }
 .NovelCarousel .owl-prev{
   position: absolute;
@@ -148,6 +174,8 @@ body{
    justify-content: start;
    opacity: 1.7;
    background: #5c5d5d !important;
+  padding: 10px !important;
+
 }
 .NovelCarousel .owl-prev:hover{
   position: absolute;
@@ -155,6 +183,49 @@ body{
    top: 90px;
    opacity: 1.7;
    background: #869791 !important;
+  padding: 10px !important;
+
+}
+.NovelCategory{
+  position: relative;
+}
+.NovelCategory .owl-next{
+  position: absolute;
+  right: 0px;
+   top: 90px;
+   opacity: 1.7;
+   background: #5c5d5d !important;
+  padding: 10px !important;
+
+}
+.NovelCategory .owl-next:hover{
+  position: absolute;
+  right: 0px;
+   top: 90px;
+   opacity: 1.7;
+   background: #869791 !important;
+  padding: 10px !important;
+
+}
+.NovelCategory .owl-prev{
+  position: absolute;
+  // display: none !important;
+  left: 0px;
+   top: 90px;
+   justify-content: start;
+   opacity: 1.7;
+   background: #5c5d5d !important;
+  padding: 10px !important;
+
+}
+.NovelCategory .owl-prev:hover{
+  position: absolute;
+  left: 0px;
+   top: 90px;
+   opacity: 1.7;
+   background: #869791 !important;
+  padding: 10px !important;
+
 }
 @keyframes shine {
 to {
@@ -234,12 +305,12 @@ input[type=checkbox]{
 .ql-align-center{
   text-align: center;
 }
-.ql-syntax{
-  background-color: #23241f;
-  color: #f8f8f2;
-  border-radius: 3px;
-  overflow: visible;
-}
+// .ql-syntax{
+//   background-color: #23241f;
+//   color: #f8f8f2;
+//   border-radius: 3px;
+//   overflow: visible;
+// }
 .ql-snow .ql-editor code, .ql-snow .ql-editor pre {
   background-color: #f0f0f0;
   
@@ -276,7 +347,7 @@ button[disabled]:hover{
   align-items: center;
   justify-content: center;
 }
-.stiker-img{
+.stiker-img, .stikerimg{
   height: 70px;
   width: 70px;
 }
@@ -288,9 +359,19 @@ img::before{
   background: #1e2046;
 }
 
+select:not(:-internal-list-box) {
+  overflow: scroll !important;
+}
+
+
+
 @media (max-width:415px) {
   .pagination{
     // display: inline-block !important;
     // position: relative;
+  }
+  .stiker-img{
+    height: 50px;
+    width: 50px;
   }
 }

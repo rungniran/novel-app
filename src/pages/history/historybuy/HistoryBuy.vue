@@ -1,81 +1,182 @@
 <template>
-  <!-- <div class="HistoryBuy">
-    <router-link
-      v-for="(item, index) in listbuy"
-      :key="index"
-      to="/read/1"
-      class="con-storyBuy"
-    >
-      <div class="detail-novel">
-        <img
-          class="buy-history-img"
-          src="https://s3.ap-southeast-1.amazonaws.com/media.fictionlog/books/61d58aa01353ba001c779a4d/61dc081cUzBPUw7w.jpeg"
-        />
-        <div class="content-information-novel">
-          <h1 class="title line-1">Nam sunt pariatur</h1>
-          <div class="content-subtitle">
-            <p>ประเภท:</p>
-            <p class="wrap-content">กำลังภายใน</p>
-          </div>
-          <div class="content-subtitle">
-            <p>ผู้เผยแพร่:</p>
-            <p class="wrap-content">Novel Kingdom Public</p>
-          </div>
-          <br class="lp" />
-          <div class="content-subtitle2">
-            <p>จำนวนตอนซื้อรวม:</p>
-            <div class="buy-coin">
-              <img
-                src="https://cdn-icons-png.flaticon.com/512/864/864702.png"
-                height="20px"
-              />
-              <p>1250 ตอน</p>
-            </div>
-          </div>
-          <div class="content-subtitle2">
-            <p>จำนวนเหรียญซื้อรวม:</p>
-            <div class="buy-coin">
-              <img :src="$path.image('coin-gold.png')" height="20px" />
-              <p>{{ item.amount }} เหรียญ</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-    </router-link>
-  </div> -->
   <div class="HistoryBuy">
-    <select @change="group">	
-        <option v-for="item,index in datalistdate" :key="index" :value="`${item.y}-${item.m}-${item.d}`">{{monthset[item.m]}} {{item.y}}</option>
-      </select><br><br>
+    <!-- {{listbuy.data.length}} -->
     <div v-if="listbuy">
       <div
-        v-for="(item, index) in listbuy"
+        v-for="(item, index) in listbuy.data"
         :key="index"
-    
-        class="con-storyBuy"
+        class="con-storyBuy pc"
       >
-      <!-- <pre> {{item.payment_data.payment_transaction_datas.name}}</pre>     :to="'/read/'"+item.payment_data.payment_transaction_datas[0].novel_episode_data.id-->
-        <div class="detail-novel">
+        <div class="detail-novel" >
           <img
-            v-lazy="item.payment_data.novel_data.image_preview"
-            width="100px"
+            class="img-history-buy"
+            v-if="item.payment_data.novel_data"
+            v-lazy="
+              item.payment_data.novel_data.image_data
+                ? item.payment_data.novel_data.image_data.url
+                : ''
+            "
+            @error="$event.target.src = $path.image('loading.png')"
+          />
+          <img
+            v-else
+            v-lazy="$path.image('loading.png')"
+            class="img-history-buy"
           />
           <div>
-            <p class="name">{{ item.payment_data.novel_data.title }}</p>
-            <!-- <p>{{item.payment_data.payment_transaction_datas[0].novel_episode_data.name}}</p> -->
-            <div class="buy-coin">
-              <img :src="$path.image('coin-gold.png')" height="20px" />
-              <div>{{item.payment_data.total }}</div>
-            </div>
+            <p class="name line-1">
+              <span v-if="item.payment_data.novel_data">
+                {{ item.payment_data.novel_data.title }}</span
+              >
+            </p>
+            <!-- <div v-if="item.payment_data.payment_transaction_datas">
+              <div v-if="item.payment_data.payment_transaction_datas.length <= 1 ">
+                <span v-if="JSON.parse(item.payment_data.payment_transaction_datas[0].json_data)"> 
+                  {{JSON.parse(item.payment_data.payment_transaction_datas[0].json_data).name}}
+                </span>
+              </div>
+              <div v-else>
+                  ซื้อยกเซต 
+                  {{JSON.parse(item.payment_data.payment_transaction_datas[0].json_data).name}} - 
+                  {{JSON.parse(item.payment_data.payment_transaction_datas[item.payment_data.payment_transaction_datas.length - 1].json_data).name}}
+              </div>
+            </div> -->
+            <p
+              class="sub-title"
+              v-if="item.payment_data.payment_transaction_datas"
+            >
+              <span
+                v-if="item.payment_data.payment_transaction_datas.length === 1"
+              >
+                <span
+                  v-if="
+                    JSON.parse(
+                      item.payment_data.payment_transaction_datas[0].json_data
+                    )
+                  "
+                >
+                  ตอนที่ #{{
+                    JSON.parse(
+                      item.payment_data.payment_transaction_datas[0].json_data
+                    ).ep_no
+                  }}
+                </span>
+              </span>
+              <span v-else>
+                <span v-if="JSON.parse( item.payment_data.payment_transaction_datas[0].json_data)">
+                  ชื้อเป็นชุด ตอนที่ #{{
+                    JSON.parse(
+                      item.payment_data.payment_transaction_datas[0].json_data
+                    ).ep_no
+                  }}
+                  ถึง
+                </span>
+                <span v-if="JSON.parse( item.payment_data.payment_transaction_datas[item.payment_data.payment_transaction_datas.length - 1].json_data)">
+                  ตอนที่ #{{
+                    JSON.parse(
+                      item.payment_data.payment_transaction_datas[
+                        item.payment_data.payment_transaction_datas.length - 1
+                      ].json_data
+                    ).ep_no
+                  }}
+                </span>
+              </span>
+            </p>
           </div>
         </div>
-        <div>
-          <p> {{$filter.toThaiDateString(item.created_at)}}</p>
+        <!-- <div v-else>
+
+        </div> -->
+        <div class="date-price">
+          <p>{{ $filter.toThaiDateString(item.created_at) }}</p>
+          <div class="buy-coin">
+            <img :src="$path.image('coin-gold.png')" height="20px" />
+            <p class="custom-font-coin">{{ item.payment_data.total }} เหรียญ</p>
+          </div>
         </div>
       </div>
-      <div v-if="listbuy.length === 0">
+      <div
+        v-for="(item, index) in listbuy.data"
+        :key="index"
+        class="con-storyBuy-mobile mobile"
+      >
+        <div class="detail-novel">
+          <img
+            class="img-history-buy"
+            v-if="item.payment_data.novel_data"
+            v-lazy="
+              item.payment_data.novel_data.image_preview !== ''
+                ? item.payment_data.novel_data.image_preview
+                : $path.image('loading.png')
+            "
+            @error="$event.target.src = $path.image('loading.png')"
+          />
+          <img class="img-history-buy" v-else v-lazy="$path.image('loading.png')" />
+          <div class="detail-novel-buy">
+            <p class="name line-1">
+              <span v-if="item.payment_data.novel_data">
+                {{ item.payment_data.novel_data.title }}</span
+              >
+              <span v-else> </span>
+            </p>
+            <p
+              class="sub-title"
+              v-if="item.payment_data.payment_transaction_datas"
+            >
+              <span
+                v-if="item.payment_data.payment_transaction_datas.length === 1"
+              >
+                <span
+                @click="read(JSON.parse(
+                      item.payment_data.payment_transaction_datas[0].json_data
+                    ))"
+                  v-if="
+                    JSON.parse(
+                      item.payment_data.payment_transaction_datas[0].json_data
+                    )
+                  "
+                >
+                  ตอนที่ #{{
+                    JSON.parse(
+                      item.payment_data.payment_transaction_datas[0].json_data
+                    ).ep_no
+                  }}
+                </span>
+              </span>
+              <span v-else>
+                <span v-if="JSON.parse( item.payment_data.payment_transaction_datas[0].json_data)">
+                  ชื้อเป็นชุด ตอนที่ #{{
+                    JSON.parse(
+                      item.payment_data.payment_transaction_datas[0].json_data
+                    ).ep_no
+                  }}
+                  ถึง
+                </span>
+                <span v-if="JSON.parse( item.payment_data.payment_transaction_datas[item.payment_data.payment_transaction_datas.length - 1].json_data)">
+                  ตอนที่ #{{
+                    JSON.parse(
+                      item.payment_data.payment_transaction_datas[
+                        item.payment_data.payment_transaction_datas.length - 1
+                      ].json_data
+                    ).ep_no
+                  }}
+                </span>
+              </span>
+            </p>
+            <div class="buy-coin-mobile">
+              <p>{{ $filter.toThaiDateString(item.created_at) }}</p>
+              <div style="display: flex; gap: 5px">
+                <img :src="$path.image('coin-gold.png')" height="20px" />
+                <p class="custom-font-coin">
+                  {{ item.payment_data.total }} เหรียญ
+                </p>
+              </div>
+            </div>
+            <div></div>
+          </div>
+        </div>
+      </div>
+      <div v-if="listbuy.data.length === 0">
         <EmptyContent
           class="image"
           pathName="6.png"
@@ -83,15 +184,16 @@
           fontSize="36px"
         ></EmptyContent>
       </div>
+      <NovelPaginate v-else :count="listbuy.last_page" @click="getlist" />
     </div>
-
     <div v-else>loading...</div>
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
 import { Gatway } from "@/shares/services";
-import { transaction_type_data } from "@/shares/constants/enum";
+import NovelPaginate from "@/components/widget/NovelPaginate.vue";
+// import { transaction_type_data } from "@/shares/constants/enum";
 import EmptyContent from "../../empty/empty.vue";
 const monthset = {
   "01": "ม.ค.",
@@ -111,73 +213,43 @@ export default Vue.extend({
   data() {
     return {
       listbuy: null,
-      per_page:[] as any,
-      datalistdate:null,
-       monthset:monthset
+      per_page: [] as any,
+      datalistdate: null,
+      monthset: monthset,
     };
   },
   components: {
     EmptyContent,
+    NovelPaginate,
   },
   methods: {
-    async getCadis(){
-        let res = await Gatway.getService('/customers/transaction-data/fetch-transaction/groupDate')
-        let data = [] as any
-        res.data.data.filter((element:any)=>{
-          data.push( {
-            d:element.date.split('-')[2],
-            m:element.date.split('-')[1],
-            y:element.date.split('-')[0],
-          } );
-        })
-
-
-        let uniqueIds = [] as any ;
-        const unique = await data.filter((element:any) => {
-          console.log(uniqueIds);
-        const isDuplicate = uniqueIds.includes(element.m);
-        console.log(!isDuplicate);
-        if (!isDuplicate === true) {
-          uniqueIds.push(element.m);
-          return true;
-        }
-        return false;
-      });
-      console.log(unique);
-        this.groupde(res.data.data[0].date)
-        this.datalistdate = unique
-           
-        // // console.log(res.data.data.last_page);
-        // // console.log(res.data.data.current_page);
-        // // if(res.data.data.current_page === 1){
-        // //   this.per_page = [res.data.data.current_page,res.data.data.current_page+1 ,res.data.data.current_page+2]
-        // // }else if( res.data.data.current_page  ===  res.data.data.last_page){
-        // //   this.per_page = [res.data.data.current_page -2,res.data.data.current_page -1,   res.data.data.current_page]
-        // // }
-        // // else{
-        // //   this.per_page = [res.data.data.current_page-1,res.data.data.current_page,res.data.data.current_page+1 ]
-        // // }
-      },
-      async groupde(event){
-        let res = await Gatway.getService(`/customers/transaction-data/fetch-transaction/ซื้อนิยาย?date=${ event}`)
-        this.listbuy = res.data.data
-      },
-      async group(event){
-        let res = await Gatway.getService(`/customers/transaction-data/fetch-transaction/ซื้อนิยาย?date=${ event.target.value}`)
-        this.listbuy = res.data.data
-      },
-    // async getHistoryRead() {
-    //   let res = await Gatway.getService('/customers/transaction-data/fetch-transaction/ซื้อนิยาย?date=2022-07-01')
-    //     console.log(res.data.data);
-    //     this.listbuy = res.data.data
-    // },
+    async getlist(page) {
+      let res = await Gatway.getService(
+        "/customers/transaction-data/fetch-transaction/ซื้อนิยาย?page=" + page
+      );
+      
+      this.listbuy = res.data.data;
+    },
+    read(id){
+      
+       this.$router.push('/read'+ id)
+    }
   },
   mounted() {
-    this.getCadis();
+    this.getlist(1);
+    // this.getCadis();
   },
 });
 </script>
 <style lang="scss" scoped>
+.img-history-buy {
+  height: auto;
+  width: 145px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+}
+
 // .HistoryBuy {
 //   display: grid;
 //   grid-template-columns: 1fr 1fr;
@@ -263,18 +335,7 @@ export default Vue.extend({
 //   }
 // }
 
-// @media (max-width: 768px) {
-//   p {
-//     font-size: 12px;
-//   }
-//   .title {
-//     font-size: 20px;
-//   }
 
-//   .detail-novel {
-//   display: flex;
-//   gap: 5px;
-// }
 
 //   .buy-history-img {
 //     width: 35%;
@@ -315,12 +376,31 @@ export default Vue.extend({
 //     margin: 5px 0px;
 //   }
 // }
+.date-price{
+  // display: flex;
+  width: fit-content;
+}
+.active-item {
+  padding: 5px 15px;
+  background-color: #645692;
+  border-radius: 50%;
+  color: #ffff;
+  cursor: pointer;
+}
+
 .con-storyBuy {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background-color: white;
   margin-bottom: 20px;
+  // padding: 10px;
+  border-radius: 10px;
   // border: 1px 0 0  0 solid rgba(204, 204, 204, 0.977);
+}
+.sub-title {
+  color: rgb(168, 166, 166);
+  font-size: 1ุ5px;
 }
 .detail-novel {
   display: flex;
@@ -334,5 +414,114 @@ export default Vue.extend({
   display: flex;
   align-items: center;
   gap: 10px;
+}
+.con-page {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
+}
+.NovelPaginate {
+  display: flex;
+  justify-content: center;
+}
+.nv-page {
+  display: flex;
+  justify-content: center;
+}
+.nopage {
+  cursor: pointer;
+}
+.item {
+  cursor: pointer;
+}
+.mobile {
+  display: none;
+}
+p {
+  font-size: 20px;
+}
+
+@media (max-width: 820px) {
+  // .name {
+  //   font-size: 20px;
+  // }
+  // p {
+  //   font-size: 17px;
+  // }
+  .img-history-buy {
+    width: 25%;
+  }
+  .detail-novel {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 450px;
+}
+}
+@media (max-width: 768px) {
+  .name {
+    font-size: 20px;
+  }
+  p {
+    font-size: 17px;
+  }
+}
+@media (max-width: 680px) {
+    .detail-novel {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 350px;
+}
+}
+
+@media (max-width: 520px) {
+  .detail-novel-buy {
+    width: 100%;
+  }
+  .img-history-buy {
+    width: 28%;
+  }
+  .name {
+    font-size: 17px;
+  }
+  .custom-font-coin {
+    font-size: 15px;
+  }
+  p {
+    font-size: 15px;
+  }
+  .con-storyBuy {
+    display: grid;
+    grid-template-columns: auto;
+    // margin-bottom: 20px;
+    // border: 1px 0 0  0 solid rgba(204, 204, 204, 0.977);
+  }
+  .con-storyBuy-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white !important;
+    // padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    // border: 1px 0 0  0 solid rgba(204, 204, 204, 0.977);
+  }
+  .buy-coin-mobile {
+    display: flex;
+    justify-content: space-between;
+  }
+  .pc {
+    display: none;
+  }
+  // .buy-coin {
+  //   flex-direction: columns !important;
+  // }
+  // .pc {
+  // display: contents;
+  // display: flex;
+  // justify-content: space-between;
+  // }
 }
 </style>

@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 <template>
+  
   <div class="Bookshelf">
+    <!-- <pre>
+      {{bookshelf}}
+    </pre> -->
     <div class="nv-box-white nv-mt-40">
       <div v-if="bookshelf">
         <div class="bookshelf">
@@ -9,7 +13,7 @@
           <div v-for="(item, index) in bookshelf" :key="index" class="item">
             <router-link :to="'/novel/' + item.id" class="img">
               <img
-                :src="
+                 v-lazy="
                   item.image_data
                     ? item.image_data.url
                     : $path.image('loading.png')
@@ -27,7 +31,11 @@
                 item.title
               }}</router-link>
               <div class="flex-s">
-                <div class="line-1">{{ item.novel_category_data_preview }}</div>
+                <!-- {{item.ep_last}} -->
+                <div class="line-1" >
+                  <span v-if="item.ep_last"> {{ item.ep_last }} </span>
+                  <span v-else>loading...</span>
+                </div>
                 <div
                   @click="
                     openmodel(item, index);
@@ -102,12 +110,13 @@ import Vue from "vue";
 import { Gatway } from "@/shares/services";
 import { alert } from "@/shares/modules/alert";
 import EmptyContent from "../empty/empty.vue";
+import { sms_alert_Bookshelf } from "@/shares/constants/smsalert";
 export default Vue.extend({
   name: "Bookshelf",
   data() {
     return {
       bookshelf: null as any,
-      itemBookshelf: {},
+      itemBookshelf: {} as any,
       indexBookshelf: null,
     };
   },
@@ -127,14 +136,43 @@ export default Vue.extend({
       let res = await Gatway.DelService(
         `/customers/novel/remove-bookshelf/${uuid}`
       );
-      alert("ลบนิยายออกจากชั้นหนังสือสำเร็จ", "success");
+      
+      alert(sms_alert_Bookshelf(this.itemBookshelf.title), "success");
       this.bookshelf.splice(i, 1);
       this.closemodel();
     },
-    async getBookshelf() {
+    async getBookshelf() { 
       let res = await Gatway.getService("/customers/novel/fetch-bookshelf");
       this.bookshelf = res.data.data;
+      let remembers = await Gatway.postService(
+        "/customers/remembers/novel-data",
+        this.$store.state.storyread.story_Read as any
+      );
+      // console.log(remembers);
+
       let data = [] as any;
+      res.data.data.forEach(element => {
+        const index = remembers.data.data.findIndex((object:any) => {
+          if(object){
+            return object.id === element.id;
+          }
+        });
+        // console.log(res.data.data[index]);
+        res.data.data[index] !== undefined
+        ? data.push({...element, ep_last:remembers.data.data[index]?.novel_episode_datas[0].name})
+        : data.push({...element, ep_last:'ยังไม่ได้อ่านนิยาย'})
+        // if(){
+
+        // }
+        // remembers.data.data.indexOf()
+        // remembers.data.data.forEach(remember => {
+        //   console.log(element.id, remember.id);
+
+        // });
+        
+      });
+      console.log(data);
+     this.bookshelf =  data 
       // let remembers = await Gatway.postService('/customers/remembers/novel-data', this.$store.state.storyread.story_Read as any)
       //  res.data.data.forEach(element => {
       //   // console.log(element.id);

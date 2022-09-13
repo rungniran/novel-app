@@ -20,7 +20,7 @@
           v-model="wordSearct"
         /><br /><br />
       </div>
-      <div class="con-resouth" v-if="wordSearct.length > 0">
+      <div class="con-resouth" v-if="wordSearct">
         <router-link
           v-for="(item, index) in Searct()"
           :key="index"
@@ -81,7 +81,6 @@ export default Vue.extend({
         }, index * 10);
       });
       this.data = data;
-      console.log(NovelAll);
     },
     Searct() {
       var data = [] as any;
@@ -93,14 +92,12 @@ export default Vue.extend({
           // }, index * 100);
         }
       });
-      console.log(data);
 
       return data;
     },
   },
   mounted() {
     this.getNovelType();
-    console.log();
     this.wordSearct = this.$route.hash.split("#")[1];
   },
 });
@@ -221,5 +218,24 @@ h1 {
   .search {
     margin-top: 50px;
   }
+}
+  input[type="color"],
+input[type="date"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="email"],
+input[type="month"],
+input[type="number"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="text"],
+input[type="time"],
+input[type="url"],
+input[type="week"],
+input,
+select:focus,
+textarea {
+  font-size: 16px;
 }
 </style>

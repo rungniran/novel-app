@@ -2,42 +2,47 @@
   <div class="Statistics" v-if="wraning === true">
     <!-- {{mywork}} -->
     <!-- {{sellchartOptions.xaxis.categories}} -->
-    <div>
-      <div>เลือกนิยาย</div>
-      <div class="series">
-        <select
-          id="inCategory"
-          v-model="selectedValue"
-          @change="onChange($event)"
-        >
-         <option value="AllNovel">รวมทุกเรื่อง</option>
-          <option v-for="(item, index) in mywork" :key="index" :value="item.id">
-            {{ item.title }}
-          </option>
-        </select>
-        <!-- v-model="selectedValue"
-          @change="onChange($event)" -->
-        <select
-          id="inCategory"
-          @change="onChangemonth($event)"
-          v-model="monthValue"
-        >
-          <!-- <option value="" :selected="true">--</option> -->
-          <option value="allMonth" :selected="true">รวมทุกเดือน</option>
-          <option
-            v-for="(item, index) in selectmonth"
-            :key="index"
-            :value="item"
+    <div class="ds">
+      <div>
+        <div>เลือกนิยาย</div>
+        <div>
+          <select
+            id="inCategory"
+            v-model="selectedValue"
+            @change="onChange($event)"
           >
-            {{ item.name }} {{ item.year }}
-          </option>
-        </select>
+            <!-- <option value="AllNovel">รวมทุกเรื่อง</option> -->
+            <option
+              v-for="(item, index) in mywork"
+              :key="index"
+              :value="item.id"
+            >
+              {{ item.title }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <div>เลือกเดือน</div>
+        <div>
+          <select @change="onChangeDate($event)" v-model="onDate">
+            <option value="Allmoth" >ทุกเดือน</option>
+            <option v-for="(item, index) in dataset" :key="index" :value="item.key">
+              {{ item.name }}
+            </option>
+          </select>
+        </div>
       </div>
     </div>
     <div>
-      <div>จำนวนเหรียญ ( {{ total }} )</div>
+      <!-- ปิดปรับปรุงกราฟสถิติโดยรวมชั่วคราว -->
+      <div v-show="isgrab">จำนวนเหรียญ ( {{ $filter.NumberToString(total) }} )</div>
       <!-- <div class="series"> -->
+      <!-- <div v-show="isgrab">
+      กำลังโหลด....
+    </div> -->
       <apexchart
+        v-show="isgrab"
         width="100%"
         type="line"
         height="350"
@@ -45,51 +50,60 @@
         :series="sellseries"
         ref="chartSell"
       ></apexchart>
+      <div  v-show="!isgrab">
+      กำลังโหลด....
+      </div>
       <!-- </div> -->
     </div>
+    <!-- <div v-else>
+      กำลังโหลด....
+    </div> -->
     <div>
-      <!-- <div>สถิติยอดวิวรวม</div> -->
-      <div class="series">
-        <!--   <apexchart
-          width="100%"
-          type="bar"
-          :options="viewchartOptions"
-          :series="viewseries"
-           ref="chartview"
-        ></apexchart>
-       <apexchart
-          width="100%"
-          type="line"
-          :options="options"
-          :series="series"
-        ></apexchart> -->
-      </div>
+      <div class="series"></div>
     </div>
   </div>
-  <div v-else class="not-novel">
-    <EmptyContent pathName="2.png" text="ไม่พบข้อมูลสถิติ..." :isSearch=false ></EmptyContent>
+  <div v-else class="wbox">
+    <EmptyContent
+      pathName="2.png"
+      text="ไม่พบข้อมูลสถิติโดยรวม..."
+      :isSearch="false"
+    ></EmptyContent>
   </div>
 </template>
 
 <script lang="ts">
+// const monthset = {
+//   "01": "ม.ค.",
+//   "02": "ก.พ.",
+//   "03": "มี.ค.",
+//   "04": "เม.ย.",
+//   "05": "พ.ค.",
+//   "06": "มิ.ย.",
+//   "07": "ก.ค.",
+//   "08": "ส.ค.",
+//   "09": "ก.ย.",
+//   "10": "ต.ค.",
+//   "11": "พ.ย.",
+//   "12": "ธ.ค.",
+// } as any;
 const monthset = {
-  "01": "ม.ค.",
-  "02": "ก.พ.",
-  "03": "มี.ค.",
-  "04": "เม.ย.",
-  "05": "พ.ค.",
-  "06": "มิ.ย.",
-  "07": "ก.ค.",
-  "08": "ส.ค.",
-  "09": "ก.ย.",
-  "10": "ต.ค.",
-  "11": "พ.ย.",
-  "12": "ธ.ค.",
-};
-
+  "01": "มกราคม",
+  "02": "กุมภาพันธ์",
+  "03": "มีนาคม",
+  "04": "เมษายน",
+  "05": "พฤษภาคม",
+  "06": "มิถุนายน",
+  "07": "กรกฎาคม",
+  "08": "สิงหาคม",
+  "09": "กันยายน",
+  "10": "ตุลาคม",
+  "11": "พฤศจิกายน",
+  "12": "ธันวาคม",
+} as any;
 import Vue from "vue";
 import { ListService, Gatway } from "@/shares/services";
-import  EmptyContent  from "../../empty/empty.vue";
+import EmptyContent from "../../empty/empty.vue";
+import api from "@/shares/services/testURL";
 export default Vue.extend({
   name: "Statistics",
   props: {
@@ -97,7 +111,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      mywork: [],
+      mywork: [] as any,
       sellseries: [
         {
           name: "ยอดขาย",
@@ -136,257 +150,307 @@ export default Vue.extend({
           data: [] as any,
         },
       ],
-      selectedValue: "allMonth",
+      selectedValue: "allMonth" as any,
       selectmonth: [],
-      total: 0,
+      total: '',
       dataset: [] as any,
       monthValue: {} as any,
+      isgrab: true,
+      IDNovel: "",
+      onDate:'Allmoth',
+      monthset:monthset
     };
   },
   components: {
     // NovelStar,
-    EmptyContent
+    EmptyContent,
   },
   methods: {
-    listNovel() {
-      ListService.listNovel().then((res: any) => {
-        console.log(res.data.data);
-
-        this.mywork = res.data.data;
-      });
+    async myworks() {
+      let res = await Gatway.getService("/customers/novel");
+      console.log(res.data.data[0]);
+      this.mywork = await res.data.data;
+      await this.onChange({target:{value:res.data.data[0].id}})
+      this.selectedValue = await res.data.data[0].id
     },
     async onChange(event: any) {
-      this.monthValue = "";
-      this.setdata(event.target.value)
-      // let res = event.target.value === 'AllNovel'
-      // ? await Gatway.getService(`customers/dashboard/sales-summary-group-by-day`)
-      // : await Gatway.getService(`customers/dashboard/sales-summary-group-by-day?novel_data_id=${event.target.value}`);
-      // this.dataset = res.data.data;
-      // let month = [] as any;
-      // let dataset = res.data.data;
-      // for (let item in dataset) {
-      //   month.push({
-      //     name: monthset[item.split("-")[1]],
-      //     key: item.split("-")[1],
-      //     year: item.split("-")[0],
-      //   });
-      // }
-      // let uniqueIds = [] as any;
-      // const unique = month.filter((element) => {
-      //   const isDuplicate = uniqueIds.includes(element.key);
-      //   if (!isDuplicate) {
-      //     uniqueIds.push(element.key);
-      //     return true;
-      //   }
-      //   return false;
-      // });
-
-      // this.selectmonth = unique;
-      // let data = [] as any;
-      // this.timeFrom(11).filter((element: any) => {
-      //   this.sellchartOptions.xaxis.categories.push(element.split("-")[2]);
-      //   if (res.data.data[element] !== undefined) {
-      //     data.push(res.data.data[element]);
-      //   } else {
-      //     data.push(0);
-      //   }
-      // });
-      // var total = 0;
-      // for (var i in data) {
-      //   total += data[i];
-      // }
-      // this.total = total;
-      // (this as any).$refs.chartSell.updateOptions({
-      //   xaxis: {
-      //     categories: this.timeFrom(11, "day").reverse(),
-      //   },
-      //   series: [
-      //     {
-      //       data: data.reverse() as any,
-      //     },
-      //   ],
-      // });
-      // this.allMonth()
-       this.monthValue = 'allMonth'
-    },
-
-    async setdata(key:any){
-      
-      let res = key === 'AllNovel'
-      ? await Gatway.getService(`customers/dashboard/sales-summary-group-by-day`)
-      : await Gatway.getService(`customers/dashboard/sales-summary-group-by-day?novel_data_id=${key}`);
-      this.dataset = await res.data.data;
-      let month = [] as any;
-      console.log(res.data.data);
-      
-      let dataset = await res.data.data;
-      for (let item in dataset) {
-        month.push({
-          name: monthset[item.split("-")[1]],
-          key: item.split("-")[1],
-          year: item.split("-")[0],
-        });
+      this.isgrab = false
+      var d = new Date();
+      let lastmonth = [] as any;
+      this.onDate ='Allmoth'
+      for (let i = 0; i <= 11; i++) {
+        lastmonth.push(`01-${this.pad(d.getMonth() + 1)}-${d.getFullYear()}`);
+        d.setMonth(d.getMonth() - 1);
       }
-      console.log(month);
-      
-      let uniqueIds = [] as any;
-      const unique = await month.filter((element) => {
-        const isDuplicate = uniqueIds.includes(element.key);
-        if (!isDuplicate) {
-          uniqueIds.push(element.key);
-          return true;
-        }
-        return false;
-      });
-
-      this.selectmonth = await unique;
-      let data = [] as any;
-      this.timeFrom(11).filter((element: any) => {
-        this.sellchartOptions.xaxis.categories.push(element.split("-")[2]);
-        if (res.data.data[element] !== undefined) {
-          data.push(res.data.data[element]);
-        } else {
-          data.push(0);
-        }
-      });
-      var total = 0;
-      for (var i in data) {
-        total += data[i];
-      }
-      this.total = total;
-      this.allMonth()
-    },
-
-    onChangemonth(event: any) {
-      if (event.target.value === "allMonth") {
-        this.allMonth()
+      console.log(event.target.value);
+      if (event.target.value !== "AllNovel") {
+        var test = await Gatway.getService(
+          `customers/dashboard/sales-summary-group-by-day?novel_data_id=${
+            event.target.value
+          }&12month=true&dateStart=${lastmonth[lastmonth.length - 1]}&dateEnd=${
+            lastmonth[0]
+          }`
+        );
       } else {
-        this.daysInMonth(1, this.monthValue?.year);
-        let count = this.daysInMonth(
-          this.monthValue?.key,
-          this.monthValue?.year
+        // var test1 = await Gatway.getService(
+        //   `customers/dashboard/sales-summary-group-by-day?month=09&year=2022`
+        // );
+        // console.log(test1);
+      }
+      this.IDNovel = test.data.data[0].id;
+      this.setgrap(test.data.data);
+    },
+    async onChangeDate(event: any) {
+      if(event.target.value !== 'Allmoth'){
+        this.isgrab = false
+        var datetime = event.target.value.split("-");
+        console.log(this.pad(datetime[0]), datetime[1]);
+        var test = await Gatway.getService(
+          `customers/dashboard/sales-summary-group-by-day?novel_data_id=${this.IDNovel}&month=${this.pad(datetime[0])}&year=${datetime[1]}`
         );
-        let daycount = [] as any;
-        let data = [] as any;
-        for (let i = 1; i < count + 1; i++) {
-          daycount.push(i)
-          if (
-            this.dataset[
-              this.monthValue?.year +
-                "-" +
-                this.monthValue?.key +
-                "-" +
-                this.pad(i)
-            ] !== undefined
-          ) {
-            data.push(
-              this.dataset[
-                this.monthValue?.year +
-                  "-" +
-                  this.monthValue?.key +
-                  "-" +
-                  this.pad(i)
-              ]
-            );
-          } else {
-            data.push(0);
-          }
-        }
-        // console.log(data);
-        
-        var total = 0;
-        for (let i in data) {
-          total += data[i];
-        }
-        this.total = total;
-        (this as any).$refs.chartSell.updateOptions({
-          xaxis: {
-            categories: daycount,
-          },
-          series: [
-            {
-              data: data,
-            },
-          ],
-        });
+        this.setgrapdate(test.data.data);
+        console.log(test);
+      }else{
+        this.onChange({target:{value:this.IDNovel}})
       }
     },
-
-    allMonth(){
-      let dataset = [] as any
-        for(let item in this.dataset){
-          dataset.push({ count:this.dataset[item], month:item.split('-')[1]})
-        }
-        // console.log(dataset);
+    async setgrapdate(data){
+      let daycount = [] as any;
+      let coin = [] as any;
+      for (let item in data[0].buy_total) {
+        let Ararrydataitem = item.split(" ")
+        var Ararrydataitemtime = Ararrydataitem[0].split("-")
+        // console.log(Ararrydataitemtime[1]);
         
-        var result = Array.from(
-          dataset.reduce( (countries, grant) =>
-              countries.set(grant.month, 
-                  (countries.get(grant.month) || 0) + +grant.count), 
-              new Map() ),
-          ([month, sum]) => ({ month, sum })
-        );
-        // console.log('sss',result);
-        var monthName = [
-          { name:"ม.ค.",key:'01'},
-          { name:"ก.พ.",key:"02"},
-          { name:"มี.ค.",key:"03"},
-          { name:"เม.ย.",key:"04"},
-          { name:"พ.ค.",key:"05"},
-          { name:"มิ.ย.",key:"06"},
-          { name:"ก.ค.",key:"07"},
-          { name:"ส.ค.",key:"08"},
-          { name:"ก.ย.",key:"09"},
-          { name:"ต.ค.",key:"10"},
-          { name:"พ.ย.",key:"11"},
-          { name:"ธ.ค.",key:"12"},
-        ] as any;
-        var d = new Date();
-        let lastmonth = [] as any
-        let sales = [] as any
+        if(daycount.includes(`${Ararrydataitemtime[2]} ${monthset[Ararrydataitemtime[1]]}`) === false){
+          daycount.unshift(`${Ararrydataitemtime[2]} ${monthset[Ararrydataitemtime[1]]}`);
+          coin.unshift( parseFloat(data[0].buy_total[item]));
+        }else{
+          coin[0] += data[0].buy_total[item] 
+        }  
+      }
+      this.isgrab = await true
+      // console.log(coin);
       
-        d.setDate(1);
-        console.log('dsffd',result);
-        let test = result.reverse()
-        for  ( let i = 0;  i <= 11; i++) {
-          lastmonth.push(monthName[d.getMonth()]?.name + " " + d.getFullYear())
-          d.setMonth(d.getMonth() - 1);
-          console.log(test[i]);
-          
-          if( test[i] !== undefined){
-            sales.push(  test[i].sum)
-          }else{
-            sales.push(0)
-          }
-          
-
-          // console.log();
-
-        }
-        var totalmo = 0;
-        for (let i in sales) {
-          // console.log(sales[i]);
-          
-          totalmo += sales[i];
-        }
-        // console.log(totalmo);
-        console.log(lastmonth);
-        console.log(sales)
-        
-        this.total = totalmo;
-        (this as any).$refs.chartSell.updateOptions({
-          xaxis: {
-            categories: lastmonth.reverse(),
+      // console.log();
+      this.total = this.sumArray(coin);
+      (this as any).$refs.chartSell.updateOptions({
+        xaxis: {
+          categories: daycount.reverse(),
+        },
+        series: [
+          {
+            data: coin.reverse(),
           },
-          series: [
-            {
-              data: sales.reverse(),
-            },
-          ],
-        });
+        ],
+      });
+      
     },
 
+    async  setgrap(data, is = true) {
+      let daycount = [] as any;
+      let coin = [] as any;
+      let showdaycount = [] as any
+      for (let item in data[0].buy_total) {
+        let Ararrydataitem = item.split("-")
+        daycount.unshift({ name: `${monthset[this.pad(Ararrydataitem[0])]} ${Ararrydataitem[1]}`, key: item });
+        showdaycount.unshift( `${monthset[this.pad(Ararrydataitem[0])]} ${Ararrydataitem[1]}` )
+        coin.unshift(data[0].buy_total[item]);
+      }
+      if(is === true){
+        this.dataset = daycount;
+      }
+      this.isgrab = await true
+      this.total = this.sumArray(coin);
+      (this as any).$refs.chartSell.updateOptions({
+        xaxis: {
+          categories: showdaycount.reverse(),
+        },
+        series: [
+          {
+            data: coin.reverse(),
+          },
+        ],
+      });
+    },
+    sumArray(dataset: any){
+     console.log(dataset);
+     var total = 0;
+      for (var i in dataset) {
+        total += dataset[i];
+      }
+      return  total.toFixed(2);
+     
+    },
+    // async setdata(key: any) {
+    //   let res =
+    //     key === "AllNovel"
+    //       ? await Gatway.getService(
+    //           `customers/dashboard/sales-summary-group-by-day`
+    //         )
+    //       : await Gatway.getService(
+    //           `customers/dashboard/sales-summary-group-by-day?novel_data_id=${key}`
+    //         );
+    //         console.log(res);
 
+    //   this.dataset = await res.data.data;
+    //   let month = [] as any;
+    //   let dataset = await res.data.data;
+    //   for (let item in dataset) {
+    //     month.push({
+    //       name: monthset[item.split("-")[1]],
+    //       key: item.split("-")[1],
+    //       year: item.split("-")[0],
+    //     });
+    //   }
+    //   console.log(month);
+
+    //   let uniqueIds = [] as any;
+    //   const unique = await month.filter((element) => {
+    //     const isDuplicate = uniqueIds.includes(element.key);
+    //     if (!isDuplicate) {
+    //       uniqueIds.push(element.key);
+    //       return true;
+    //     }
+    //     return false;
+    //   });
+
+    //   this.selectmonth = await unique;
+    //   let data = [] as any;
+    //   this.timeFrom(11).filter((element: any) => {
+    //     this.sellchartOptions.xaxis.categories.push(element.split("-")[2]);
+    //     if (res.data.data[element] !== undefined) {
+    //       data.push(res.data.data[element]);
+    //     } else {
+    //       data.push(0);
+    //     }
+    //   });
+    //   var total = 0;
+    //   for (var i in data) {
+    //     total += data[i];
+    //   }
+    //   this.total = total;
+    //   this.allMonth();
+    // },
+
+    // onChangemonth(event: any) {
+    //   if (event.target.value === "allMonth") {
+    //     this.allMonth();
+    //   } else {
+    //     this.daysInMonth(1, this.monthValue?.year);
+    //     let count = this.daysInMonth(
+    //       this.monthValue?.key,
+    //       this.monthValue?.year
+    //     );
+    //     let daycount = [] as any;
+    //     let data = [] as any;
+    //     for (let i = 1; i < count + 1; i++) {
+    //       daycount.push(i);
+    //       if (
+    //         this.dataset[
+    //           this.monthValue?.year +
+    //             "-" +
+    //             this.monthValue?.key +
+    //             "-" +
+    //             this.pad(i)
+    //         ] !== undefined
+    //       ) {
+    //         data.push(
+    //           this.dataset[
+    //             this.monthValue?.year +
+    //               "-" +
+    //               this.monthValue?.key +
+    //               "-" +
+    //               this.pad(i)
+    //           ]
+    //         );
+    //       } else {
+    //         data.push(0);
+    //       }
+    //     }
+    //     // console.log(data);
+
+    //     var total = 0;
+    //     for (let i in data) {
+    //       total += data[i];
+    //     }
+    //     this.total = total;
+    //     (this as any).$refs.chartSell.updateOptions({
+    //       xaxis: {
+    //         categories: daycount,
+    //       },
+    //       series: [
+    //         {
+    //           data: data,
+    //         },
+    //       ],
+    //     });
+    //   }
+    // },
+
+    async allMonth() {
+      let dataset = [] as any;
+      for (let item in this.dataset) {
+        dataset.push({ count: this.dataset[item], month: item.split("-")[1] });
+      }
+      var result = Array.from(
+        dataset.reduce(
+          (countries, grant) =>
+            countries.set(
+              grant.month,
+              (countries.get(grant.month) || 0) + +grant.count
+            ),
+          new Map()
+        ),
+        ([month, sum]) => ({ month, sum })
+      );
+      var monthName = [
+        { name: "ม.ค.", key: "01" },
+        { name: "ก.พ.", key: "02" },
+        { name: "มี.ค.", key: "03" },
+        { name: "เม.ย.", key: "04" },
+        { name: "พ.ค.", key: "05" },
+        { name: "มิ.ย.", key: "06" },
+        { name: "ก.ค.", key: "07" },
+        { name: "ส.ค.", key: "08" },
+        { name: "ก.ย.", key: "09" },
+        { name: "ต.ค.", key: "10" },
+        { name: "พ.ย.", key: "11" },
+        { name: "ธ.ค.", key: "12" },
+      ] as any;
+      var d = new Date();
+      let lastmonth = [] as any;
+      let sales = [] as any;
+
+      d.setDate(1);
+      let test = result.reverse();
+      for (let i = 0; i <= 11; i++) {
+        lastmonth.push(monthName[d.getMonth()]?.name + " " + d.getFullYear());
+        d.setMonth(d.getMonth() - 1);
+        console.log(test[i]);
+
+        if (test[i] !== undefined) {
+          sales.push(test[i].sum);
+        } else {
+          sales.push(0);
+        }
+      }
+      var totalmo = 0;
+      for (let i in sales) {
+        totalmo += sales[i];
+      }
+
+      await (this as any).$refs.chartSell.updateOptions({
+        xaxis: {
+          categories: await lastmonth.reverse(),
+        },
+        series: [
+          {
+            data: await sales.reverse(),
+          },
+        ],
+      });
+    },
 
     daysInMonth(month: any, year: any) {
       return new Date(year, month, 0).getDate();
@@ -419,21 +483,151 @@ export default Vue.extend({
     pad(d: any) {
       return d < 10 ? "0" + d.toString() : d.toString();
     },
+    async AllNovel() {
+      var obj = [] as any;
+      var total = [] as any;
+      this.mywork.forEach((element: any, index: any) => {
+        if (element.buy_total.length === undefined) {
+          for (var item in element.buy_total) {
+            total.push(this.mywork[index].buy_total[item]);
+            let hasMagenicVendor = obj.some(
+              (vendor: any) => vendor["date"] === item
+            );
+            if (hasMagenicVendor === false) {
+              obj.push({ date: item, coin: element.buy_total[item] });
+            } else {
+              const index = obj.findIndex((object) => {
+                return object.date === item;
+              });
+              obj[index].coin += element.buy_total[item];
+            }
+          }
+        }
+      });
+      let totalsum = 0;
+      var monthName = [
+        { name: "ม.ค.", key: "1" },
+        { name: "ก.พ.", key: "2" },
+        { name: "มี.ค.", key: "3" },
+        { name: "เม.ย.", key: "4" },
+        { name: "พ.ค.", key: "5" },
+        { name: "มิ.ย.", key: "6" },
+        { name: "ก.ค.", key: "7" },
+        { name: "ส.ค.", key: "8" },
+        { name: "ก.ย.", key: "9" },
+        { name: "ต.ค.", key: "10" },
+        { name: "พ.ย.", key: "11" },
+        { name: "ธ.ค.", key: "12" },
+      ] as any;
+      var d = new Date();
+      let lastmonth = [] as any;
+      let saraly = [] as any;
+      for (let i = 0; i <= 10; i++) {
+        const index = obj.findIndex((object) => {
+          return object.date === d.getMonth() + 1 + "-" + d.getFullYear();
+        });
+        if (index !== -1) {
+          saraly.unshift(obj[index].coin);
+        } else {
+          saraly.unshift(0);
+        }
+        lastmonth.unshift(
+          monthName[d.getMonth()]?.name + " " + d.getFullYear()
+        );
+        d.setMonth(d.getMonth() - 1);
+      }
+      this.isgrab = await false;
+      await (this as any).$refs.chartSell.updateOptions({
+        xaxis: {
+          categories: await lastmonth,
+        },
+        series: [
+          {
+            data: await saraly,
+          },
+        ],
+      });
+    },
+    async test(novel) {
+      if (novel === "AllNovel") {
+        this.AllNovel();
+      } else {
+        var monthName = [
+          { name: "ม.ค.", key: "1" },
+          { name: "ก.พ.", key: "2" },
+          { name: "มี.ค.", key: "3" },
+          { name: "เม.ย.", key: "4" },
+          { name: "พ.ค.", key: "5" },
+          { name: "มิ.ย.", key: "6" },
+          { name: "ก.ค.", key: "7" },
+          { name: "ส.ค.", key: "8" },
+          { name: "ก.ย.", key: "9" },
+          { name: "ต.ค.", key: "10" },
+          { name: "พ.ย.", key: "11" },
+          { name: "ธ.ค.", key: "12" },
+        ] as any;
+        var d = new Date();
+        let lastmonth = [] as any;
+        let saraly = [] as any;
+        for (let i = 0; i <= 10; i++) {
+          lastmonth.unshift(
+            monthName[d.getMonth()]?.name + " " + d.getFullYear()
+          );
+          if (
+            this.selectedValue.buy_total[
+              d.getMonth() + 1 + "-" + d.getFullYear()
+            ] !== undefined
+          ) {
+            saraly.unshift(
+              this.selectedValue.buy_total[
+                d.getMonth() + 1 + "-" + d.getFullYear()
+              ]
+            );
+          } else {
+            saraly.unshift(0);
+          }
+          d.setMonth(d.getMonth() - 1);
+        }
+        var total = 0;
+        for (var i in this.selectedValue.buy_total) {
+          total += this.selectedValue.buy_total[i];
+        }
+        // this.total = total;
+        this.isgrab = false;
+        await (this as any).$refs.chartSell.updateOptions({
+          xaxis: {
+            categories: await lastmonth,
+          },
+          series: [
+            {
+              data: await saraly,
+            },
+          ],
+        });
+      }
+    },
   },
-  mounted() {
+  async mounted() {
+    await this.myworks();
     // this.sellchartOptions.xaxis.categories = this.timeFrom(11, "day");
-    this.listNovel();
+    //  await this.listNovel();
+    //  await this.test('AllNovel')
+    // this.test(novel)
     // setTimeout(() => {
-      this.setdata('AllNovel')
-      this.selectedValue = 'AllNovel'
-      this.monthValue = 'allMonth'
+    // this.setdata("AllNovel");
+
+    this.monthValue = "allMonth";
     // }, 2000);
-    
   },
 });
 </script>
 
 <style lang="scss" scoped>
+.ds {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+}
 .Statistics {
   display: grid;
   grid-template-columns: 1fr;
@@ -453,9 +647,7 @@ export default Vue.extend({
   grid-template-columns: 1fr 2fr;
   grid-gap: 20px;
 }
-.not-novel {
-  margin-top: -35px;
-}
+
 .con-btn {
   display: flex;
   align-items: center;
@@ -478,6 +670,9 @@ export default Vue.extend({
   font-size: 18px;
   color: #1e2046;
 }
+.wbox {
+  margin-top: 85px;
+}
 
 @media (max-width: 1024px) {
 }
@@ -489,6 +684,9 @@ export default Vue.extend({
 @media (max-width: 415px) {
   .series {
     grid-template-columns: 1fr;
+  }
+  .wbox {
+    margin-top: 30px;
   }
 }
 </style>

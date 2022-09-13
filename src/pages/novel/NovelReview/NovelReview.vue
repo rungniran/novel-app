@@ -1,8 +1,8 @@
 <template>
-   <div>
+   <div v-if="dataReview">
 <ReviewModal ref="ReviewModal" @ResetReviwe="ResetReviwe"/>
      <div class="nv-col-2">
-          <div class="nv-title">รีวิวผู้อ่าน ({{dataReview.length }})</div>
+          <div class="nv-title">รีวิวผู้อ่าน <span>({{dataReview.length }})</span></div>
           <button
             class="nv-btn-yellow"
             @click="cleck ? $refs.ReviewModal.open() : $base.openlogin()"
@@ -10,7 +10,7 @@
             เขียนรีวิว
           </button>
         </div>
-          <div v-if="dataReview.length === 0">
+          <div v-if="dataReview.length === 0" style="margin-top:20px; padding:20px">
             <EmptyContent pathName="8.png" text="นิยายเรื่องนี้ยังไม่มีผู้รีวิว" :isSearch=false fontSize=30px></EmptyContent>
           </div>
           <div
@@ -78,7 +78,7 @@ export default Vue.extend({
     return{
       img: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
       reviwe: 3, 
-      dataReview:[]
+      dataReview:null
     }
   },
   methods:{
@@ -109,10 +109,10 @@ export default Vue.extend({
       this.getReviewAll()
     },
     allreviwe(){
-      if((this.dataReview.length - this.reviwe) > 3){
+      if(((this as any).dataReview.length - this.reviwe) > 3){
         this.reviwe += 3
       }else{
-        this.reviwe += this.dataReview.length - this.reviwe
+        this.reviwe += (this as any).dataReview.length - this.reviwe
       }
       
     },
@@ -122,7 +122,6 @@ export default Vue.extend({
         action:'fetch-preview', 
         novel_data_id:this.$route.params.id
       } as any) 
-      console.log('>>>>>>>>>>>>', res.data.data);
       
       this.dataReview = res.data.data
       
@@ -182,8 +181,12 @@ export default Vue.extend({
   padding: 15px 0px;
   // padding-bottom: 30px;
   grid-template-columns: 1fr;
-  border-top: 1px solid #d5d5d5;
+  border-top: 1px solid #61BCBE;
   grid-gap: 10px;
+}
+img.img-no-data{
+  background-color: black !important;
+  width: 40% !important;
 }
 .review-profile {
   display: flex;

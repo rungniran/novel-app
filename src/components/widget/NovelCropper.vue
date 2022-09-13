@@ -35,8 +35,8 @@
         <div  class="reset" @click="reset">ลบ</div>
         </span>
         <span class="NovelCropper-input" v-else>
-		<input  type="file" class="file" @change="previewFiles" accept="image/png, image/jpeg">
-        <img src="https://novelkingdom.co/images/use-file-img.png" class="camera">
+		<input  type="file" class="file" @change="previewFiles" accept="image/png, image/jpeg, image/jpg">
+        <img src="https://lh3.googleusercontent.com/EbXw8rOdYxOGdXEFjgNP8lh-YAuUxwhOAe2jhrz3sgqvPeMac6a6tHvT35V6YMbyNvkZL4R_a2hcYBrtfUhLvhf-N2X3OB9cvH4uMw=w1064-v0" class="camera">
         </span>
 
 		<!-- <img :src="test"> scalable: false, movable: false,	handlers: {},-->
@@ -58,7 +58,11 @@ export default Vue.extend({
   props:{
     imgupdata:{
 			type:String,
-			defail:'https://119.59.97.111/storage/novel_image/BB16BA7F-2D9A-428F-9CD7-68231B086EAB.png'
+			default:'https://119.59.97.111/storage/novel_image/BB16BA7F-2D9A-428F-9CD7-68231B086EAB.png'
+		},
+		type:{
+			type:String,
+			default:'image/png'
 		}
 	},
 	data: () => {
@@ -75,7 +79,7 @@ export default Vue.extend({
 		change({ canvas }) {
 			this.test = canvas.toDataURL()
 			const date = new Date
-			var file = this.dataURLtoFile(canvas.toDataURL(),Date.parse(date)+'.png');
+			var file = this.dataURLtoFile(canvas.toDataURL(),Date.parse(date));
 			this.resize(file)
 			// console.log(file);
 			// this.$emit("imgCropper" , file)
@@ -95,9 +99,9 @@ export default Vue.extend({
 			};
 		},
 		resize(file){
-			  const MAX_WIDTH = 300;
-        const MAX_HEIGHT = 507;
-				const MIME_TYPE = "image/png";
+			  const MAX_WIDTH = 	500  ;
+        const MAX_HEIGHT = 707;
+				const MIME_TYPE = this.$props.type;
 				const QUALITY = 0.7;
 				const blobURL = URL.createObjectURL(file);
 				const img = new Image();
@@ -121,13 +125,14 @@ export default Vue.extend({
 		},
 
 		bade64(blob){
-			var file = new File([blob], "name", {type:'image/png'});
+			// console.log('sdfsdf',blob);
+			var file = new File([blob], "name");
 			this.size = this.$filter.formatBytes(file.size)
 			var reader = new FileReader()
 		  reader.readAsDataURL(blob)
 			reader.onload = () => {
 				this.tests =reader.result
-				var file = this.dataURLtoFile(reader.result,"dffddf"+'.png');
+				var file = this.dataURLtoFile(reader.result,"dffddf");
 				this.size = this.$filter.formatBytes(file.size)
 				this.$emit("imgCropper" , file)
 				
