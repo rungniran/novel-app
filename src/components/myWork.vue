@@ -1,5 +1,8 @@
 <template>
   <div id="Work">
+    <!-- <pre>
+      {{data}}
+    </pre> -->
     <div v-if="data" class="con-mywork">
       <router-link
         :to="'/writer/novelpreview/' + item.id"
@@ -7,48 +10,29 @@
         :key="index"
         class="box-mywork"
       >
-        <div class="promotion" v-if="item.novel_promotion_datas.length !== 0">
-          <div>
-            <div class="tag">
-              <div class="tag-side tag-3-side">
-                <div class="tag-text tag-3-text">
-                  Sale
-                  <!-- <div class="rule-shape">&#10052;</div> -->
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-              class="tags-end"
-              v-if="item.status_end_novel === true"
-            >
-              <div>
-                <div class="tag">
-                  <div class="tag-side tag-3-side">
-                    <div class="tag-text tag-3-text">
-                      จบ
-                      <!-- <div class="rule-shape">&#10052;</div> -->
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-        <div class="image loading-img">
-          <img
-            :src="
+      <div class="img-con">
+      <NovelPomotion :cleckP='item.novel_promotion_datas.length ' @cleckandP="0" msmP="Sale" msmE='จบ' :cleckE='item.status_end_novel'/>
+ 
+      <!-- <div class="image loading-img"> -->
+         <NovelImage :image="dataUrl(item.image_data)" :alt="item.title "></NovelImage>
+        <!-- <img
+        :src="
               item.image_data ? item.image_data.url : $path.image('loading.png')
-            "
+              "
             alt="novel"
             class="img-pre"
             width="100%"
             onerror="this.onerror=null;this.src='https://novelkingdom.co/loading.png';"
-          />
-          <div class="type-novel">เผยแพร่</div>
-        </div>
-        <div class="name-novel">
-          {{item.title}}
+            />
+             -->
+          
+        <!-- </div> -->     
+        <div class="type-novel" v-if="!item.draft">เผยแพร่</div>
+        <div  class="type-novel-draft" v-else>ไม่เผยแพร่</div>
+      </div>
+        <div class="name-novel line-1">
+         <span v-if="item.title.length > 18"> {{item.title.slice(0,18) }}...</span>
+         <span v-else> {{item.title }}</span>
         </div>
       </router-link>
     </div>
@@ -66,10 +50,13 @@
 <script lang="ts">
 import Vue from "vue";
 import EmptyContent from "../pages/empty/empty.vue";
+import { _Base } from "@/pages";
+const logic = new _Base;
 export default Vue.extend({
   name: "Work",
   data() {
     return {
+      dataUrl:logic._dataUrl ,
       dataloang: [...Array(5).keys()],
     };
   },
@@ -85,8 +72,8 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .con-mywork {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  grid-gap: 30px;
+  grid-template-columns:1fr 1fr 1fr 1fr 1fr ;
+  grid-gap: 30px 10px;
 }
 .image {
   position: relative;
@@ -98,28 +85,37 @@ export default Vue.extend({
   box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
     rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
 }
+.img-con{
+  position: relative;
+}
 // .image:hover {
 //   box-shadow: rgba(255, 255, 255, 0.2) 0px 0px 0px 1px inset, rgba(0, 0, 0, 0.9) 0px 0px 0px 1px;
 // }
-.type-novel {
+.type-novel, .type-novel-draft {
   position: absolute;
   bottom: 0px;
   width: 100%;
   height: 30px;
-  background: radial-gradient(
-    circle,
-    rgba(11, 173, 16, 1) 0%,
-    rgba(172, 195, 34, 1) 98%
-  );
+  // background: radial-gradient(
+  //   circle,
+  //  #af97f9,
+  //     #906df7
+  // );
+    background-image: linear-gradient(to right,  #c1acfe, #906df7);
+   //   background: radial-gradient(circle, rgba(172,195,34,1) 0%, rgba(11,173,16,1) 98%);
   display: flex;
+   border-radius: 0px 0 5px 5px;
   justify-content: center;
   align-items: center;
   color: #fff;
 }
-.type-novel:hover{
-  background: radial-gradient(circle, rgba(172,195,34,1) 0%, rgba(11,173,16,1) 98%);
-  transition: all 0.5s linear ease-in-out;
+.type-novel-draft{
+    background-image: linear-gradient(to right,  #fac6c6, #ff7474);
 }
+// .type-novel:hover{
+//   background: radial-gradient(circle, rgba(172,195,34,1) 0%, rgba(11,173,16,1) 98%);
+//   transition: all 0.5s linear ease-in-out;
+// }
 .img-pre {
 }
 .container-detail {

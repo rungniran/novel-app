@@ -2,7 +2,7 @@
   <div class="NovelConfirm " :id="idcon">
       <div class="con-confirm" :id="id">
         <div class="haeder-confirm" :style="'background:' + color ">
-          <div>{{title}}</div>
+          <div class="title-font">{{title}}</div>
           <div></div>
         </div>
         <div class="mss-confirm">
@@ -87,7 +87,7 @@ export default Vue.extend({
   
 })
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .NovelConfirm{
   position: fixed;
   width: 100%;
@@ -104,6 +104,9 @@ export default Vue.extend({
   transition: .3s;
   pointer-events: none;
  
+}
+.title-font{
+  font-size: 18px;
 }
 .NovelConfirm-show{
     opacity: 10;
@@ -127,10 +130,10 @@ export default Vue.extend({
   transform: scale(1.0);
 }
 .haeder-confirm{
-  font-size: 20px;
+  font-size: 20px !important;
   display: flex;
   justify-content: space-between;
-  background: #ff6b6b;
+  // background: #ff6b6b;
   padding: 15px 20px;
   color: #ffffff;
 }
@@ -148,7 +151,7 @@ export default Vue.extend({
   grid-gap: 10px;
 }
 .btn{
-  padding: 8px 25px;
+  padding: 7.5px 25px;
   border-radius: 5px;
   cursor: pointer;
 }

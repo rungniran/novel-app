@@ -1,5 +1,5 @@
 <template>
-  <div class="contai-modal" @click="onmouse == false ? close() : null" :id="ID">
+  <div :class="`contai-modal ${Classa}`" @click="onmouse == false ? close() : null" :id="ID" >
     <!-- {{onmouse}} -->
     <div class="contai-modal-crad" :id="IDCrad" :style="'width:' + width ">
       <i v-if="Close === true" class="fas fa-times-circle" @click="close()"></i>
@@ -33,6 +33,14 @@ export default Vue.extend({
       type:String,
       default:'auto'
     },
+    Classa:{
+      type:String,
+      default:'sa'
+    },
+    Onmouse:{
+      type:Boolean,
+      default:true
+    }
   },
   methods: {
     close(): void {
@@ -49,13 +57,18 @@ export default Vue.extend({
     },
   },
   mounted() {
+    if(this.$props.Onmouse ===true){
     let elememt = document.getElementById(this.$props.IDCrad) as HTMLElement;
-    elememt.onmouseover = (): void => {
-      this.onmouse = true;
-    };
-    elememt.onmouseout = (): void => {
-      this.onmouse = false;
-    };
+      if(elememt){
+        elememt.onmouseover = () => {
+          this.onmouse = true;
+        };
+        elememt.onmouseout = () => {
+          this.onmouse = false;
+        };
+      }
+    }
+    
   },
 });
 </script>
@@ -105,7 +118,7 @@ export default Vue.extend({
   gap: 10px;
 }
 #buysetCrad{
-   max-height: 90vh;
+   max-height: 100vh;
    overflow-y: scroll;
 }  
 .fa-times-circle {
@@ -118,8 +131,8 @@ export default Vue.extend({
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  min-width: 300px;
+  // gap: 10px;
+  min-width: 350px;
 }
 #buyNovelEpAutoCard {
   background: #ffffff;
@@ -170,10 +183,46 @@ export default Vue.extend({
 #PromotionModalCard{
   padding: 0px;
 }
+
+#StickerCard{
+  min-height: 450px;
+  position: relative;
+  overflow: hidden;
+  width: 550px !important; 
+}
 @media (max-width: 415px) {
   #buysetCrad {
-    height: 100vh;
+    height: auto;
     overflow-y: scroll;
   }
 }
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #96969600;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #bfbfbf7d;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8484849e;
+}
+#NovelConfirmCead{
+  padding:0px; 
+   box-shadow: 0 10px 50px 0 rgb(0 0 0 / 20%);
+}
+
+.bg-w{
+      background: #ffffffcc;
+         
+}
+#ExchangeCrad{
+  padding: 0px;
+}
+// #clecktimeCrad #clecksellCrad
 </style>

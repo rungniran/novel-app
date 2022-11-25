@@ -1,8 +1,8 @@
 <template>
-  <div class="NovelPreview">
-    <!-- <pre>
-      {{getNover}}
-    </pre> -->
+  <div
+    class="NovelPreview"
+    v-if="getNover.user_id === $store.state.auth.dataset.id"
+  >
     <div class="nv-box-white nv-mt-40" v-if="getNover">
       <div class="box-nove">
         <div class="image-nv">
@@ -32,26 +32,14 @@
                 getNover.novel_category_data_preview
               }}</router-link>
             </div>
-            <div class="story-sub line-5" style="margin-top: 15px; line-height: 1.6">
+            <div
+              class="story-sub line-5"
+              style="margin-top: 15px; line-height: 1.6"
+            >
               {{ getNover.detail }}
             </div>
-            <!-- <div class="view-list nv-mt-10">
-              <div class="view">
-                <i class="far fa-eye"></i>
-                <div class="count-numble-view">
-                  {{ $filter.NumbertoText(getNover.total_view) }}
-                </div>
-              </div>
-              <div class="list">
-                <i class="fas fa-list"></i>
-               
-              </div>
-            </div> -->
           </div>
           <div class="grud-btn">
-            <!-- <button class="nv-btn-orange" @click="Views">
-              <i class="fas fa-chart-line"></i> ดูสถิติ
-            </button> -->
             <router-link
               :to="
                 '/writer/editnovel/' +
@@ -66,49 +54,94 @@
             <button
               class="nv-btn-light-blue PromotionModal"
               @click="$refs.PromotionModal.open()"
-              :disabled='eplength ? false : true'
+              :disabled="eplength ? false : true"
             >
               โปรโมชัน
-              <div class="numbel-p" v-if="itempromotion">{{itempromotion.length}}</div>
+              <div class="numbel-p" v-if="itempromotion">
+                {{ itempromotion.length }}
+              </div>
             </button>
-            <!-- <button class="nv-btn-light-blue">โปรโมชั่น</button> -->
             <button
-              class="nv-btn-blue"
+              class="nv-btn-red"
               @click="$base.openalert('deletenovel', 'conDeletenovel')"
             >
               ลบหนังสือ
+            </button>
+            <button v-show="getNover.draft"
+              class="nv-btn-purple"
+              @click="$base.openalert('publicNovel', 'conPublicnovel')"
+            >
+              เผยแพร่นิยาย
             </button>
           </div>
         </div>
       </div>
     </div>
-    
-    <!-- <div class="nv-box-white nv-mt-40 promotioncon" v-if="itempromotion">
-      <div class="promotion-c">
-          นิยายนี้ติดโปรโมชันอยู่
-      </div>
-    </div> -->
-  <!-- <pre>
+    <div class="nv-box-white nv-mt-40" v-if="getNover">
+     <div style="position: relative" v-if="getNover.description">
+        <div class="nv-title">เรื่องย่อ</div>
+        <div
+          class="story"
+          v-html="getNover.description"
+          style="margin-top: 10px; line-height: 2; height: 200px"
+        ></div>
 
-    {{moment}}
-  </pre> -->
+        <div class="ade"></div>
+        <div class="center">
+          <button class="more nv-btn-blue" @click="Element._more()">
+            ดูเพิ่มเติม
+          </button>
+        </div>
+      </div>
+    </div>
     <div class="nv-box-white nv-mt-40" v-if="moment">
       <div v-if="moment.length === 0" class="nv-col-2">
         <span></span>
         <router-link :to="'/writer/novelpreview/' + novelUuid + '/novelep'">
-              <button class="nv-btn-yellow">เพิ่มตอนใหม่</button>
-            </router-link>
+          <button class="nv-btn-yellow">เพิ่มตอนใหม่</button>
+        </router-link>
       </div>
       <div v-else>
         <div class="nv-col-2" style="padding-bottom: 20px">
-          <div class="nv-title">สารบัญ 
-             <span>
-                  <span v-if="eplength !== null">  ( {{ $filter.NumbertoText(eplength) }} ) </span>
-                  <span v-else> รอสักครู่ </span>
-                </span>
+          <div class="nv-title" v-if="!isdraggable">
+            สารบัญ
+            <span>
+              <span v-if="eplength !== null">
+                ( {{ $filter.NumberToString(eplength) }} )
+              </span>
+              <span v-else> รอสักครู่ </span>
+            </span>
+          </div>
+          <div class="grud-btn" v-else>
+            <button
+              class="nv-btn-red"
+              :disabled="arrayUuid.length === 0 ? true : false"
+              @click="delall()"
+            >
+              <i class="fa fa-trash-o" aria-hidden="true"></i>
+            </button>
+            <button
+              class="nv-btn-orange"
+              :disabled="arrayUuid.length === 0 ? true : false"
+              @click="sell()"
+            >
+              <i class="fas fa-coins"></i>
+            </button>
+            <!-- <button @click="testf()" class="nv-btn-yellow" :disabled="isSort">
+              <font-awesome-icon :icon="['fas','fa-sort']" />
+            </button> -->
           </div>
           <div class="grud-btn">
-            <button @click="test()" class="nv-btn-light-blue " :disabled="isSort">เรียงชื่อตอน</button>
+            <button  v-if="isdraggable" @click="testf()" class="nv-btn-yellow" :disabled="isSort">
+              <!-- <font-awesome-icon :icon="['fas','fa-sort']" /> -->
+              ยืนยันการเรียง
+            </button>
+            <!-- <select >{{textdraggable}}</select> cancel()-->
+            <!-- <button @click="!isdraggable ? test():testf()" class="nv-btn-light-blue " :disabled="isSort">{{textdraggable}}</button> -->
+            <button @click="!isdraggable ? test() : cancel()" class="cancel">
+              {{ textdraggable }}
+            </button>
+
             <router-link :to="'/writer/novelpreview/' + novelUuid + '/novelep'">
               <button class="nv-btn-yellow">เพิ่มตอนใหม่</button>
             </router-link>
@@ -116,89 +149,127 @@
           </div>
         </div>
         <div>
-          <!-- <div class="nv-mt-20">
-          <div v-for="(item, index) in EpisodeData" :key="index" class="episode">
-             <div>#{{index + 1}} {{item.name}}</div>
-             <div class="p-con-detail">
-               <div v-if="item.coin != 0.00" class="coin">
-                 <img :src="$path.image('coin-gold.png')" width="20px" />
-                 {{item.coin}}
-               </div> 
-               <div v-else class="coin">
-
-               </div>
-               {{item.timestamp}}
-              <div class="grud-btn-manager">
-                <router-link :to="'/writer/novelpreview/'+ novelUuid + '/novelep/'+ item.id" class="grud-btn-manager"> 
-                  <img :src="$path.svg('edit.svg')"> 
-                </router-link>
-               
-       
-                <div @click="$base.openalert('deleteEP', 'conDeleteEp'); epObj = item; epIndex = index" class="grud-btn-manager">
-                  <img :src="$path.svg('delete.svg')">  
-                </div>  
-              </div>
-             </div>
-          </div>
-          </div> -->
-
           <div v-for="(item, indexmoment) in moment" :key="indexmoment">
-            <div
-              v-if="item.ep.length"
-              class="box-price_range"
-              @click="openEp(indexmoment)"
-            >
-              <div>{{ item.moment }}</div>
-              <div>
-                <i class="fas fa-chevron-right"></i>
+            <div style="display: flex; align-items: center; gap: 5px">
+              <!-- <input v-show="isdraggable" type="checkbox"  :id="indexmoment"  @change="seEp(item)"> -->
+              <div
+                v-if="item.ep.length"
+                :class="
+                  !isdraggable
+                    ? 'box-price_range'
+                    : 'box-price_range draggable-price_range'
+                "
+                @click="openEp(indexmoment)"
+              >
+                <div>{{ item.moment }}</div>
+                <div>
+                  <i class="fas fa-chevron-right"></i>
+                </div>
               </div>
             </div>
             <div class="container-ep">
-              <div
-                v-for="(item, index) in item.ep"
-                :key="index"
-                :class="'episode episode' + index"
-              >
-                <div class="line-1">#{{ item.ep_no }} {{ item.name }}</div>
-                <div class="p-con-detail">
-                  <div v-if="item.coin != 0.0" class="coin">
-                    <img :src="$path.image('coin-gold.png')" width="20px" />
-                    {{ item.coin }}
-                  </div>
-                  <div v-else class="coin"></div>
-                    {{ $filter.toThaiDateString(item.publisher_episode_data.date_time) }} น.
-                  <div class="grud-btn-manager">
-                    <router-link
-                      :to="
-                        '/writer/novelpreview/' +
-                        novelUuid +
-                        '/novelep/' +
-                        item.id
-                      "
-                      class="grud-btn-manager"
-                    >
-                      <img :src="$path.svg('edit.svg')" />
-                    </router-link>
+              <div v-show="isdraggable" class="episode episode fg">
+                <input
+                  type="checkbox"
+                  id="indexmoment"
+                  :value="item"
+                  @change="seEp"
+                />
+                เลือกทั้งเซต
+              </div>
+              <draggable
+                :list="item.ep"
+                :sort="isdraggable"
+                @change="removePosition"
+                :animation="300"
+                ghost-class="ghost-card"
+                group="tasks"
+                :scroll-sensitivity="250"
+                :fallback-tolerance="isdraggable ? 1 : 1000"
+                :force-fallback="true"
 
-                    <div
-                      @click="
-                        $base.openalert('deleteEP', 'conDeleteEp');
-                        epObj = item;
-                        epIndex = index;
-                        momentIndex = indexmoment;
-                      "
-                      class="grud-btn-manager"
-                    >
-                      <img :src="$path.svg('delete.svg')" />
+              >
+                <div
+                  v-for="(item, index) in item.ep"
+                  :key="index"
+                  :class="
+                    !item.draft
+                      ? ' episode episode' + index
+                      : ' episode draggable episode' + index
+                  "
+                >
+                 <!-- {{item.draft}} -->
+                  <div  class="line-1" style="display: flex; gap: 10px;">
+                    <input
+                      v-show="isdraggable"
+                      :id="item.id"
+                      :checked="isCheckd"
+                      :value="item.id"
+                      type="checkbox"
+                      @change="setepid"
+                    />
+                    <div v-show="isdraggable">
+                      <i class="fas fa-grip-lines"></i>
+                    </div>
+                    <div>
+
+                      <span v-show="!isdraggable"> #{{ item.ep_no }}</span>
+                       {{ item.name }} 
+                        <!-- <span class="draft" v-if="item.draft"> (ฉบับร่าง) </span>   -->
+                    </div>
+                  </div>
+                  <div class="p-con-detail">
+                    <span class="coin" v-if="item.draft" >  </span> 
+                    <span v-else>
+                    <div v-if="item.coin != 0.0" class="coin">
+                      <img :src="$path.image('coin-gold.png')" width="20px" />
+                      {{ item.coin }}
+                    </div>
+                    
+                    <div v-else class="coin"></div>
+                    </span>
+                    <span class="draft" v-if="item.draft"> (ฉบับร่าง) </span>  
+                    <span v-else class="toThaiDateString">
+                    {{
+                      $filter.toThaiDateString(
+                        item.publisher_episode_data.date_time
+                      )
+                    }}
+                    น.
+                    </span>
+                    <div class="grud-btn-manager">
+                      <div @click="hideClick(item)" class="grud-btn-manager" title="ซ่อน">
+                        <font-awesome-icon v-if="!item.status_hide_ep" icon="fa-regular fa-eye" />
+                        <font-awesome-icon v-else icon="fa-regular fa-eye-slash" />
+                      </div>
+                      <router-link
+                        :to="
+                          '/writer/novelpreview/' +
+                          novelUuid +
+                          '/novelep/' +
+                          item.id
+                        "
+                        class="grud-btn-manager pen"
+                      >
+                        <!-- <img :src="$path.svg('edit.svg')" /> -->
+                        <font-awesome-icon icon="fa-solid fa-pen-to-square" />
+                      </router-link>
+
+                      <div
+                        @click="deleteEP(item, { indexmoment, index })"
+                        class="grud-btn-manager trash"
+                      >
+                        <!-- <img :src="$path.svg('delete.svg')" /> -->
+                        <font-awesome-icon icon="fa-solid fa-trash-can"  />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </draggable>
             </div>
           </div>
         </div>
       </div>
-      
     </div>
     <div
       class="nv-box-white nv-mt-40 con-Sarabun"
@@ -235,6 +306,7 @@
       </svg>
       กำลังโหลดสารบัญ...
     </div>
+
     <NovelConfirm
       color="#ab93f9"
       title="ยืนยันการลบนิยาย"
@@ -262,6 +334,20 @@
     </NovelConfirm>
     <NovelConfirm
       color="#ab93f9"
+      title="ตั้งค่าการเผยเเพร่นิยาย"
+      :button="true"
+      @confirm="NovelPublish($event)"
+      id="publicNovel"
+      idcon="conPublicnovel"
+    >
+      <template v-slot:body>
+        <div>ตั้งค่าการเผยเเพร่นิยายเรื่องนี้ </div>
+        <div>นิยายของคุณจะเเสดงบนหน้าเว็บไซต์ให้นักอ่านเห็น เพียงคุณกดปุ่มยืนยัน</div>
+        
+      </template>
+    </NovelConfirm>
+    <!-- <NovelConfirm
+      color="#ab93f9"
       title="ยืนยันการลบ"
       @confirm="deleteConfirm($event)"
       id="deleteEP"
@@ -271,211 +357,359 @@
       <template v-slot:button>
         <button
           @click="deleteEP"
+          disabled
           class="confirm"
           style="background: #ab93f9; border: 1px solid #ab93f9"
         >
           ยืนยัน
         </button>
       </template>
-    </NovelConfirm>
-    <PromotionModal v-if="eplength" ref="PromotionModal" :epcount='eplength' @reface="getpomotiom()"/>
+    </NovelConfirm> -->
+    <ConfirmDialogue ref="DeleteEp"></ConfirmDialogue>
+    <PromotionModal
+      v-if="eplength"
+      ref="PromotionModal"
+      :epcount="eplength"
+      @reface="getpomotiom()"
+    />
+    <NovelLoading ref="loading" />
+    <NovelModal2
+      ID="de"
+      IDCrad="clecksellCrad"
+      ref="clecksellCrad"
+      width="400px"
+    >
+      <template v-slot:body>
+        <div class="from">
+          <div class="contor-input">
+            <div class="title">ราคา</div>
+            <input
+              id="TitleEp"
+              type="number"
+               @change="$filter.setTwoNumberDecimal"
+              v-model="change_coin"
+               max="10.0"
+              step="0.5"
+              value="0.0"
+              required
+              @keyup="filter"
+            />
+          </div>
+          <div class="contor-input">
+            <button class="nv-btn-yellow" @click="submitcoin()">
+              ยืนยันการเปลี่ยนราคา
+            </button>
+          </div>
+        </div>
+      </template>
+    </NovelModal2>
+    <NovelModal2 ID="picker" IDCrad="pickerCrad" ref="picker"  width="400px" :Close="true">
+      <template v-slot:body>
+          <div class="contor-input">
+             <div class="title">
+              วันที่เผยแพร่ <span class="is-valid">*</span>
+            </div>
+            <v-date-picker is-expanded />
+            <br>
+            <div class="title">เวลาที่เผยแพร่</div>
+            <input type='time' min="00:00" max="24:00">
+          </div>
+        <div class="contor-input nv-mt-30">
+        <button
+            type="submit"
+            class="nv-btn-yellow"
+          >
+            ยืนยันการตั้งเวลา
+          </button>
+        </div>
+      </template>
+    </NovelModal2>
+  </div>
+  <div v-else>
+    <div class="nv-box-white nv-mt-40 not-novel-mys">ไม่พบนิยายของท่าน</div>
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Gatway, GetService } from "../../../shares/services";
+
+import { Gatway } from "../../../shares/services";
 import { alert, loadbtn, closealert } from "@/shares/modules/alert";
-import { sms_alert_DelNovelep } from "@/shares/constants/smsalert";
+import draggable from "vuedraggable";
+import NovelModal2 from "@/components/widget/NovelModal2.vue";
+import {_NovelPreview,_NovelPreviewSetData, _NovelPreviewElement} from "./NovelPreview"
+const logic = new _NovelPreview
+const Setdata = new _NovelPreviewSetData
 export default Vue.extend({
   name: "NovelPreview",
-  components: {
+  components: {    
+    draggable,
     NovelStar: () => import("@/components/widget/NovelStar.vue"),
     NovelConfirm: () => import("@/components/widget/NovelConfirm.vue"),
-    // eslint-disable-next-line vue/no-unused-components
-    NovelModal: () => import("@/components/widget/NovelModal.vue"),
     PromotionModal: () => import("./PromotionModal/PromotionModal.vue"),
+    NovelModal2,
   },
   data() {
     return {
-      isSort:false,
+      Element: new _NovelPreviewElement(),
+      Ep: [] as any,
+      isdraggable: false,
+      textdraggable: "เปิดโหมดจัดการ",
+      dataSort: [] as any,
+      isSort: true,
       review: [...Array(6).keys()],
       price_range: [...Array(6).keys()],
       img: "https://pbs.twimg.com/media/EsBPBp1XEAMVZxC.jpg",
       getNover: {} as any,
       novelUuid: this.$route.params.id,
-      EpisodeData: [],
+      EpisodeData: [] as any,
+      isCheckd: false,
       confirm: "",
       confirmEp: null,
       nameEP: "" as string,
+      arrayUuid: [] as any,
       epObj: {} as any,
+      change_coin: 0.00,
       epIndex: 0,
       moment: null as any,
+      momentdefault: null as any,
       momentIndex: 0,
       eplength: null as any,
       itempromotion: null as any,
-      options: {
-        chart: {
-          id: "vuechart-example",
-        },
-        xaxis: {
-          categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998],
-        },
-      },
-      series: [
-        {
-          name: "series-1",
-          data: [30, 40, 45, 50, 49, 60],
-        },
-      ],
-      chartOptions: {
-        chart: {
-          id: "realtime",
-          height: 350,
-          type: "line",
-          animations: {
-            enabled: true,
-            easing: "linear",
-            dynamicAnimation: {
-              speed: 500,
-            },
-          },
-          toolbar: {
-            show: false,
-          },
-          zoom: {
-            enabled: false,
-          },
-        },
-        xaxis: {
-          categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998],
-        },
-      },
+      NovelId:this.$route.params.id,
     };
   },
   methods: {
-    async test(){
-      this.isSort = true
-      let res = await Gatway.postService('/customers/user-info/novel-episode-data/sort',{novel_data_id:this.$route.params.id} as any)
-      // setTimeout
-      // const myTimeout = setTimeout(myGreeting, 5000);
-      setTimeout(() => {
-        // console.log("Delayed for 1 second.");
-        this.isSort = false
-      }, 30000)
-      alert("เรียงตอนใหม่", "success");
-             
+
+    async hideClick(item:any){
+      let confirm = await (this as any).$refs.DeleteEp.show({
+        title: !item.status_hide_ep ? "ซ่อนตอนนิยาย" : "ยกเลิกซ่อนตอนนิยาย",
+        message: "ตอนที่ " + item.ep_no + " " + item.name,
+        okButton: "ยืนยัน",
+      });
+      if(confirm){
+        await Gatway.postService('/customers/hide-episode', { id:item.id , status_hide_ep:!item.status_hide_ep } as any)
+        const index =  logic._findIndex(this.EpisodeData, item.id ) 
+        this.EpisodeData[index].status_hide_ep = !item.status_hide_ep 
+        this.moment = await logic._momentEp(this.EpisodeData)
+        await (this as any).$refs.DeleteEp.close();
+        this.getListEp()
+      }
     },
-    async getnNovel() {
-      // const resGetNovel = await GetService.getNovel(this.$route.params.id);
-      let res = await Gatway.getIDService(
-        "/guest/fetch-novel-header",
-        this.$route.params.id
+    NovelPublish(value: any) {
+      value.value === true
+        ? this.publishComfirm()
+        : document.getElementById("confirm")?.classList.remove("err");
+    },
+    async publishComfirm(){
+      const res = await Gatway.PutService(
+        `/customers/change-draft`,this.NovelId,this.novelUuid as any
       );
-      this.getNover = await res.data.data;
+      if (res) {
+        alert("เผยแพร่ตอนสำเร็จ", "success");
+        // this.$router.push("/writer"); 
+        window.location.reload();
+        // loadbtn("remove");
+      }
     },
 
-    async getListEp() {
-      const resEpisodeData = await Gatway.getService(
-        `/customers/episode_data/index/${this.$route.params.id}`
-      );
-      
-      this.EpisodeData = await resEpisodeData.data;
-      this.eplength = resEpisodeData.data.data.length;
-      let res = resEpisodeData.data.data.sort((a, b) => {
-        return a.ep_no - b.ep_no
-      } )
-      this.momentEp(res);
+    filter(e:any) {
+      if (e.target.value < 0) {
+        e.target.value = Math.abs(e.target.value);
+      } else if (e.target.value === "") {
+        e.target.value = "";
+      }
     },
+
+    async delall() { 
+      let confirm = await (this as any).$refs.DeleteEp.show({title: "ลบตอนที่เลือก",okButton: "ยืนยัน",});
+      if (confirm === true) {
+        await (this as any).$refs.loading.switchloading(true);
+        const dataset = { novel_data_id: this.$route.params.id, dataEp: this.arrayUuid } as any
+        await Setdata._setDelete(dataset)
+        await (this as any).$refs.DeleteEp.close();
+        const data = logic._changeNodeList(this.Ep,this.arrayUuid)
+        this.moment = await logic._momentEp(data)
+        this.cancelAll()
+        await (this as any).$refs.loading.switchloading(false);
+      }
+    },
+
+    sell() {
+      (this as any).$refs.clecksellCrad.open();
+    },
+
+    seEp(el:any) {
+      if (el.target.checked === true) {
+        el.target._value.ep.forEach((element:any) => {
+          let seEp = document.getElementById(element.id) as HTMLInputElement;
+          const index =  logic._findIndex(this.arrayUuid,element.id)
+          index === -1 ? this.arrayUuid.push(element.id) : null
+          seEp.checked = true;
+        });
+      } else {
+        el.target._value.ep.forEach((element:any) => {
+          let seEp =  document.getElementById(element.id) as HTMLInputElement;
+          const index = logic._findIndex(this.arrayUuid,element.id)
+          this.arrayUuid.splice(index, 1);
+          seEp.checked = false;
+        });
+      }
+    },
+
+    setepid(item: any) {
+      if (item.target.checked === true) {
+        this.arrayUuid.push(item.target.value);
+      } else {
+        const index = this.arrayUuid.findIndex((object: any) => {
+          return object === item.target.value;
+        });
+        this.arrayUuid.splice(index, 1);
+      }
+    },
+
+    cancelAll(){
+      this.arrayUuid = []
+      this.momentdefault.forEach((element) => {
+         let seEp = document.getElementById(element) as HTMLInputElement;
+         if(seEp){
+          seEp.checked = false;
+         } 
+      })
+    },
+
+    async submitcoin() {
+      (this as any).$refs.clecksellCrad.close();
+      await (this as any).$refs.loading.switchloading(true);
+      const dataset =  { novel_data_id: this.$route.params.id, dataEp: this.arrayUuid,coin: this.change_coin,} as any
+      await Setdata._setCoin(dataset)
+      const  data = logic._changeNodeList(this.Ep,this.arrayUuid, this.change_coin)
+      this.moment = await  logic._momentEp(data)
+      this.cancelAll()
+      await (this as any).$refs.loading.switchloading(false);
+    },
+
+    async test() {
+      this.isdraggable = true;
+      this.textdraggable = "ยกเลิก";
+      this.getListEp(true);
+
+    },
+
+    async testf() {
+      let confirm = await (this as any).$refs.DeleteEp.show({
+        title: "ยืนยันการเรียงตอน",
+        okButton: "ยืนยัน",
+      });
+      if (confirm === true) {
+        await (this as any).$refs.loading.switchloading(true);
+        await Gatway.postService(
+          "/customers/user-info/novel-episode-data/sortV2",
+          { novel_data_id: this.$route.params.id, dataEp: this.dataSort } as any
+        );
+        this.cancel();
+      }
+      await (this as any).$refs.DeleteEp.close();
+    },
+
+    cancel() {
+      this.cancelAll()
+      this.isdraggable = false;
+      this.textdraggable = "เปิดโหมดจัดการ";
+      this.getListEp();
+    },
+
+    removePosition() {
+      let ArrayID = [] as any;
+      this.moment.forEach((element:any) => {
+        element.ep.forEach((element_ed:any) => {
+          ArrayID.push(element_ed.id);
+        });
+      });
+      this.isSort  = logic._arrayLike(ArrayID,this.momentdefault)
+      this.dataSort = ArrayID;
+    },
+
+    async getnNovel() {
+      const res = await this.$store.getters._GetNovelHeader(this.$route.params.id);
+      this.getNover = await res;
+    },
+
+    async getListEp(draft = false) {
+      await Setdata._setEpisodeData(this.$route.params.id)
+      const resEpisodeData = await Setdata.getEpisodeData
+      this.eplength = await resEpisodeData.length;
+      let res = logic._sort(resEpisodeData, 'ep_no')
+      this.EpisodeData = await res;
+      this.Ep = await res;
+      if(draft){
+        const resfilter = await res.filter((element:any)=>{
+            return  element.draft === false
+        })
+        this.momentdefault = logic._defaultArrayID(resfilter) ;
+        this.moment = await  logic._momentEp(resfilter)
+      }else{
+        this.momentdefault = logic._defaultArrayID(res) ;
+        this.moment = await  logic._momentEp(res)
+      }
+
+      
+      await (this as any).$refs.loading.switchloading(false);
+    },
+
     confirmDelete() {
       this.confirm === "ลบนิยาย"
         ? this.delete()
         : document.getElementById("confirm")?.classList.add("err");
-        
     },
+
     deleteConfirm(value: any) {
       value.value === true
         ? this.confirmDelete()
         : document.getElementById("confirm")?.classList.remove("err");
     },
+
     async delete() {
       loadbtn("add");
       const res = await Gatway.DelService(
         `/customers/novel/${this.$route.params.id}`
       );
       if (res) {
-        loadbtn("remove");
         alert("ลบนิยายสำเร็จ", "success");
         this.$router.push("/writer");
+        loadbtn("remove");
       }
     },
-    // ConfirmdeleteEp(value?:any, uuid?:string){
-    //   value.value === true
-    //   ? this.deleteEP(value.uuid, value.index)
-    //   : closealert('deleteEp', 'conDeleteEp')
 
-    // },
-    async deleteEP() {
-      // let moment:any[] = this.moment[0]
-      // console.log(moment);
-      const res = await Gatway.DelService(
-        `/customers/episode_data/${this.epObj.id}`
-      );
-      if (res) {
-        this.moment[this.momentIndex];
-        this.moment[this.momentIndex].ep.splice(this.epIndex, 1);
-        // this.EpisodeData.splice(this.epIndex, 1);
-        // alert(sms_alert_DelNovelep(this.res.epObj.name), "success");
-        alert("ลบตอนนิยายสำเร็จ", "success");
-        closealert("deleteEp", "conDeleteEp");
+    async deleteEP(item: any, index: any) {
+      let confirm = await (this as any).$refs.DeleteEp.show({
+        title: "ลบตอนนิยาย",
+        message: "ลบ ตอนที่ " + item.ep_no + " " + item.name,
+        okButton: "ยืนยัน",
+        theme:'delete'
+      });
+      if (confirm === true) {
+        const res = await Gatway.DelService(`/customers/episode_data/${item.id}`);
+        await (this as any).$refs.DeleteEp.close();
+        if (res) {
+          this.moment[index.indexmoment].ep.splice(index.index, 1);
+          alert("ลบตอนนิยายสำเร็จ", "success");
+          closealert("deleteEp", "conDeleteEp");
+        }
       }
     },
+
     async getpomotiom() {
       let res = await Gatway.getIDService(
         "/guest/novel-promotion-data",
         this.$route.params.id
       );
-      
-      this.itempromotion = res.data.data.length !== 0 ? res.data.data : null ;
+
+      this.itempromotion = res.data.data.length !== 0 ? res.data.data : null;
     },
-    filterEp(key: any) {
-      return this.EpisodeData.filter((item: any) => {
-        return item.id.match(key);
-      });
-    },
-    momentEp(countEp: any) {
-      let arraymoment = [] as any;
-      let count = countEp.length / 50;
-      let momentCount = count + 0.0;
-      let ep = 0;
-      let [eplast, eplastStas] = [50, 50] as any[];
-      if (countEp.length > 0) {
-        for (let i = 0; i < ~~momentCount + 1; i++) {
-          if (countEp.length <= eplast) {
-            arraymoment.push({
-              moment: `บทที่ ${ep + 1} - ${countEp.length}`,
-              ep: countEp.slice(ep, eplast),
-            });
-            ep = +eplast;
-            eplast = eplast + eplast;
-          } else {
-            arraymoment.push({
-              moment: `บทที่ ${ep + 1} - ${eplast}`,
-              ep: countEp.slice(ep, eplast),
-            });
-            ep = +eplast;
-            eplast = eplast + eplastStas;
-          }
-        }
-      }
-      this.moment = arraymoment;
-    },
+
     openEp(key: number): void {
-      const con_ep = document.getElementsByClassName("container-ep")[
-        key
-      ] as HTMLElement;
-      const chevron = document.getElementsByClassName("fa-chevron-right")[
-        key
-      ] as HTMLElement;
+      const con_ep = document.getElementsByClassName("container-ep")[key] as HTMLElement;
+      const chevron = document.getElementsByClassName("fa-chevron-right")[key] as HTMLElement;
       if (con_ep.style.display === "block") {
         con_ep.style.display = "none";
         chevron.style.transform = "rotate(0deg)";
@@ -484,276 +718,14 @@ export default Vue.extend({
         con_ep.style.display = "block";
       }
     },
-    Views() {
-      let series = document.getElementById("series") as HTMLElement;
-      window.scrollTo({ top: series.offsetHeight, behavior: "smooth" });
-    },
-    // test() {
-    //   const limit = 100;
-    //   let Sell = [
-    //     Math.floor(Math.random() * limit),
-    //     Math.floor(Math.random() * limit),
-    //     Math.floor(Math.random() * limit),
-    //     Math.floor(Math.random() * limit),
-    //     Math.floor(Math.random() * limit),
-    //     Math.floor(Math.random() * limit),
-    //   ];
-    //   let View = [
-    //     Math.floor(Math.random() * limit),
-    //     Math.floor(Math.random() * limit),
-    //     Math.floor(Math.random() * limit),
-    //     Math.floor(Math.random() * limit),
-    //     Math.floor(Math.random() * limit),
-    //     Math.floor(Math.random() * limit),
-    //   ];
-    //   (this as any).$refs.chartSell.updateSeries([
-    //     {
-    //       data: Sell as any,
-    //     },
-    //   ]);
-    //   (this as any).$refs.chartSell1.updateSeries([
-    //     {
-    //       data: Sell as any,
-    //     },
-    //   ]);
-    //   (this as any).$refs.chartView.updateSeries([
-    //     {
-    //       data: View as any,
-    //     },
-    //   ]);
-    //   (this as any).$refs.chartView1.updateSeries([
-    //     {
-    //       data: View as any,
-    //     },
-    //   ]);
-    // },
   },
+
   mounted() {
     this.getnNovel();
     this.getListEp();
-    this.getpomotiom()
+    this.getpomotiom();
   },
 });
 </script>
-<style lang="scss" scoped>
-.btn-promotion {
-  background-color: #61bcbe;
-  border: 2px solid #61bcbe;
-}
-
-.btn-promotion:hover {
-  box-shadow: #61bcbe 0px 3px 10px 0px;
-}
-.numbel-p{
-  position: absolute;
-  right: -10px;
-  top: -10px;
-  width: 20px;
-  display: flex;
-  font-size: 12px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #db3d3d;
-  color: white;
-  height: 20px;
-}
-
-.box-nove {
-  display: grid;
-  grid-template-columns: 1fr 2.5fr;
-  grid-gap: 30px;
-}
-.detail {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-.PromotionModal{
-  position: relative;
-}
-.grud-btn {
-  display: flex;
-  align-items: center;
-  grid-gap: 10px;
-}
-.story {
-  margin: 10px 0px;
-  font-family: "Sarabun", sans-serif;
-  font-weight: 500;
-  color: #4e4e4e;
-}
-.story-sub {
-  font-family: "Sarabun", sans-serif;
-}
-.image-nv {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 10px;
-}
-
-.box-price_range {
-  background: #6a70aa;
-  display: flex;
-  color: #fff;
-  justify-content: space-between;
-  padding: 20px 20px;
-  border-radius: 5px;
-  margin: 1px 0px;
-  transition: 0.3s;
-  cursor: pointer;
-}
-.box-price_range:hover {
-   background: #545ca0;
-  box-shadow: rgba(98, 145, 151, 0.8) 0px 3px 8px;
-}
-// .box-price_range:hover {
-//   transform: scale(1.01);
-//   background: #61bcbed2;
-// }
-.ep {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  text-align: center;
-  padding: 20px;
-  border-top: 1px solid #bbbbbb;
-}
-.ep0 {
-  border-top: 0px solid #61bcbe80;
-}
-.detail-ed {
-  display: flex;
-  justify-content: space-between;
-}
-.count-coin {
-  margin-left: 5px;
-  color: #febc2a;
-}
-.con-coin {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.container-ep {
-  display: none;
-  margin: 0px 15px;
-}
-
-.fa-chevron-right {
-  transition: 0.3s;
-}
-.writer-sarabun {
-  display: flex;
-  justify-content: space-between;
-}
-.writer-detail {
-  display: flex;
-  align-items: center;
-  grid-gap: 15px;
-}
-.con-review {
-  display: flex;
-  align-items: center;
-}
-.confirm-waning {
-  padding: 10px;
-  border: 2px solid #ab93f9;
-  margin: 20px 0px;
-  line-height: 1.6;
-  font-size: 12px;
-  border-radius: 5px;
-}
-.episode {
-  padding: 20px 0px;
-  border-top: 1px solid rgb(209, 209, 209);
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-}
-.grud-btn-manager img {
-  cursor: pointer;
-}
-
-.p-con-detail {
-  display: flex;
-  // grid-gap: 40px;
-  align-items: center;
-  justify-content: space-between;
-}
-.grud-btn-manager {
-  display: flex;
-  grid-gap: 20px;
-  align-items: center;
-}
-#deleteEP {
-  width: 200px !important;
-}
-.coin {
-  width: 60px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #febc2a;
-}
-// .promotion-c{
-//       padding: 20px;
-//     background: #6a70aa;
-//     font-family: "Sarabun", sans-serif;
-//     border-radius: 5px;
-//     font-size: 15px;
-//     color: white;
-//     display: flex;
-//     justify-content: space-between;
-// }
-.episode0 {
-  border-top: 0px solid;
-}
-.series {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-.promotioncon{
-  padding: 0px;
-  
-}
-.nv-img-novel{
-  border-radius: 10px;
-  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
-}
-
-@media (max-width: 1024px) {
-  .box-nove {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-gap: 30px;
-  }
-  .image-nv img {
-    width: 40%;
-  }
-}
-@media (max-width: 768px) {
-  .box-nove {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-gap: 30px;
-  }
-  .image-nv img {
-    width: 40%;
-  }
-}
-@media (max-width: 415px) {
-  .box-nove {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-gap: 30px;
-  }
-
-  .image-nv img {
-    width: 70%;
-  }
-  .series {
-    grid-template-columns: 1fr;
-  }
-}
+<style lang="scss" scoped src="./NovelPreview.scss">
 </style>

@@ -23,6 +23,7 @@
         :to="'/novel/' + items.novel_data.id"
         class="nv-box-carousel carousel "
       >
+      <NovelPomotion :cleckP='items.novel_promotion_datas.length ' @cleckandP="0" msmP="Sale" msmE='จบ' :cleckE='items.status_end_novel'/>
 
         <img
         
@@ -60,7 +61,6 @@
 <script lang="ts">
 import Vue from "vue";
 import carousel from "vue-owl-carousel";
-import NovelStar from "@/components/widget/NovelStar.vue";
 
 export default Vue.extend({
   name: "NovelCarousel",
@@ -72,7 +72,6 @@ export default Vue.extend({
 
   components: {
     carousel,
-    // NovelStar,
   },
   data() {
     return {
@@ -109,7 +108,7 @@ $second-grayLight: #cfd4d9;
   flex-direction: column;
   grid-gap: 10px;
   justify-content: center;
-  align-items: center;
+  // align-items: center;
 }
 .nv-box-carousel .grod-detail {
   display: flex;
@@ -125,6 +124,22 @@ $second-grayLight: #cfd4d9;
 .subname {
   font-size: 15px;
   color: rgb(182, 182, 182);
+}
+.promotion {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  // width: 70px;
+  border-radius: 10%;
+  height: 10px;
+  position: absolute;
+  // background: #fb5353;
+  left: 0px;
+  font-size: 13px;
+  // z-index: 100;
+  top: 5px;
+  padding: 5px;
+  color: #fff;
 }
 
 // .owl-stage-outer {

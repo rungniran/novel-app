@@ -4,7 +4,7 @@
 	<!-- resize =	{{size.size}} {{size.value}}<br>
 
 	defail =	{{size_defail.size}} {{size_defail.value}} -->
-  <!-- {{imgupdata}} -->
+	<!-- <div>{{imgupdata}}</div> -->
 	</div>
     <span id="NovelCropper" v-if="img != ''">
 		<div class="con-zoom">
@@ -19,11 +19,11 @@
 			:default-size="defaultSize"
 			image-restriction="stencil"
 			:stencil-size="{
-				width: 	500,
-				height: 707
+				width: 	width,
+				height: height
 			}"
 			:stencil-props="{
-				aspectRatio: 500/707,
+				aspectRatio: width/height,
 				scalable: false, 
 				movable: false,
 
@@ -35,7 +35,7 @@
         <div  class="reset" @click="reset">ลบ</div>
         </span>
         <span class="NovelCropper-input" v-else>
-		<input  type="file" class="file" @change="previewFiles" accept="image/png, image/jpeg, image/jpg">
+		<input  type="file" class="file" @change="previewFiles" accept="image/png, image/jpeg, image/jpg" :style="styles">
         <img src="https://lh3.googleusercontent.com/EbXw8rOdYxOGdXEFjgNP8lh-YAuUxwhOAe2jhrz3sgqvPeMac6a6tHvT35V6YMbyNvkZL4R_a2hcYBrtfUhLvhf-N2X3OB9cvH4uMw=w1064-v0" class="camera">
         </span>
 
@@ -63,6 +63,14 @@ export default Vue.extend({
 		type:{
 			type:String,
 			default:'image/png'
+		},
+		width:{
+			type:Number,
+			default:500
+		},
+		height:{
+			type:Number,
+			default:707
 		}
 	},
 	data: () => {
@@ -182,6 +190,15 @@ export default Vue.extend({
 		}
 		
 	},
+	computed: {
+        styles() {
+            return {
+                'background-image': `url(${this.imgupdata})`,
+                'background-repeat': 'no-repeat',
+                'background-size': 'cover'
+            }
+        }
+    }
 });
 </script>
 
@@ -213,6 +230,7 @@ export default Vue.extend({
 	background: #dfdfdf;
 	width: 230px;
 	cursor: pointer;
+	color: #dfdfdf00;
 }
 .reset{
 	padding: 5px 10px;
@@ -241,6 +259,8 @@ export default Vue.extend({
     margin: auto;
     pointer-events: none;
     top: 120px;
+	/* bottom: 0px; */
+	/* right: 100px; */
 }
 .NovelCropper-input{
     height: 300px;

@@ -10,6 +10,8 @@
               class="form-control"
               id="epStart"
               v-model="obj.ep_fish"
+              min="0.0"
+              @keyup="filter"
             />
           </div>
           <span class="ep-title-to">ถึง</span>
@@ -18,37 +20,52 @@
               type="number"
               class="form-control"
               id="epEnd"
+              min="0.0"
               v-model="obj.ep_last"
+              @keyup="filter"
             />
           </div>
-          <div>
-            <button class="nv-btn-blue" @click="buyAll()">ซื้อยกเซต</button>
+          <div class=" cal-price1">
+            <button class="nv-btn-blue" @click="buyAll()" :disabled="isBtn">ซื้อยกเซต</button>
           </div>
-          <div>
-            <button class="nv-btn-yellow" @click="buyset()">คำนวณราคา</button>
+          <div class="cal-price2">
+            <button class="nv-btn-yellow" @click="buyset()" :disabled="isBtn">คำนวณราคา</button>
           </div>
         </div>
+        <div class="as" v-if="$route.params.id === '9755FCB8-78CB-42A0-85AC-272845D833C5'" >
+          <promoteNovel @resetpage="resetpage"/>
+        </div>
+        <!-- <div class="promoteNovels"> -->
+        <!-- <promoteNovels v-show="false"/> -->
+        <!-- </div> -->
         <!-- <div>
           <button class="nv-btn-yellow">คำนวณราคา</button>
         </div> -->
-        <div v-if="sum" class="sum">
-          ราคา {{ sum.toFixed(2) }} เหรียญ
-        </div>
+        <!-- <div v-if="sum" class="sum">
+          ราคา {{Number(sum.toFixed(2)).toLocaleString() }} เหรียญ
+        </div> -->
         <div class="token">
-          <div>เหรียญที่มีทั้งหมด</div>
+          <button class="nv-btn-yellow" @click="addcoin()">เติมเงิน</button>
+          <!-- <div style="display: flex; align-items: center; gap: 10px;">
+           <div
+                  class="image-profile-user"
+                  style="background: url('https://cdn-icons-png.flaticon.com/512/149/149071.png') center center/cover; "
+                ></div>
+                
+                  {{ $store.state.auth.display_name}} 
+              
+          </div> -->
           <div class="icon-coin-stat">
-            <img :src="$path.image('coin-gold.png')" width="40%" />
+            <img :src="$path.image('coin-gold.png')" width="20px" />
+            {{ $filter.NumberToString($store.state.auth.dataset.coin_balance_sandbox) }}
           </div>
-          {{ $filter.NumberToString($store.state.auth.dataset.coin_balance_sandbox) }}
-          <!-- {{this.$store.state.auth.dataset.coin_balance_sandbox}} -->
-          <!-- <span> {{
-          $filter.NumberToString(
-            this.$store.state.auth.dataset.coin_balance_sandbox
-          )
-        }}</span> -->
+          
         </div>
+
+
         <!-- <div class="discount">คูปอง</div> -->
-        <div class="discount" v-if="itempromotion">
+        <div v-if="itempromotion" class="discount">
+        <div class="discount" v-if="itempromotion.length !==0">
           โปรโมชัน
           <div v-for="(item, index) in itempromotion" :key="index" class="promotion">
           <span>
@@ -81,6 +98,10 @@
                 }}
                 </span>
           </div>
+          <div class="promotion"  v-if="$route.params.id === '807A2FA2-D699-4B4E-B49F-F41508F5F051'" >
+            โปรโมชัน ซื้อเคล็ดกายานวดารา ได้ส่วนลด 5 %
+          </div>
+        </div>
         </div>
         <div class="discount" v-if="list">
           รายละเอียดการซื้อ
@@ -88,24 +109,25 @@
             <span v-if="promotions">
               <div class="listsell-list">
                  <p>ยอดรวม</p>
-                <p>{{promotions[0].coin_total}}</p>
+                <p>{{promotions[0].coin_total.toLocaleString()}}</p>
               </div>
               <div v-for="(item, index) in promotions" :key="index" class="listsell-list">
                 
                 <p>{{item.promotion_name}}</p>
-                <p class="price-promo">{{item.coin_discount}}</p>
+                <p class="price-promo">{{ Number(item.coin_discount.toFixed(2)).toLocaleString()}}</p>
               </div>
             </span>
             <div
               class="listsell-list"
           
             >
-              <p>{{ list[2].title }}</p>
-              <p>{{ list[2].detail.toFixed(2) }}</p>
+              <p>{{ list[3].title }}</p>
+              <p>{{  Number(list[3].detail.toFixed(2)).toLocaleString()}}</p>
+            
             </div>
           </div>
-          <button class="nv-btn-orange" @click="buyConfirm()">
-            <div v-if="isLoading === true">
+          <button class="nv-btn-yellow" @click="buyConfirm()" :disabled="isLoading">
+            <!-- <div v-if="isLoading === true">
               <svg
                 version="1.1"
                 id="loader-1"
@@ -134,9 +156,9 @@
                   />
                 </path>
               </svg>
-            </div>
+            </div> -->
 
-            <div v-else>ยืนยันการซื้อ</div>
+            <div >ยืนยันการซื้อ</div>
           </button>
         </div>
       </div>
@@ -151,6 +173,12 @@ import { alert } from "@/shares/modules/alert";
 import Vue from "vue";
 export default Vue.extend({
   name: "buyset",
+  props:{
+    lastEP:{
+      type:Number,
+      default:0
+    }
+  },
   data() {
     return {
       coin: this.$store.state.auth.dataset.coin_balance_sandbox,
@@ -166,76 +194,112 @@ export default Vue.extend({
       itempromotion:null as any,
       novel_promotion_type_data_id:novel_promotion_type_data_id,
       novel_promotion_type_fix_data_id:novel_promotion_type_fix_data_id,
-      promotion:promotion
+      promotion:promotion,
+      isBtn:false
     };
   },
-  components: {
+  components: { 
+    promoteNovel:() => import("@/pages/read/promoteNovels/promoteNovel.vue"),
     NovelModal2: () => import("@/components/widget/NovelModal2.vue"),
+    
+    // promoteNovels:() => import("./promoteNovels/promoteNovel.vue"),
   },
   methods: {
     open(item = {} as any) {
-      // console.log(item.item);
       this.item = item.item;
       this.getpomotiom();
       (this as any).$refs.Modeal.open();
     },
     async getpomotiom(){
       let res = await  Gatway.getIDService('/guest/novel-promotion-data', this.$route.params.id)
-      this.itempromotion = res.data.data
+      this.itempromotion = res.data.data.length  === 0 ? null : res.data.data
     },
     async buyset() {
-      const Arraya = this.item.slice(this.obj.ep_fish - 1, this.obj.ep_last);
-      this.countcoin(Arraya);
+      // const Arraya = this.item.slice(this.obj.ep_fish - 1, this.obj.ep_last);
+       this.countcoin(this.obj.ep_fish , this.obj.ep_last);
     },
     async buyAll() {
       this.obj.ep_fish = 1;
-      this.obj.ep_last = await this.item.length;
-      const Arraya = this.item.slice(this.obj.ep_fish - 1, this.obj.ep_last);
-      this.countcoin(Arraya);
+      this.obj.ep_last =  this.lastEP;
+       this.countcoin(this.obj.ep_fish , this.obj.ep_last);
     },
     buyConfirm() {
-      const Arraya = this.item.slice(this.obj.ep_fish - 1, this.obj.ep_last);
+      // const Arraya = this.item.slice(this.obj.ep_fish - 1, this.obj.ep_last);
       this.isLoading = true;
-      this.countcoin(Arraya, true);
-    },
+      this.countcoin(this.obj.ep_fish , this.obj.ep_last, true);
 
-    async countcoin(Arraya: any, purchase_confirmation = false) {
-      let data = [] as any;
-      Arraya.forEach((element: any) => {
-        data.push(element.id);
-      });
+    },
+    
+    filter(e){
+      // console.log(e.target.value);
+      if(e.target.value < 0){
+        e.target.value = Math.abs(e.target.value)
+      }else if(e.target.value === ''){
+        e.target.value = ''
+      }
+      
+    },
+    addcoin(){
+      this.$emit('addcoin');
+      //  this.$router.push('/wallet')
+    },
+    async countcoin(ep_fish:any, ep_last:any,purchase_confirmation = false) {
+      this.isBtn = true
+      // let data = [] as any;
+      // Arraya.forEach((element: any) => {
+      //   data.push(element.id);
+      // });
+      
       let res = await Gatway.postService(
         "/customers/novel-episode-data-set/buys",
         {
           novel_data_id: this.$route.params.id,
-          novel_episode_data_ids: data,
+          novel_ep_start: ep_fish,
+          novel_ep_end:ep_last,
           purchase_confirmation: purchase_confirmation,
         } as any
       );
 
-      // this.sum = res.data.data.descriptions[0].detail;
       if (purchase_confirmation === true) {
         if (res.data.code === 405) {
+          this.$emit('addcoin');
           this.isLoading = false;
           alert(res.data.data, "error");
-        }else if (res.data.code === 422) {
+        }else 
+        if (res.data.code === 422) {
           this.isLoading = false;
           alert('รูปแบบผิดลองเช็คดูอีกครั้ง', "error");
         } 
         else {
-          this.sum = res.data.data.descriptions[0].detail;
+
+          this.sum = res.data.data.descriptions[3].detail;
           this.isLoading = false;
           this.$store.commit("reset");
           this.$emit('reface');
           (this as any).$refs.Modeal.close();
-          alert("คุณซื้อนิยาย " +(this as any).$filter.NumberToString(res.data.data[0].detail) +" เหรียญ","success");
+          this.obj.ep_last = ""
+          this.obj.ep_fish = ""
+          
+          alert("คุณซื้อนิยาย " +(this as any).$filter.NumberToString(res.data.data.descriptions[3].detail) +" เหรียญ","success");
         }
       }else{
+        if(res.data.code === 422){
+          alert('รูปแบบผิดลองเช็คดูอีกครั้ง', "error");
+          this.isBtn = false
+        }
+
         this.sum = res.data.data.descriptions[0].detail;
         this.promotions = res.data.data.promotions.length !== 0 ?res.data.data.promotions :null
         this.list = res.data.data.descriptions;
+        const buysetCrad = await document.getElementById("buysetCrad") as HTMLElement;
+          buysetCrad.scrollTo({ top:10000, behavior: 'smooth'});
       }
+      this.isBtn = false
     },
+    resetpage(){
+      this.$emit("resetpage");
+      (this as any).$refs.Modeal.close();
+    }
   },
   // mounted(){
 
@@ -245,41 +309,63 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .form-buyset-con {
   display: grid;
-  gap: 20px;
+  gap: 15px;
   justify-items: center;
 }
+.as{
+  zoom: 0.8;
+  margin: 20px 0px;
+      max-width: 600px;
+}
 .form-buyset {
-  display: flex;
+  display: grid;
   align-items: center;
+  grid-template-columns: auto auto auto auto auto auto;
   gap: 10px;
 }
+.form-control{
+  width: 100px;
+}
 .token {
+  margin-top: 20px;
   // border: 2px solid #ab93f9;
   // background: #ab93f9;
   // color: #fff;
-
+// border: 2px solid #f#fff4d0#fff8e0;
+  background: #fff1d2;
   width: 100%;
   display: flex;
-  justify-content: center;
+    justify-content: space-between;
   align-items: center;
-  border-radius: 50px;
-  padding: 6px 15px;
+  border-radius: 5px;
+       padding: 10px;
   font-size: 18px;
   color: #303030;
   display: flex;
+  
+    align-items: center;
+
   // gap: 2px;
 }
 .icon-coin-stat {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 10px;
+      // color: #1b1b1b;
 }
 .discount {
   display: grid;
   gap: 10px;
   width: 100%;
-  border-top: 1px solid #d5d5d5;
+  // border-top: 1px solid #d5d5d5;
   padding-top: 10px;
+}
+.promoteNovels{
+  padding-top: 40px;
+  overflow: hidden;
+  max-width: 700px;
+
 }
 .promotion {
   padding: 15px;
@@ -298,8 +384,8 @@ export default Vue.extend({
   color: #000000;
 }
 .token {
-  border: 2px solid rgb(128, 25, 245);
-  width: 300px;
+  // border: 2px solid rgb(128, 25, 245);
+  // width: 300px;
 }
 .listsell-list {
   display: flex;
@@ -308,6 +394,7 @@ export default Vue.extend({
 }
 .sum {
   font-size: 20px;
+      padding-top: 25px;
 }
 // .price-promo{
 //   display: flex;
@@ -315,10 +402,28 @@ export default Vue.extend({
 // }
 @media (max-width: 500px) {
   .form-buyset {
-    display: grid;
-    align-items: center;
-    width: 100%;
-    gap: 10px;
-  }
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1fr 2fr 0.6fr 2fr;
+  gap: 10px;
+}
+.cal-price1{
+  display: flex;
+  justify-content: end;
+  grid-column: 1/span 2;
+}
+.cal-price2{
+  grid-column: 3/span 4;
+}
+.form-buyset-con {
+  display: grid;
+  gap: 5px;
+  justify-items: center;
+}
+
+}
+.image-profile-user{
+  width: 50px;
+  height: 50px;
 }
 </style>

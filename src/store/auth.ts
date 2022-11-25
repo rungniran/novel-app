@@ -1,13 +1,16 @@
 
-import {Auth} from "../shares/services";
+import {Auth, Gatway} from "../shares/services";
 import { alertSystem } from "../shares/modules/alert";
 import  router  from "../router";
+import  profile_writer  from "@/shares/modules/image";
 export type statetype = {
-    dataset:any,
+    dataset?:any| null,
     display_name?:string| null,
     coin?:string | null,
     loggedIn?:boolean | null
-    token?:string
+    token?:string|null
+    penname_preview?:string,
+    image_data?:string
 }
 
 
@@ -24,12 +27,16 @@ const disployName = ()=>{
     }
 }
 
+
 const state:statetype = {
     dataset: localStorage.getItem("dataset") ? JSON.parse(localStorage.getItem("dataset") as string) : null, 
     display_name: disployName(),
     coin: localStorage.getItem("coin") ? JSON.parse(localStorage.getItem("coin") as string ) as string : null,
     loggedIn: localStorage.getItem("loggedIn") ? localStorage.getItem("loggedIn") as boolean | null : null,
-    token:localStorage.getItem("token") as string
+    token:localStorage.getItem("token") as string | null,
+    // image_data:
+    // penname_preview:'string'
+
 }
 const actions = {
 
@@ -43,12 +50,18 @@ const getters ={
             return true
         }
     },
+    _dataset:(state:statetype):any=>{
+        return state.dataset
+    },
+    _token:(state:statetype):any=>{
+        return state.token
+    }
+    
 }
 const mutations = {
     async login(state:statetype,{token,status}:{token:string,status:string }):Promise<void>{
+        state.token = token
         const resProfile = await Auth.customer(token)
-        
-        
         if(resProfile.data.email_verified_at){
             const profile =  resProfile.data.user_profile_datas[0]
             
@@ -56,6 +69,11 @@ const mutations = {
             ? resProfile.data.user_profile_datas[1]
             : null
             const resFetchcookie = await Auth.fetchcookie(token)
+            if(profilewriter){
+                if(profilewriter.image_data){
+                    profilewriter.image_data.url = await profile_writer(profilewriter.id, 0);
+                }    
+            }
             if(resFetchcookie.data.data !== 'Success'){
                 const cookie = resFetchcookie.data.data.cookie?.item !== undefined
                 ? resFetchcookie.data.data.cookie?.item 
@@ -67,8 +85,8 @@ const mutations = {
             const object = {
                 ...resProfile.data , 
                 show_name: `${profile?.first_name}  ${profile?.last_name}` , 
-                // user_profile_datas: profile,
-                user_profile_datas: profile !== undefined 
+                image_url: profilewriter ? await profile_writer(profilewriter.id, 0): 'https://cdn-icons-png.flaticon.com/512/149/149071.png', 
+                user_profile_datas: profile !== undefined
                 ? profile 
                 :{
                     user_nickname:'e9eb971e-70bc-4e4e-bfd6-38046e326e29',
@@ -82,9 +100,11 @@ const mutations = {
             localStorage.setItem("dataset", JSON.stringify(object));
             state.dataset = object
             state.display_name = disployName()
-            window.location.reload() 
-            
-            // 
+            const routers= router as any
+            console.log( routers.history.current?.hash=== "#login");
+            setTimeout(() => {
+                routers.history.current?.hash !== "#login" ? window.location.reload() : window.location.href = '/'
+            }, 500);
         }else{
             alertSystem('คุณต้องยืนยันอีเมลก่อน')
             
@@ -92,12 +112,17 @@ const mutations = {
         
         
     },
-    logout(state:statetype):void{
+    async logout(state:statetype):Promise<void>{
+        await Gatway.getService("/logout");
         localStorage.removeItem("loggedIn");
         localStorage.removeItem("token");
         localStorage.removeItem("dataset");
         localStorage.removeItem("StoryRead");
+        state.token =  null
+        state.dataset = null
+        state.display_name = null
         state.loggedIn = false
+        window.location.href = "/";
     },
     countCoin(state:statetype,{buy}:{buy:any}):void{
         const int = parseInt(state.coin as any)
@@ -111,16 +136,22 @@ const mutations = {
         const  key = localStorage.getItem("token") as string
         if(key){
             const resProfile =  await Auth.customer(key)
-            // const resProfile = await Auth.profile(key, JSON.parse(localStorage.getItem("dataset") as any).id)
                 state.coin = resProfile.data.coin_balance_sandbox
                 const profile =  resProfile.data.user_profile_datas[0]
                 const profilewriter = resProfile.data.user_profile_datas[1] !== undefined 
                 ? resProfile.data.user_profile_datas[1]
                 : null
+                if(profilewriter){
+                    if(profilewriter.image_data){
+                        console.log(await profile_writer(profilewriter.id, 0));
+                        profilewriter.image_data.url = await '';
+                    }    
+                }
                 const object = {
                     ...resProfile.data  , 
                     show_name: `${profile?.first_name}  ${profile?.last_name}`, 
                     // user_profile_datas: profile,
+                    image_url: profilewriter ? await profile_writer(profilewriter.id, 0) : 'https://cdn-icons-png.flaticon.com/512/149/149071.png', 
                     user_profile_datas: profile !== undefined 
                         ? profile 
                         : {
@@ -134,6 +165,8 @@ const mutations = {
                 } 
                 state.dataset = object
                 state.display_name = disployName()
+                // console.log(encode(JSON.stringify(object)));
+                
                 localStorage.setItem("dataset", JSON.stringify(object));
             
         }

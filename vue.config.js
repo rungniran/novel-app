@@ -10,3 +10,9 @@
 //         public: 'https://localhost:8080/'
 //     }
 // }
+// vite.config.js
+// const { createVuePlugin } = require('vite-plugin-vue2');
+
+// module.exports = {
+//   plugins: [createVuePlugin()],
+// };

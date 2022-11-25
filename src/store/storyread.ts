@@ -1,5 +1,6 @@
 
 import { Gatway} from "../shares/services";
+import store from '../store'
 export type story_Read = {
 
   story_Read?: any[]| null,
@@ -7,7 +8,6 @@ export type story_Read = {
 }
 
 export type EPopj = {
-
   id:string,
   id_ep:string
 
@@ -16,7 +16,9 @@ const state:story_Read = {
   story_Read:  localStorage.getItem("StoryRead") ? JSON.parse(localStorage.getItem("StoryRead") as string) : null
 }
 const getters = {
-
+      _story_Read:(state:story_Read):any=>{
+        return state.story_Read
+      }
 }
 
 
@@ -29,7 +31,7 @@ const mutations = {
     
     const item =  localStorage.getItem("StoryRead") ? JSON.parse(localStorage.getItem("StoryRead") as string) : [] as any;
     
-    // console.log(item);
+    console.log(item);
     // item.includes(EPopj.)
     if(item.length !== 0){
       const index = item.findIndex(object => {
@@ -53,11 +55,12 @@ const mutations = {
       localStorage.setItem("StoryRead", JSON.stringify(item));
       
     }
-    setTimeout(async () => {
-      await Gatway.postService('/customers/cookie', {item} as any) 
-    }, 100000);
-    // const res = 
-    // console.log('dffffffffffffff', res);
+    // if((store as any).state.auth.token){
+    //   setTimeout(async () => {
+      
+    //     await Gatway.postService('/customers/cookie', {item} as any) 
+    //   }, 100000);
+    // }
      
     
   }

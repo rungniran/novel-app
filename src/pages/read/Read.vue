@@ -1,5 +1,8 @@
 <template>
   <div class="read" id="Read">
+    <!-- <div @click="stop()">หยุด</div>
+    <div @click="play()">เล่น</div> -->
+
     <!-- <pre>
       {{recommend.title}}
     </pre> -->
@@ -7,67 +10,116 @@
     <!-- <Pre>
       {{read}}
     </Pre> -->
-    <div class="con-read nv-box-white nv-mt-40" v-if="read">
-      <div class="grod-1">
-        <router-link class="nv-btn-gold" :to="'/novel/' + read.novel_data_id">
-          <span class="pc"><i class="fas fa-chevron-left"></i></span>
-          <span class="mobile"><i class="fas fa-chevron-left"></i></span
-        ></router-link>
-        <div class="nv-btn-gold contai-sarabun" @click="$refs.Sarabun.toggle()">
-          <span class="pc"><i class="fas fa-list contai-sarabun"></i></span>
-          <span class="mobile"><i class="fas fa-list contai-sarabun"></i></span>
-          <ReadSarabun
-            ref="Sarabun"
-            v-on:sarabun-buy="Sarabunbuy"
-            :uuid="read.novel_data_id"
-          />
-        </div>
-        <div class="line-1" style="display: flex; align-items: center">
-          <p class="line-1 color-header">{{ read.name }}</p>
-        </div>
-      </div>
-      <div class="box-percen">
-        <!-- <div class="Percen">{{Percen}}%</div> -->
-        <div>
-          <div class="nv-btn-gold cuttom" @click="opencutom">
-            <span class="pc cuttom">Aa</span>
-            <span class="mobile cuttom">Aa</span>
+    <span v-if="code">
+      <span v-if="code === 200">
+        <div class="nv-box-white nv-mt-40 con-read" v-if="read">
+          <div class="grod-1">
+            <router-link
+              class="nv-btn-gold"
+              :to="'/novel/' + read.novel_data_id"
+            >
+              <span class="pc"><i class="fas fa-chevron-left"></i></span>
+              <span class="mobile"><i class="fas fa-chevron-left"></i></span
+            ></router-link>
+            <div
+              class="nv-btn-gold contai-sarabun"
+              @click="$refs.Sarabun.toggle()"
+            >
+              <span class="pc"><i class="fas fa-list contai-sarabun"></i></span>
+              <span class="mobile"
+                ><i class="fas fa-list contai-sarabun"></i
+              ></span>
+              <ReadSarabun
+                ref="Sarabun"
+                v-on:sarabun-buy="Sarabunbuy"
+                :uuid="read.novel_data_id"
+              />
+            </div>
+            <div class="line-1" style="display: flex; align-items: center">
+              <p class="line-1 color-header">{{ read.name }}</p>
+            </div>
           </div>
-          <Customize   @clickFonrSize="FonrSizecm"/>
-        </div>
-      </div>
-    </div>
-    <div class="nv-box-white box-read" v-if="read">
-      <div class="nv-mt-30">
-        <div class="name-story">{{ read.name }}</div>
-        <div
-          class="nv-mt-20 story"
-          v-html="read.detail"
-          :style="'font-size:' + fonrsize + 'px'"
-        ></div>
-
-        <div class="next-back" v-if="previous">
- 
-          <div v-if="read.ep_no === 1"></div>
-          <div v-else @click="EpฺBack(previous)" class="nv-btn-gold-ep">
-            ตอนที่แล้ว
-          </div>
-          <div
-            v-if="next.ep_no !== read.ep_no"
-            @click="EpNext(next)"
-            class="nv-btn-gold-ep"
-          >
-            ตอนถัดไป
+          <div class="box-percen">
+            <!-- <div class="Percen">{{Percen}}%</div> -->
+            <div>
+              <div class="nv-btn-gold cuttom" @click="opencutom">
+                <span class="pc cuttom">Aa</span>
+                <span class="mobile cuttom">Aa</span>
+              </div>
+              <Customize @clickFonrSize="FonrSizecm" />
+            </div>
           </div>
         </div>
+        <div class="nv-box-white box-read" v-if="read">
+          <div class="nv-mt-30">
+            <span>
+              <div class="name-story">{{ read.name }}</div>
+              <!-- story-file100 v-if="read.file_status !== true"-->
+              <div
+                
+                class="nv-mt-20 story"
+                id="storytext"
+                v-html="text"
+                :style="'font-size:' + fonrsize + 'px'"
+              ></div>
+              <div
+                v-if="
+                  read.novel_data_id === '9755FCB8-78CB-42A0-85AC-272845D833C5'
+                "
+              >
+                <Promote />
+              </div>
+            </span>
+            <div class="next-back" v-if="previous">
+              <div v-if="read.ep_no === 1"></div>
+              <button
+                v-else
+                @click="EpฺBack(previous)"
+                class="nv-btn-gold-ep"
+                :disabled="isBuy"
+              >
+                ตอนที่แล้ว
+              </button>
+              <button
+                :disabled="isBuy"
+                v-if="next.ep_no !== read.ep_no"
+                @click="EpNext(next)"
+                class="nv-btn-gold-ep"
+              >
+                ตอนถัดไป
+              </button>
+            </div>
+          </div>
+        </div>
+      </span>
+      <div v-else-if="code === 402" class="nv-box-white nv-mt-40 recommend">
+        เนื้อหาถูกซ่อน
+        <!-- {{next}} -->
+        <!-- <div class="next-back" v-if="previous">
+    
+              <div v-if="read.ep_no === 1"></div>
+              <button v-else @click="EpฺBack(previous)" class="nv-btn-gold-ep"  :disabled="isBuy">
+                ตอนที่แล้ว
+              </button>
+              <button
+              :disabled="isBuy"
+                v-if="next.ep_no !== read.ep_no"
+                @click="EpNext(next)"
+                class="nv-btn-gold-ep"
+                
+              >
+                ตอนถัดไป
+              </button>
+            </div> -->
       </div>
-    </div>
-    <!--  -->
-    <div v-else class="nv-box-white read-loading"  style="    display: flex;
-    align-items: center;
-    justify-content: center;
-    ">
-        <svg
+      <div v-else class="nv-box-white nv-mt-40 recommend">ท่านยังไม่ซื้อ</div>
+    </span>
+    <div
+      v-else
+      class="nv-box-white read-loading"
+      style="display: flex; align-items: center; justify-content: center"
+    >
+      <svg
         version="1.1"
         id="loader-1"
         xmlns="http://www.w3.org/2000/svg"
@@ -94,95 +146,47 @@
             repeatCount="indefinite"
           />
         </path>
-      </svg> กำลังโหลดเนื้อหา
+      </svg>
+      กำลังโหลดเนื้อหา
     </div>
-    
-    <!-- <pre>
-      {{recommend}}
-    </pre> -->
-    
-    <div v-if="recommend">
-      <div v-if="recommend.length !== 0" class="nv-box-white nv-mt-40 bg-color-theme">
-        <div class="NovelCarousel">
-        <carousel
-          :items="1"
-          :loop="true"
-          :margin="10"
-          :center="false"
-          :lazyLoad="false"
-          :autoplay="true"
-          :singleItem="false"
-          :nav="true"
-          class="NovelCarousel"
-          :dots="false"
-          :responsive="responsive"
-          :navText="sdds"
-        >
-          <template>
-       
-            <router-link
-              v-for="(items, index) in recommend"
-              :key="index"
-              :to="'/novel/' + items.id"
-              class="nv-box-carousel carousel"
-            >
-      
-              <img
-                class="item-banner"
-                :src="
-                  items.image_data
-                    ? items.image_data.url
-                    : $path.image('loading.png')
-                "
-                onerror="this.onerror=null;this.src='https://novelkingdom-80a1d.firebaseapp.com/img/loading.a7cb0bda.png';"
-                :alt="items.title"
-              />
 
-              <div class="grod-detail">
-                <div class="name line-1">{{ items.title }}</div>
-                <div class="subname">
-                  {{ items.novel_category_data_preview }}
-                </div>
-                <div>
-                  <NovelStar
-                  
-                    :rating="Math.round(items.avg_star)"
-                  />
-                </div>
-                <div class="view-list">
-                  <div class="view">
-                    <i class="far fa-eye"></i>
-                    <div class="count-numble-view">
-                      {{ $filter.NumbertoText(items.ep_total_view) }}
-                    </div>
-                  </div>
-                  <div class="list">
-                    <i class="fas fa-list"></i>
-                    <div class="count-numble-view">
-                      {{ $filter.NumbertoText(items.ep_count) }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </router-link>
-          </template>
-        </carousel>
+    <div>
+      <div class="nv-box-white nv-mt-40 recommend">
+        <div v-if="recommend">
+          <div v-if="recommend.length !== 0">
+            <NovelCarousel :opject="recommend" />
+          </div>
+        </div>
       </div>
-      </div>
-     <div v-else>
-      <!-- df -->
-     </div>
+      <!-- <div v-else class="nv-box-white bg-promode">
+          <Promote/>
+       
+        </div> -->
     </div>
     <div
       class="nv-box-white nv-mt-40 NovelEditterComment bg-editor-comments"
       v-if="profile"
     >
       <div class="title-com">แสดงความคิดเห็น</div>
-      <NovelEditterComment @click="ClickPost" />
+      <NovelEditterComment @click="ClickPost" @opanstikers="opanstikers" />
     </div>
     <div class="nv-box-white nv-mt-40 Comments" v-if="profile && DataComment">
-
-      <Comments :DataComment="DataComment" @fetch="fetch" />
+      <span v-if="read">
+        <Comments
+          :novelCommentEffet="read.novel_data.status_comment_effect"
+          :DataComment="setcm"
+          @fetch="fetch"
+          ref="Comments"
+          @opanstikers="opanstikers"
+        />
+      </span>
+      <div class="paginate" v-show="DataComment.length > pageMax">
+        <NovelPaginate
+          v-if="DataComment"
+          :count="~~(DataComment.length / pageMax) + 1"
+          @click="page"
+        />
+      </div>
     </div>
     <NovelModal2
       ID="BuyBovelEpAuto"
@@ -217,25 +221,32 @@
           />
           ใช้กำลังใจอ่านอัตโนมัติ
         </div>
-        <button class="buy" v-if="modalSell" @click="buy(modalSell, true)" :disabled="isBuy">
+        <button
+          class="buy"
+          v-if="modalSell"
+          @click="buy(modalSell, true)"
+          :disabled="isBuy"
+        >
           ส่งกำลังใจ
         </button>
       </template>
     </NovelModal2>
+    <NovelLoading ref="loading" />
+    <Sticker ref="Sticker" />
   </div>
 </template>
 
 <script lang="ts">
+import Sticker from "@/components/widget/Sticker.vue";
 import { Gatway } from "@/shares/services";
-import carousel from "vue-owl-carousel";
-// import { sms_alert_BuyEpisoderead } from "@/shares/constants/smsalert";
-import NovelStar from "@/components/widget/NovelStar.vue";
+import { _Read, _ReadSetData } from "./Read";
+const logic = new _Read();
 import { alert } from "@/shares/modules/alert";
 import { setAutoBuy, getAutoBuy } from "@/shares/modules/autobuy";
-import { sms_alert_CommentEp } from "@/shares/constants/smsalert";
 import { setThreme } from "./ReadCustomize";
 import ReadSarabun from "./readsarabun/ReadSarabun.vue";
 import Vue from "vue";
+import { faWarning } from "@fortawesome/free-solid-svg-icons";
 export default Vue.extend({
   name: "Read",
   data() {
@@ -256,7 +267,11 @@ export default Vue.extend({
         1100: {
           items: 6,
         },
-      },sdds: ['<i class="fa fa-angle-left" aria-hidden="true"></i>','<i class="fa fa-angle-right" aria-hidden="true"></i>'],
+      },
+      sdds: [
+        '<i class="fa fa-angle-left" aria-hidden="true"></i>',
+        '<i class="fa fa-angle-right" aria-hidden="true"></i>',
+      ],
       recommend: null,
       fonrsize: localStorage.getItem("fontSize")
         ? parseInt(localStorage.getItem("fontSize") as string)
@@ -267,8 +282,10 @@ export default Vue.extend({
       read: null as any,
       next: null,
       previous: null,
-      code: 401,
+      text: "",
+      code: null as number | null,
       cleckAuten: false,
+      // promoteData:'',
       // IDnovel:this.$route.params.id,
       current: "",
       modalSell: null,
@@ -279,26 +296,45 @@ export default Vue.extend({
         novel_data_id: "",
         novel_episode_data_id: this.$route.params.slug,
       },
-      DataComment: [],
-      isBuy:false,
-      novel_cat:null as any,
+      DataComment: null as any,
+      isBuy: false,
+      novel_cat: null as any,
+      uuidNovel: null,
+      pagesdata: [0, 15],
+      pageMax: 15,
+      setcm: null as any,
     };
   },
+  // metaInfo: {
+  //   title: 'resGetNovel',
+  //   titleTemplate: '%s | My Awesome Webapp'
+
+  // },
   components: {
-    carousel,
-    // NovelCarousel: () => import("@/components/widget/NovelCarousel.vue"),
+    // carousel,
+    NovelCarousel: () => import("@/components/widget/NovelCarousel.vue"),
     Customize: () => import("./customize/Customize.vue"),
     NovelModal2: () => import("@/components/widget/NovelModal2.vue"),
     ReadSarabun,
-    NovelStar,
+    // NovelStar,
+    Promote: () => import("./promoteNovels/promoteNovel.vue"),
+    Sticker,
     Comments: () => import("@/components/Comments.vue"),
     // ReadCommentEp: () => import("./readcommentep/ReadCommentEp.vue"),
     NovelEditterComment: () =>
       import("@/components/widget/NovelEditterComment.vue"),
   },
   methods: {
-    FonrSizecm(size:any){
-      this.fonrsize = size
+    page(page: number) {
+      this.pagesdata[1] = page * this.pageMax;
+      this.pagesdata[0] = this.pagesdata[1] - this.pageMax;
+      this.setcm = this.DataComment.slice(this.pagesdata[0], this.pagesdata[1]);
+    },
+    async opanstikers() {
+      await (this as any).$refs.Sticker.openmodel();
+    },
+    FonrSizecm(size: any) {
+      this.fonrsize = size;
     },
     opencutom() {
       let box_cuttom = document.getElementsByClassName(
@@ -313,57 +349,78 @@ export default Vue.extend({
     },
     onScroll() {
       let story = document.getElementsByClassName("story")[0] as HTMLElement;
-      let percen = (window.top.scrollY / (story.scrollHeight - 500)) * 100;
+      let percen =
+        ((window as any).top.scrollY / (story.scrollHeight - 500)) * 100;
       percen < 101 ? (this.Percen = percen ^ 0) : null;
       if (this.$route.fullPath.split("/")[1] === "read") {
-        localStorage.setItem("scollbar", window.top.scrollY.toString());
+        localStorage.setItem(
+          "scollbar",
+          (window as any).top.scrollY.toString()
+        );
       }
     },
+
     async getread(Ojb: any) {
-      this.read = null
+      this.read = null;
       if (Ojb.data.data === "please pay") {
         this.code = 401;
+      } else if (Ojb.data.data === "hide ep") {
+        this.code = 402;
       } else {
         this.code = await Ojb.data.code;
         this.read = await Ojb.data.data.current;
         this.next = await Ojb.data.data.next;
         this.previous = await Ojb.data.data.previous;
-        // console.log("sdf",Ojb.data.data.code)
-        setThreme();
+        this.isBuy = false;
 
+        if (Ojb.data.data.current?.detail) {
+          await this.forment(Ojb.data.data.current);
+        }
         let dataitem = {
           id: Ojb.data.data.current.novel_data_id,
           id_ep: Ojb.data.data.current.id,
-          timestamp_update:new Date()
+          timestamp_update: new Date(),
           // image_data:res.data.data.image_data.url,
           // title:res.data.data.title,
           // name:Ojb.data.data.current.name
           // img: res.data.data.
         };
-        this.novel_cat = Ojb.data.data.current.novel_data.novel_category_data_id
+        this.novel_cat =
+          Ojb.data.data.current.novel_data.novel_category_data_id;
         this.$store.commit("setRead", dataitem);
+        await this.$store.getters._GetNovelHeader(
+          Ojb.data.data.current.novel_data_id
+        );
+        await this.$store.getters._GetNovelEpSet(
+          Ojb.data.data.current.novel_data_id
+        );
+        // const url = await (this as any).cleck === "true" ? "/novel/novel-data" : "/guest/novel/novel-data";
+        // // await this.$store.getters._GetNovelEp(url, Ojb.data.data.current.novel_data_id);
       }
+      // this.isBuy = false
+      setThreme();
     },
-    
+
     async cleckNovel() {
-       
-        
       if ((this as any).profile) {
+        await (this as any).$refs.loading.switchloading(true);
+
         let resguest = await Gatway.getIDService(
           "/guest/novel-episode/read",
           this.$route.params.slug
         );
-
+        // this.getread(await resguest);
+        await (this as any).$refs.loading.switchloading(false);
         let resreader = await Gatway.postService("/reader/novel-episode/read", {
           novel_episode_datas: [this.$route.params.slug],
-          payment_confirmation: resguest.data.code !== 401 ? true : false,
+          payment_confirmation: resguest.data.code !== 401 ? true : true,
         } as any);
         let res = (await (this as any).cleck) === "true" ? resreader : resguest;
         if (res.data.data === "please pay") {
           (this as any).$refs.BuyNovelEpAuto.open();
         }
-        
-        this.cleckAuten = getAutoBuy(res.data.data.current.novel_data_id);
+
+        this.cleckAuten = getAutoBuy(res.data.data?.current?.novel_data_id);
         this.getread(await res);
         this.tets();
       } else {
@@ -371,13 +428,13 @@ export default Vue.extend({
           "/guest/novel-episode/read",
           this.$route.params.slug
         );
-        if( resguest.data.code === 401){
-          (this as any). $base.openlogin() 
-        } else{
-          this.read = null
+        if (resguest.data.code === 401) {
+          (this as any).$base.openlogin();
+        } else {
+          this.read = null;
           this.getread(await resguest);
-        } 
-        this.tets()
+        }
+        this.tets();
       }
     },
     switchsell(key: string) {
@@ -386,63 +443,43 @@ export default Vue.extend({
     async buy(item: any, paymentConfirma: boolean) {
       // (this as any).$refs.BuyNovelEpAuto.close()
       // this.read = null
-      this.isBuy = true
+      this.isBuy = true;
       let res = await Gatway.postService("/reader/novel-episode/read", {
         novel_episode_datas: [item.id],
         payment_confirmation: paymentConfirma,
       } as any);
-      this.isBuy = false
+      this.isBuy = false;
       if (res.data.code === 402) {
-        alert("เหรียญของคุณมีไม่เพียงพอ", "error");
+        // alert("เหรียญของคุณมีไม่เพียงพอ", "error");
       } else if (res.data.data === "please pay") {
         if (this.cleckAuten === true) {
-          this.AutoBuy(item)
-        } else{
-          (this as any).$refs.BuyNovelEpAuto.open() ;
-          //  this.read = {}
+          await this.AutoBuy(item);
+        } else {
+          (this as any).$refs.BuyNovelEpAuto.open();
         }
-          // ? 
-          // : 
       } else {
-        
         await this.getread(res);
         await this.$router.push("/read/" + item.id);
-        this.tets();
+        await this.tets();
         this.$store.commit("reset");
-        (this as any).$refs.BuyNovelEpAuto.close();
+        await (this as any).$refs.BuyNovelEpAuto.close();
         if (paymentConfirma === true) {
           if (item.coin !== "0.00") {
             if (item.bought != true) {
               alert("คุณในซื้อนิยาย " + item.coin + " เหรียญ", "success");
-              // alert(sms_alert_BuyEpisoderead("",""),'success')
             }
           }
         }
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
-
-      // alert('คุณในซื้อนิยาย ' +  item.coin + ' เหรียญ','success')
-      // if(res.data.data){
-      //   console.log("sdds");
-      // }
-      // if (res.data.code !== 402) {
-      //   await this.getread(res)
-      //   this.$store.commit("reset");
-      //   (this as any).$base.closemodal('buy-novel-ep-auto', 'create-novel-show', 0)
-      //   window.scrollTo({ top: 0, behavior: 'smooth' })
-      //   await this.$router.push('/read/' + item.id)
-      //   if(item.coin !== '0.00' && item.bought != true){
-      //     alert('คุณในซื้อนิยาย ' +  item.coin + ' เหรียญ','success')
-      //   }
-      // }else{
-      //   alert('เหรียญของคุณมีไม่เพียงพอ' , 'error')
-      // }
     },
     async AutoBuy(item: any) {
+      // await (this as any).$refs.loading.switchloading(true)
       let res = await Gatway.postService("/reader/novel-episode/read", {
         novel_episode_datas: [item.id],
         payment_confirmation: true,
       } as any);
+      // await (this as any).$refs.loading.switchloading(false)
       if (res.data.code === 402) {
         alert("เหรียญของคุณมีไม่เพียงพอ", "error");
       } else {
@@ -457,26 +494,41 @@ export default Vue.extend({
 
     Sarabunbuy(item: any) {
       this.modalSell = item;
-      this.cleckAutoBuy(item);
+      this.cleckAutoBuy(item, !item.status_hide_ep || item.bought);
     },
     EpNext(item: any) {
       this.modalSell = item;
-      this.cleckAutoBuy(item);
+      this.cleckAutoBuy(item, !item.status_hide_ep || !item.bought);
     },
     EpฺBack(item: any) {
       this.modalSell = item;
-      this.cleckAutoBuy(item);
+      this.cleckAutoBuy(item, !item.status_hide_ep || !item.bought);
     },
-    async cleckAutoBuy(item: any) {
-      if((this as any).profile){
+    async cleckAutoBuy(item: any, status_hide_ep = true) {  
+      if ( status_hide_ep) {
+        this.Cleckbuy(item);
+      } else {
+        (this as any).$alert(
+          "เนื้อหา " + item.name + " ถูกซ่อนอยู่",
+          "wraning"
+        );
+      }
+    },
+
+    async Cleckbuy(item: any) {
+      if ((this as any).profile) {
         if (item.coin === "0.00") {
           await this.buy(item, true);
         } else {
           await this.buy(item, false);
         }
-      }else{
-        await this.$router.push("/read/" + item.id);
-        this.cleckNovel()
+      } else {
+        if (item.coin === "0.00") {
+          await this.$router.push("/read/" + item.id);
+        } else {
+          (this as any).$login.openlogin();
+        }
+        this.cleckNovel();
       }
     },
 
@@ -500,7 +552,6 @@ export default Vue.extend({
         "/customers/comments/post",
         this.commentObj as any
       );
-
       this.tets();
       // alert(sms_alert_CommentEp(this.item.epName), "success");
     },
@@ -520,111 +571,203 @@ export default Vue.extend({
         data as any
       );
 
-
       this.tets();
     },
     async tets() {
-      if(this.$store.state.auth.dataset){
-      let res = await Gatway.postService(
-        "/customers/comments/comment-episode",
-        {
-          action: "fetch-comment-episode",
-          novel_episode_data_id: this.$route.params.slug,
-        } as any
-      );
-      this.DataComment = res.data.data;
+      if (this.$store.state.auth.dataset) {
+        let res = await Gatway.postService(
+          "/customers/comments/comment-episode",
+          {
+            action: "fetch-comment-episode",
+            novel_episode_data_id: this.$route.params.slug,
+          } as any
+        );
+        this.DataComment = await res.data.data;
+        this.page(1);
       }
     },
     async getRecommend() {
+      this.recommend = logic._getRecommend(
+        await this.$store.getters._GetRecommendedNovel
+      ) as any;
       // this.recommend = await null;
-      let res = await Gatway.getService("/guest/recommended-novel");
-      const data = [] as any;
-      res.data.data.forEach((element: any, index: number) => {
-        console.log(element.novel_data)
-        if (element.novel_data) {
-          if ( element.novel_data.novel_category_data_id === this.novel_cat) {
-            {
-              data.push({
-                ...element.novel_data,
-                novel_episode_data_total: element.novel_data.ep_total_preview,
-              });
-            }
-          } 
-        }
-      });
+      // let res = await Gatway.getService("/guest/recommended-novel");
+      // const data = [] as any;
+      // res.data.data.forEach((element: any, index: number) => {
+      //   if (element.novel_data) {
+      //     if ( element.novel_data.novel_category_data_id === this.novel_cat) {
+      //       {
+      //         data.push({
+      //           ...element.novel_data,
+      //           novel_episode_data_total: element.novel_data.ep_total_preview,
+      //         });
+      //       }
+      //     }
+      //   }
+      // });
 
-      this.recommend = this.makeUniqueRandom(data);
+      // this.recommend = this.makeUniqueRandom(data);
     },
-    makeUniqueRandom(numRandoms:any) {
-      var nums = numRandoms as any;
-        var ranNums = [] as any;
-        var i = nums.length as any;
-        var j = 0 as any;
+    // makeUniqueRandom(numRandoms:any) {
+    //   var nums = numRandoms as any;
+    //     var ranNums = [] as any;
+    //     var i = nums.length as any;
+    //     var j = 0 as any;
 
-      while (i--) {
-        j = Math.floor(Math.random() * (i + 1));
-        ranNums.push(nums[j]);
-        nums.splice(j, 1);
-      }
-      return ranNums;
-    },
+    //   while (i--) {
+    //     j = Math.floor(Math.random() * (i + 1));
+    //     ranNums.push(nums[j]);
+    //     nums.splice(j, 1);
+    //   }
+    //   return ranNums;
+    // },
     // async testfunction(){
     //   let res = await Gatway.getService("/guest/novel-episode/read");
     //   console.log(res)
     // },
-    notprint(){
-      // console.log("Before print");
+    notprint() {
       let read = document.getElementById("Read") as HTMLElement;
       read.remove();
 
-      const isVisible = window.confirm("คุณพยายามละเมิดลิขสิทธิ์");
-      if (isVisible) {
-        window.location.reload();
-      }else{
-        window.location.reload();
+      // const isVisible = window.confirm("คุณพยายามละเมิดลิขสิทธิ์");
+      // if (isVisible) {
+      //   window.location.reload();
+      // }else{
+      window.location.reload();
+      // }
+    },
+
+    stop() {
+      window.speechSynthesis.cancel();
+    },
+    play() {
+      // var voices = window.speechSynthesis.getVoices();
+      var msg = new SpeechSynthesisUtterance();
+      // msg.rate = 1;
+      // msg.voice = voices[2];
+      msg.lang = "th-TH";
+      msg.volume = 0.75;
+      msg.text = this.read.name + "  " + this.text;
+
+      // window.speechSynthesis.cancel()
+      window.speechSynthesis.speak(msg);
+    },
+    async forment(item: any) {
+      // console.log('',item.detail.split('<br />\n'));
+      if (item.file_status !== true) {
+        let cutcode = await item.detail;
+        let cutcode1 = await cutcode.replaceAll("style", "class");
+        this.text = cutcode1;
+        let ep_no = Array.from({ length: 50 }, (_, i) => i + 1) as any;
+        let ep_no1 = Array.from({ length: 10 }, (_, i) => i + 81) as any;
+        console.log(ep_no1);
+        if (
+          item.novel_data_id === "2B3CC094-1623-4C61-97A0-0F748ABA24CE" &&
+          ep_no.concat(ep_no1).includes(item.ep_no) === true
+        ) {
+          let storytext = document.getElementById("storytext") as HTMLElement;
+          storytext.classList.add("pre-wrap");
+        } else if (
+          item.novel_data_id === "72CE3214-410E-42FB-A30C-84AE03047A93" &&
+          Array.from({ length: 10 }, (_, i) => i + 1001).includes(
+            item.ep_no
+          ) === true
+        ) {
+          console.log(Array.from({ length: 10 }, (_, i) => i + 1001));
+
+          let storytext = document.getElementById("storytext") as HTMLElement;
+          storytext.classList.add("pre-wrap");
+        } else {
+          let storytext = document.getElementById("storytext") as HTMLElement;
+          storytext.classList.remove("pre-wrap");
+        }
+      } else {
+        console.log("", item.detail.split("<br />\n"));
+        const length = item.detail.split("<br />\n").length
+        const items = item.detail.split("<br />\n")
+        let text = "";
+
+        for (let i = 0; i < length; i++) {
+          if (i === length) {
+            continue;
+          }
+          console.log(items[i]);
+          const sdf =  items[i] !== '' ? '<p>'+items[i]+ '</p>' : ''
+          text = text + sdf;
+        }
+
+        console.log(text);
+        this.text = text
       }
-    }
+      // let cutcode2  = await this.read.detail.split("<p>")
+      // console.log(cutcode);
+      // if(cutcode2.length > 15 || cutcode2.length == 1){
+      //   this.text = cutcode1
+      // let storytext = document.getElementById('storytext') as HTMLElement
+      // storytext.classList.add('pre-wrap') '<p class="pre-wrap">' +
+      // .replaceAll('"<br /> <br />','<br>')
+      // }else{
+      //   this.text = cutcode2[1]
+      // }
+      //  cutcode2.length > 15 || cutcode2.length == 1 ?  :
+    },
+    // async  promote(){
+    //   let res = await Gatway.getIDService(
+    //     "/guest/fetch-novel-header",
+    //     (this as any).$promote
+    //   );
+    //   console.log(res);
+    //   this.promoteData =res.data.data
+
+    // }
   },
   async mounted() {
     window.addEventListener("beforeprint", (event) => {
-      this.notprint()
+      this.notprint();
     });
-    // window.addEventListener('keyup', (e) => {
-    //   console.log(e.key);
-      
-    // if (e.key == 'PrintScreen' || e.key =='Unidentified'|| e.key =='F12') {
-    //     this.notprint()
-    //   }
-    // });
+    window.addEventListener("keyup", (e) => {
+      console.log(e.key);
+
+      if (e.key == "PrintScreen" || e.key == "Unidentified" || e.key == "F12") {
+        this.notprint();
+      }
+    });
 
     await this.cleckNovel();
     // await this.testfunction();
     await this.getRecommend();
   },
   // beforeDestroy
-  beforeCreate(){
-    // console.log();
+  // async beforeUpdate(){
+  //   let cutcode = await this.read.detail.replaceAll('<br /><br />','<br>')
+  //   let cutcode2  = await this.read.detail.split("<p>")
+  //   console.log(cutcode);
 
-    // content.style.background = '#151515'
+  //   this.text = cutcode2.length > 15 || cutcode2.length == 1 ? cutcode :'<p class="pre-wrap">' + cutcode2[1]
+  // },
+  beforeDestroy() {
+    let content = document.getElementsByClassName("content")[0] as HTMLElement;
+    const Topbar = document.getElementById("Topbar") as HTMLElement;
+    const text = document.getElementsByClassName("text")[0] as HTMLElement;
+    const listmenu = document.getElementsByClassName("list-sub-menu");
+    const footer = document.getElementsByClassName("footer")[0] as HTMLElement;
+    const menuiocn = document.getElementsByClassName(
+      "menumobile"
+    )[0] as HTMLElement;
+    Topbar.style.background = "#fff";
+    footer.style.background = "#efefef";
+    footer.style.color = "#5f5f5f";
+    menuiocn.style.color = "#1c1140";
+    for (let i = 0; i < listmenu.length - 1; i++) {
+      (listmenu[i] as HTMLElement).style.color = "#1E2046";
+    }
+    content.style.background =
+      "linear-gradient(180deg, rgba(230, 222, 255, 0.433) 2.72%, rgba(175, 151, 249, 0.432) 100%)";
+    text.style.color = "#1E2046";
+    for (let i = 0; i < listmenu.length - 1; i++) {
+      (listmenu[i] as HTMLElement).style.color = "#1E2046";
+    }
   },
-  beforeDestroy (){
-    let content = document.getElementsByClassName('content')[0] as HTMLElement
-    const Topbar = document.getElementById('Topbar') as HTMLElement
-    const text = document.getElementsByClassName('text')[0] as HTMLElement
-    const listmenu = document.getElementsByClassName('list-sub-menu')
-    const footer = document.getElementsByClassName('footer')[0] as HTMLElement
-    Topbar.style.background = '#fff'
-    footer.style.background = '#efefef';
-    footer.style.color = '#5f5f5f';
-     for (let i= 0; i < listmenu.length -1 ;i++) {
-      (listmenu[i] as HTMLElement).style.color = '#1E2046'
-    }
-    content.style.background= 'linear-gradient(180deg, rgba(230, 222, 255, 0.433) 2.72%, rgba(175, 151, 249, 0.432) 100%)'
-    text.style.color = '#1E2046' 
-      for (let i= 0; i < listmenu.length -1 ;i++) {
-      (listmenu[i] as HTMLElement).style.color = '#1E2046'
-    }
-  }
 });
 </script>
 
@@ -633,43 +776,82 @@ export default Vue.extend({
 .dark .read .text-editer {
   border: 1px solid #282828 !important;
 }
-.dark .read .Editer{
+.dark .read .Editer {
   // border: 1px solid #282828 !important;
   color: #fff;
 }
-.dark .read  .notcomment{
+.dark .read .notcomment {
   background: #313131 !important;
 }
-
-.dark .read .box-review{
-    background: #313131; 
-    border: 2px solid #313131;
-}
-.dark .read .box-reply{
-    background: #313131; 
-    border: 2px solid #313131;
-}
-.dark .read .text-review{
- color: #a2a2a2 !important;
-}
-.dark .read .text-editer{
-  background: #313131; 
-}
-.dark .read .name-review{
-  color: #a2a2a2;
-}
-.dark .read .review-date{
-  color: #a2a2a2;
-}
-.dark .read .ddd{
-  color: #a2a2a2;
-}
-.dark .read .option-icon{
-  color: #a2a2a2;
-}
-.dark .read .b-t-reply{
-  color: #a2a2a2;
+.read .notcomment {
+  background: #fff !important;
 }
 
-
+.dark .read .box-review {
+  background: #313131;
+  border: 2px solid #313131;
+}
+.dark .read .box-reply {
+  background: #313131;
+  border: 2px solid #313131;
+}
+.dark .read .text-review {
+  color: #a2a2a2 !important;
+}
+.dark .read .text-editer {
+  background: #313131;
+}
+.dark .read .name-review {
+  color: #a2a2a2;
+}
+.dark .read .review-date {
+  color: #a2a2a2;
+}
+.dark .read .ddd {
+  color: #a2a2a2;
+}
+.dark .read .option-icon {
+  color: #a2a2a2;
+}
+.dark .read .b-t-reply {
+  color: #a2a2a2;
+}
+.dark .read .fa-bars {
+  color: #a2a2a2 !important;
+}
+.dark .read .Sarabun {
+  background: #313131;
+}
+.dark .read .loading-sarabun {
+  color: #bdbdbd;
+}
+.dark .read #loader-1 {
+  fill: #bdbdbd;
+}
+.dark .read .box-sarabun {
+  color: #bdbdbd !important;
+}
+// border: 1px solid #e7e7e7;
+.dark .read .Sarabun-activate {
+  background: #6d6d6d;
+}
+.dark .read #BuyBovelEpAutoCrad {
+  background: #373737;
+  color: #bdbdbd;
+}
+.dark .read .nv-box-carousel .grod-detail .name {
+  color: #fff;
+}
+.dark .read .recommend {
+  background: #1c1c1e;
+}
+.dark .read .loading-sarabun {
+  color: rgb(180, 180, 180);
+}
+.dark .read .box-sarabun:hover {
+  color: rgb(107, 107, 107) !important;
+}
+// .dark .read .footer-promote{
+//   --footer-background: #313131 !important;
+// }
 </style>

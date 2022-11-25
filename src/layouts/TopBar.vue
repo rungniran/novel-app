@@ -42,6 +42,10 @@
             to="/writer"
             exact
             >นักเขียน
+            <!-- <span v-if="this.$store.getters._getNotificationCount()"> -->
+              <!-- <pre> -->
+              <!-- </pre> -->
+            <!-- </span> -->
             <!-- <i class="fas fa-chevron-up"></i>
                         <div class="box-writer">
                             <div class="arrow"></div>
@@ -57,30 +61,35 @@
           <router-link to="/search"
             ><li class="user-active"><i class="fas fa-search"></i></li
           ></router-link>
-          <li class="user-active noti">
-            <!-- <p class=" noti-number">10</p> -->
-            <notication ref="notication" />
+          <li class="user-active noti" @click="$store.state.auth.token ? $refs.notication.opennoti() : $base.openlogin()">
+            <p v-if="numberNoti === 0" class="noti-number-empty"></p>
+            <p v-else class="noti-number" @click="$refs.notication.opennoti()">
+              {{ numberNoti}}
+            </p>
+            <!-- <notication ref="notication" /> -->
             <i class="far fa-bell noti"></i>
-            <!-- <i class="far fa-bell noti" @click="cleck ? $refs.notication.opennoti() : $base.openlogin()" ></i> -->
+            <!-- <i class="far fa-bell noti" @click="cleck ? $refs.notication.opennoti() : $base.openlogin()" ></i> $refs.notication.opennoti()-->
           </li>
 
-          <li
-            class="user-active"
-            v-if="profile"
-            @click="cleck ? $refs.profilemenu.opanmenu() : $base.openlogin()"
-            style="
-            background: url(https://cdn-icons-png.flaticon.com/512/149/149071.png) center center/cover;
-          "
-          >
-            <profilemenu ref="profilemenu" @closedLeft="closeLeftmenu" />
-          </li>
+      
+          <!-- <i class="fa-solid fa-check-square"></i> -->
+          <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" width="100%"   class="user-active"    v-if="$store.state.auth.token"
+            @click=" $refs.profilemenu.opanmenu()">
+            
+      
           <li
             class="user-active"
             v-else
-            @click="cleck ? $refs.profilemenu.opanmenu() : $base.openlogin()"
+            @click="
+              $store.state.auth.token 
+                ? $refs.profilemenu.opanmenu()
+                : $base.openlogin()
+            "
           >
             <i class="far fa-user"></i>
           </li>
+          <notication ref="notication"   @getnovel="getnovel"/>
+          <profilemenu ref="profilemenu" @closedLeft="closeLeftmenu" />
         </ul>
       </div>
       <div
@@ -101,6 +110,7 @@
         </div>
       </div>
     </div>
+  
     <div class="leftmenu list-sub-menu" id="leftmenu">
       <router-link
         class="list-sub-menu-mobile"
@@ -137,74 +147,87 @@
     </div>
   </div>
 </template>
-
+<script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script lang="ts">
 import Vue from "vue";
-// import NovelModal from "@/components/widgetNovelModal.vue";
+import Pusher from "pusher-js";
+import { Gatway } from "@/shares/services";
 export default Vue.extend({
   name: "TopBar",
   components: {
-    //    NovelModal
     profilemenu: () => import("../components/Menu.vue"),
     notication: () => import("../components/Notication.vue"),
   },
   data() {
     return {
+      link: localStorage.getItem("server"),
       prevScrollpos: window.pageYOffset,
       profile_onmouse: false,
       current: "",
       scroll: document.documentElement.scrollTop,
+      notificationdata: 0 as any,
+      numberNoti:0 as any,
     };
   },
   methods: {
-    // openmenu(key:string):void{
-    //     document.getElementsByClassName("profile-contai-modal")[0].classList.add("profile-show")
-    //     this.current = key
-    // },
-    // closemenu():void{
-    //         document.getElementsByClassName("profile-menu")[0].classList.remove("profile-crad-show")
-    //         document.getElementsByClassName("profile-contai-modal")[0].classList.remove("profile-show")
-    //     },
     onScroll() {
       let Topbar = document.getElementById("Topbar") as HTMLElement;
       if (this.$route.fullPath.split("/")[1] === "read") {
-        if (window.top.scrollY > 12) {
+        if ((window as any).top.scrollY > 12) {
           Topbar.style.top = "-100px";
         } else {
           Topbar.style.top = "0px";
         }
-        // this.scroll = window.top.scrollY
       } else {
         Topbar.style.top = "0px";
       }
-
-      // this.windowTop = window.top.scrollY /* or: e.target.documentElement.scrollTop || this.$route.path === '/search'*/
+    },
+    async gotNoti(){
+      if(this.$store.state.auth.dataset){
+       this.numberNoti = await this.$store.getters._getNotificationCount
+        
+      }
+    },
+    getnovel(){
+      this.$emit('getnovel')
     },
     topFunction() {
-    //   document.body.scrollTop = 0;
-    //   document.documentElement.scrollTop = 0;
-      window.scrollTo({top: 0, behavior: 'smooth'});
-    },
-    search() {
-      //   let Topbar = document.getElementById("Topbar") as HTMLElement
-      //   let content = document.getElementsByClassName("content")[0] as HTMLElement
-      //   Topbar.style.display = "none"
-      //   content.style.paddingTop = "0px"
-      //   content.style.paddingBottom = "0px"
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
     openLeftmenu() {
       let leftmenu = document.getElementById("leftmenu");
       leftmenu?.classList.toggle("leftmenu-show");
-      //   this.closemenu()
     },
     closeLeftmenu() {
       let leftmenu = document.getElementById("leftmenu");
       leftmenu?.classList.remove("leftmenu-show");
     },
+    notifyMe() {
+    if (!("Notification" in window)) {
+      alert("This browser does not support desktop notification");
+    } else if (Notification.permission === "granted") {
+      const notification = new Notification("Hi there!");
+    } else if (Notification.permission !== "denied") {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          const notification = new Notification("Hi there!");
+        }
+      });
+    }
+}
+    
   },
   mounted() {
-    if (this.$route.path === "/search") {
-      this.search();
+    if(this.$store.state.auth.token){
+      var pusher = new Pusher("f8361379ddb03dc0faa7", {
+        cluster: "ap1",
+      });
+      var channel = pusher.subscribe(`notification-data-${this.$store.state.auth.dataset.user_profile_datas.user_id}`);
+      const self1 = this;
+      channel.bind("my-event", function (data) {
+        self1.numberNoti = data.count_notification;
+      });
     }
     window.addEventListener("scroll", this.onScroll);
     let elememt = document.getElementsByClassName(
@@ -228,9 +251,6 @@ export default Vue.extend({
         }
       }
     });
-    //    window.addEventListener("click",()=>{
-    //        this.closeLeftmenu()
-    //    })
   },
 });
 </script>
@@ -243,6 +263,7 @@ $primary-yellow: #f4bb40c9;
   position: fixed;
   width: 100%;
   top: 0;
+  
   z-index: 1500;
   background: #ffffff;
   transition: 0.3s;
@@ -253,6 +274,7 @@ $primary-yellow: #f4bb40c9;
   transition: 0.3s;
   display: grid;
   max-width: 1050px;
+  position: relative;
   // padding: 0px 10px;
   margin: auto;
   margin-top: 0px;
@@ -264,17 +286,28 @@ $primary-yellow: #f4bb40c9;
 .noti {
   position: relative;
 }
-body{
-scroll-behavior: smooth;
+body {
+  scroll-behavior: smooth;
 }
 .noti-number {
   position: absolute;
   background-color: red;
-  color: #ffffff;
-  height: 25px;
-  width: 25px;
+  color: #fff;
+  height: 20px;
+  width: 20px;
+  font-size: 13px;
   text-align: center;
-  // padding: 3px 10px;
+  border-radius: 50%;
+  transform: translate(15px, -15px);
+}
+.noti-number-empty {
+  position: absolute;
+  background-color: rgba(255, 0, 0, 0);
+  color: #fff;
+  height: 20px;
+  width: 20px;
+  font-size: 13px;
+  text-align: center;
   border-radius: 50%;
   transform: translate(15px, -15px);
 }
@@ -382,9 +415,11 @@ scroll-behavior: smooth;
 }
 .user-active {
   // background: #eae6f1;
+      border-radius: 50%;
   position: relative;
   background: #ececec;
   // overflow: hidden;
+  cursor: pointer;
   width: 40px;
   height: 40px;
 }
@@ -574,7 +609,7 @@ list-sub-menu {
     margin-left: 10px;
   }
   .logo .text {
-    font-size: 17px;
+    font-size: 15px;
   }
   .logo img {
     width: 25px;

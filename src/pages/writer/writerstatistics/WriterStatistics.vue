@@ -11,7 +11,7 @@
             v-model="selectedValue"
             @change="onChange($event)"
           >
-            <!-- <option value="AllNovel">รวมทุกเรื่อง</option> -->
+            <!-- <option value="AllNovel">--เลือกนิยาย--</option> -->
             <option
               v-for="(item, index) in mywork"
               :key="index"
@@ -25,8 +25,8 @@
       <div>
         <div>เลือกเดือน</div>
         <div>
-          <select @change="onChangeDate($event)" v-model="onDate">
-            <option value="Allmoth" >ทุกเดือน</option>
+          <select @change="onChangeDate($event)" v-model="onDate" :disabled="dataset.length === 0 ? true : false">
+            <option value="Allmoth" >ปี</option>
             <option v-for="(item, index) in dataset" :key="index" :value="item.key">
               {{ item.name }}
             </option>
@@ -72,38 +72,38 @@
 </template>
 
 <script lang="ts">
-// const monthset = {
-//   "01": "ม.ค.",
-//   "02": "ก.พ.",
-//   "03": "มี.ค.",
-//   "04": "เม.ย.",
-//   "05": "พ.ค.",
-//   "06": "มิ.ย.",
-//   "07": "ก.ค.",
-//   "08": "ส.ค.",
-//   "09": "ก.ย.",
-//   "10": "ต.ค.",
-//   "11": "พ.ย.",
-//   "12": "ธ.ค.",
-// } as any;
 const monthset = {
-  "01": "มกราคม",
-  "02": "กุมภาพันธ์",
-  "03": "มีนาคม",
-  "04": "เมษายน",
-  "05": "พฤษภาคม",
-  "06": "มิถุนายน",
-  "07": "กรกฎาคม",
-  "08": "สิงหาคม",
-  "09": "กันยายน",
-  "10": "ตุลาคม",
-  "11": "พฤศจิกายน",
-  "12": "ธันวาคม",
+  "01": "ม.ค.",
+  "02": "ก.พ.",
+  "03": "มี.ค.",
+  "04": "เม.ย.",
+  "05": "พ.ค.",
+  "06": "มิ.ย.",
+  "07": "ก.ค.",
+  "08": "ส.ค.",
+  "09": "ก.ย.",
+  "10": "ต.ค.",
+  "11": "พ.ย.",
+  "12": "ธ.ค.",
 } as any;
+// const monthset = {
+//   "01": "มกราคม",
+//   "02": "กุมภาพันธ์",
+//   "03": "มีนาคม",
+//   "04": "เมษายน",
+//   "05": "พฤษภาคม",
+//   "06": "มิถุนายน",
+//   "07": "กรกฎาคม",
+//   "08": "สิงหาคม",
+//   "09": "กันยายน",
+//   "10": "ตุลาคม",
+//   "11": "พฤศจิกายน",
+//   "12": "ธันวาคม",
+// } as any;
 import Vue from "vue";
 import { ListService, Gatway } from "@/shares/services";
 import EmptyContent from "../../empty/empty.vue";
-import api from "@/shares/services/testURL";
+// import api from "@/shares/services/testURL";
 export default Vue.extend({
   name: "Statistics",
   props: {
@@ -168,12 +168,13 @@ export default Vue.extend({
   methods: {
     async myworks() {
       let res = await Gatway.getService("/customers/novel");
-      console.log(res.data.data[0]);
+      console.log(res.data.data[0],'dsssssssssssssssss');
       this.mywork = await res.data.data;
       await this.onChange({target:{value:res.data.data[0].id}})
-      this.selectedValue = await res.data.data[0].id
+      this.selectedValue =  res.data.data[0].id
     },
     async onChange(event: any) {
+      this.dataset = []
       this.isgrab = false
       var d = new Date();
       let lastmonth = [] as any;
@@ -209,7 +210,15 @@ export default Vue.extend({
           `customers/dashboard/sales-summary-group-by-day?novel_data_id=${this.IDNovel}&month=${this.pad(datetime[0])}&year=${datetime[1]}`
         );
         this.setgrapdate(test.data.data);
-        console.log(test);
+        // console.log( '>>>>>>>>',test.data.data[0].buy_total.length);
+        let sd = [] as any
+        for(let i in test.data.data[0].buy_total){
+             sd.push(test.data.data[0].buy_total[i])  
+            // console.log(i);
+            
+        }
+        console.log(this.sumArray(sd));
+        
       }else{
         this.onChange({target:{value:this.IDNovel}})
       }
@@ -282,111 +291,7 @@ export default Vue.extend({
       return  total.toFixed(2);
      
     },
-    // async setdata(key: any) {
-    //   let res =
-    //     key === "AllNovel"
-    //       ? await Gatway.getService(
-    //           `customers/dashboard/sales-summary-group-by-day`
-    //         )
-    //       : await Gatway.getService(
-    //           `customers/dashboard/sales-summary-group-by-day?novel_data_id=${key}`
-    //         );
-    //         console.log(res);
 
-    //   this.dataset = await res.data.data;
-    //   let month = [] as any;
-    //   let dataset = await res.data.data;
-    //   for (let item in dataset) {
-    //     month.push({
-    //       name: monthset[item.split("-")[1]],
-    //       key: item.split("-")[1],
-    //       year: item.split("-")[0],
-    //     });
-    //   }
-    //   console.log(month);
-
-    //   let uniqueIds = [] as any;
-    //   const unique = await month.filter((element) => {
-    //     const isDuplicate = uniqueIds.includes(element.key);
-    //     if (!isDuplicate) {
-    //       uniqueIds.push(element.key);
-    //       return true;
-    //     }
-    //     return false;
-    //   });
-
-    //   this.selectmonth = await unique;
-    //   let data = [] as any;
-    //   this.timeFrom(11).filter((element: any) => {
-    //     this.sellchartOptions.xaxis.categories.push(element.split("-")[2]);
-    //     if (res.data.data[element] !== undefined) {
-    //       data.push(res.data.data[element]);
-    //     } else {
-    //       data.push(0);
-    //     }
-    //   });
-    //   var total = 0;
-    //   for (var i in data) {
-    //     total += data[i];
-    //   }
-    //   this.total = total;
-    //   this.allMonth();
-    // },
-
-    // onChangemonth(event: any) {
-    //   if (event.target.value === "allMonth") {
-    //     this.allMonth();
-    //   } else {
-    //     this.daysInMonth(1, this.monthValue?.year);
-    //     let count = this.daysInMonth(
-    //       this.monthValue?.key,
-    //       this.monthValue?.year
-    //     );
-    //     let daycount = [] as any;
-    //     let data = [] as any;
-    //     for (let i = 1; i < count + 1; i++) {
-    //       daycount.push(i);
-    //       if (
-    //         this.dataset[
-    //           this.monthValue?.year +
-    //             "-" +
-    //             this.monthValue?.key +
-    //             "-" +
-    //             this.pad(i)
-    //         ] !== undefined
-    //       ) {
-    //         data.push(
-    //           this.dataset[
-    //             this.monthValue?.year +
-    //               "-" +
-    //               this.monthValue?.key +
-    //               "-" +
-    //               this.pad(i)
-    //           ]
-    //         );
-    //       } else {
-    //         data.push(0);
-    //       }
-    //     }
-    //     // console.log(data);
-
-    //     var total = 0;
-    //     for (let i in data) {
-    //       total += data[i];
-    //     }
-    //     this.total = total;
-    //     (this as any).$refs.chartSell.updateOptions({
-    //       xaxis: {
-    //         categories: daycount,
-    //       },
-    //       series: [
-    //         {
-    //           data: data,
-    //         },
-    //       ],
-    //     });
-    //   }
-    // },
 
     async allMonth() {
       let dataset = [] as any;
@@ -609,15 +514,8 @@ export default Vue.extend({
   },
   async mounted() {
     await this.myworks();
-    // this.sellchartOptions.xaxis.categories = this.timeFrom(11, "day");
-    //  await this.listNovel();
-    //  await this.test('AllNovel')
-    // this.test(novel)
-    // setTimeout(() => {
-    // this.setdata("AllNovel");
 
     this.monthValue = "allMonth";
-    // }, 2000);
   },
 });
 </script>

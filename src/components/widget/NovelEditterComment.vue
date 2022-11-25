@@ -51,8 +51,9 @@
     <div class="con-submit">
       <button :disabled="issubmit" class="nv-btn-yellow submit" @click="cleck ? submit($event) : $base.openlogin()">ส่ง</button>
     </div>
-    <div id="stiker">
-      <!-- {{sticker}} -->
+    <!-- <Sticker ref="Sticker" @click="addstikerf"/> -->
+    <!-- <div id="stiker">
+
       <div class="con-stiker">
         <div @click="close()" class="close">
           <i class="fas fa-times-circle"></i>
@@ -69,6 +70,7 @@
             </div>
           </carousel>
         </span>
+        {{stickerss}}
         <div class="con-item" v-if="stickerss">
           <div v-for="(item, index) in stickerss" :key="index">
             <div
@@ -90,7 +92,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- <textarea v-model="input"></textarea> -->
   </div>
 </template>
@@ -101,7 +103,9 @@ import { Gatway } from "@/shares/services";
 // import { shop_type_data_id } from "@/shares/constants/enum";
 import EmojiPicker from "vue-emoji-picker";
 import carousel from "vue-owl-carousel";
+import Sticker from "./Sticker.vue";
 // import EmptyContent from "../../pages/empty/empty.vue";
+
 export default Vue.extend({
   name: "NovelEditterComment",
   props: {
@@ -113,8 +117,9 @@ export default Vue.extend({
     },
   },
   components: {
-    carousel,
+    // carousel,
     EmojiPicker,
+    // Sticker
     // EmptyContent,
   },
 
@@ -135,11 +140,15 @@ export default Vue.extend({
   },
   methods: {
     async opanstiker(as: any) {
-
-      await this.getListstiger();
-
-      await this.filter(this.sticker[0]);
-      await localStorage.setItem("s", as);
+        console.log('sdds');
+        
+      // await this.getListstiger();
+      
+      // await this.filter(this.sticker[0]);
+      
+      this.$emit("opanstikers")
+      // await (this as any).$refs.Sticker.openmodel()
+      localStorage.setItem("s", as);
       // let conModal = (await document.getElementById("stiker")) as HTMLElement;
       // conModal.style.display = await "flex";
     },
@@ -284,6 +293,7 @@ export default Vue.extend({
 }
 .text-editer {
   padding: 20px;
+  word-break: break-all;
   border: 1px solid #d7d7d7;
   // border-radius: 0 0 10px 10px !important;
   position: relative;

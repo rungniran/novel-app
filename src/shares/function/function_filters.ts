@@ -70,7 +70,7 @@ const filters = {
 		}
 		interval = seconds / 3600;
 		if (interval > 1) {
-			return Math.floor(interval) + " ชั่วโมงที่แล้ว";
+			return Math.floor(interval) + " ชม. ที่แล้ว";
 		}
 		interval = seconds / 60;
 		if (interval > 1) {
@@ -78,6 +78,16 @@ const filters = {
 		}
 		return  "เมื่อสักครู่";
 	},
+	_dataUrl(item:any, type = "Novel"):string {
+    console.log(type);
+    
+    if (item) {
+      const cutpath = item.url.replaceAll('https://novelkingdom.co/public/publicImages/', '')
+      return cutpath === '' ? dynamic_path.image('loading.png') : item.url
+    } else{
+      return dynamic_path.image('loading.png')
+    }
+  },
 
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	setTwoNumberDecimal(event:any):void {
@@ -112,6 +122,7 @@ NumberToString(x:string):string{
 
 
 toThaiDateString(date:Date):string {
+	// const time = date.split("")
   const data2 =	new Date(date)
 
 	
@@ -129,8 +140,9 @@ toThaiDateString(date:Date):string {
 
 	const hour = data2.getHours().toString().padStart(2, "0");
 	const minutes = data2.getMinutes().toString().padStart(2, "0");
-	// const second = date.getSeconds().toString().padStart(2, "0");
-
+	// console.log(date);
+	
+  
 	return `${numOfDay} ${month} ${year} ` +
 			`${hour}:${minutes}`;
 }
@@ -155,7 +167,7 @@ toThaiDateString(date:Date):string {
 // 	}
 // 	return 0
 // },
-}
+} as any
 const dynamic_path = {
 	image(img:string):string{
 		const images = require.context('../../assets/images', false)
@@ -163,6 +175,10 @@ const dynamic_path = {
 	},
 	svg(img:string):string{
 		const images = require.context('../../assets/svg', false, /\.svg$/)
+		return images('./' + img)
+	},
+	gif(img:string):string{
+		const images = require.context('../../assets/gif', false, /\.gif$/)
 		return images('./' + img)
 	},
     cheerup(img:string):string{
@@ -178,7 +194,7 @@ const dynamic_path = {
 		return images('./' + img)
 	},
 	
-}
+} as any
 
 
 

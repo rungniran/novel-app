@@ -24,7 +24,7 @@
         <div class="box-social"><a href="https://www.facebook.com/Novelkingdom" target="_blank" class="icon-fb"><i class="fab fa-twitter"></i></a></div>
       </div>
       <!-- <div><i class="fas fa-copyright"></i> novelkingdom 2022 version bata</div> -->
-       <div class="name-company"><i class="fas fa-copyright"></i> 2022 Novel Kingdom Version 0.0.2</div>
+       <div class="name-company"><i class="fas fa-copyright"></i> 2022 Novel Kingdom Version 0.1.0 </div>
     </div>
 </template>
 

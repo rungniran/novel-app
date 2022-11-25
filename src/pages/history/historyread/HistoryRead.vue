@@ -82,6 +82,14 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss" scoped>
+.con-storyBuy {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  grid-gap: 15px;
+  border-radius: 12px;
+
+}
 .img-history-read {
   box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 }
@@ -95,14 +103,7 @@ export default Vue.extend({
   color: rgb(168, 166, 166);
 }
 
-.con-storyBuy {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-  gap: 15px;
-  border-radius: 12px;
-  background-color: white;
-}
+
 .detail-novel {
   display: flex;
   justify-content: space-between;

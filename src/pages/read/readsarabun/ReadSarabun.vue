@@ -1,16 +1,21 @@
 <template>
   <div class="Sarabun">
     <div class="in-sarabun">
-      <div v-if="data.length !== 0">
+      <div v-if="data">
+      
         <div
+        
           v-for="(item, index) in data"
           :key="index"
           class="box-sarabun"
           :id="'box' + item.id"
           @click="$emit('sarabun-buy', item)"
+          :style="status_hide(item).style"
         >
+        <!-- {{status_hide(item)}} -->
           <div class="line-1 font-content">
-            #{{ item.ep_no }} {{ item.name }}
+            
+              #{{ item.ep_no }} {{ item.name }}  <font-awesome-icon v-if="status_hide(item).view" icon="fa-regular fa-eye-slash" />
           </div>
           <div v-if="item.coin !== '0.00'">
             <div v-if="item.bought === false" class="buy-coin">
@@ -26,7 +31,7 @@
       </div>
       <div v-else class="loading-sarabun">
         <div
-          class="nv-box-white nv-mt-40 con-Sarabun"
+          class=" "
           style="display: flex; justify-content: center; align-items: center"
         >
           <svg
@@ -43,7 +48,6 @@
             xml:space="preserve"
           >
             <path
-              fill="#000"
               d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z"
             >
               <animateTransform
@@ -66,43 +70,64 @@
 <script lang="ts">
 import Vue from "vue";
 import { Gatway } from "@/shares/services";
+
 export default Vue.extend({
   name:'ReadSarabun',
   data() {
     return {
-      data: []
+      data: null
     };
   },
   props: {
     uuid: String,
   },
   methods: {
+    status_hide(item:any){
+    if(  item.status_hide_ep){
+      return !item.bought 
+      ? {
+        style:'opacity: 0.2;',
+        status: true,
+        view: true
+        }  
+      : {
+        style:'opacity: 0.2;',
+        status: false,
+        view: true
+        }  
+    } else{
+      return {
+        style:'',
+        status: false,
+        view: false
+        }
+
+    }
+    
+  },
     async getSarabun() {
-      if(this.uuid !== this.$store.state.sarabun.sarabunID){
-      const resGetNovel = await Gatway.getIDService(
-        (this as any).cleck === "true"
-          ? "/novel/novel-data"
-          : "/guest/novel/novel-data",
-        this.uuid
-      );
-      this.data = await resGetNovel.data.data.novel_episode_datas;
-      this.$store.commit('setSarabun',{ 
-        Sarabun:resGetNovel.data.data.novel_episode_datas, 
-        id:this.uuid
-      })
-      }else{
-        this.data = await this.$store.state.sarabun.sarabun;
-      }
-      const sarabun = (await document.getElementsByClassName("Sarabun")[0]) as HTMLElement;
-      const box = (await document.getElementById("box" + this.$route.params.slug)) as HTMLElement;
-      box.style.background = await "#fdf8e1";
-      sarabun.scrollTo({ top: box.offsetTop - 10, behavior: "smooth" });
+      console.log();
+      
+      setTimeout(async() => {
+        
+      
+      // const url = (await (this as any).cleck) === "true" ? "/novel/novel-data" : "/guest/novel/novel-data";
+      //   {{$store.state.Novel._NovelEp}}
+      const res = await this.$store.getters._GetNovelEpSet(this.uuid)
+
+      this.data = await res
+      const sarabun = await document.getElementsByClassName("Sarabun")[0] as HTMLElement;
+      const box = await document.getElementById("box" + this.$route.params.slug) as HTMLElement;
+      await box.classList.add('Sarabun-activate')
+      await sarabun.scrollTo({ top: box.offsetTop - 10});
+      }, 100);
     },
-    toggle(){
-       const sarabun =  document.getElementsByClassName("Sarabun")[0] as HTMLElement;
+    async toggle(){
+      this.data = await null
+      const sarabun =  document.getElementsByClassName("Sarabun")[0] as HTMLElement;
       if(sarabun.classList[1] === undefined){
         sarabun.classList.add('Sarabun-show')
-        this.getSarabun()
+        await this.getSarabun()  
       }else{
         sarabun.classList.remove('Sarabun-show')
       }
@@ -145,7 +170,7 @@ export default Vue.extend({
   // display: none;
   // box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
   // display: none;
-  border: 1px solid #e7e7e7;
+  // border: 1px solid #e7e7e7;
   width: 300px;
   background: rgb(255, 255, 255);
   left: -45px;
@@ -160,6 +185,9 @@ export default Vue.extend({
   opacity: 10;
   pointer-events: auto;
 }
+.Sarabun-activate{
+ background: #fdf8e1;
+}
 .buy-coin {
   display: flex;
   grid-gap: 4px;
@@ -170,6 +198,9 @@ export default Vue.extend({
 }
 .in-sarabun {
   height: 350px;
+    //   display: flex;
+    // align-items: center;
+    // justify-content: center;
 }
 
 .box-sarabun {

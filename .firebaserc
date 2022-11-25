@@ -1,8 +1,10 @@
 {
   "projects": {
     "default": "novelkingdom-80a1d",
-    "rungniran": "novelkingdom-test",
-    "novelkingdom": "novelkingdom-80a1d"
+    "rungniran": "novelkingdom-80a1d",
+    "novelkingdom": "novelkingdom-80a1d",
+    "flook": "novelkingdom-80a1d"
   },
-  "targets": {}
+  "targets": {},
+  "etags": {}
 }

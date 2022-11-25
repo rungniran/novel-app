@@ -25,7 +25,7 @@
                   :style="'background: url(' + img + ') center center/cover'"
                 ></div>
                 <div>
-                  <div class="name-review" v-if="item.user">
+                  <div class="name-review line-1" v-if="item.user">
                     <span v-if="item.user.user_profile_datas[0].user_nickname">{{item.user.user_profile_datas[0].user_nickname}}</span>
                     <span v-else>{{item.user.user_profile_datas[0].first_name}} {{item.user.user_profile_datas[0].last_name}}</span>
                   </div>
@@ -37,12 +37,12 @@
               <!-- <pre>{{item.user_id}}</pre> -->
               <div class="review-detail" v-if="item.id">
                 <div class="in-review-detail">
-                 <i class="far fa-thumbs-up" @click="Clicklike(item.id)"></i>
-                  {{item.click_like}}
+                 <i class="far fa-thumbs-up" @click="isLike ? Clicklike(item.id, index) : null"></i>
+                 <span class="click-like" :id="item.id"> {{item.click_like}}</span>
                 </div>
                 <div style="position: relative;">
                   <i class="fas fa-ellipsis-v" @click="profile ? openObtion(item.id) :  $base.openlogin()"></i>
-                  <div class="option" :id="item.id" v-if="profile"> 
+                  <div :id="'option'+item.id" class="option" v-if="profile"> 
                     <li v-if="item.user_id === profile.id" @click="deleteComment(item.id, index)">ลบความคิดเห็น</li>
     
                     <li v-if="item.user_id !== profile.id">รายงาน</li>
@@ -50,9 +50,15 @@
                 </div>
               </div>
             </div>
-            <div class="text-review" v-html="item.comment">
-              
-            </div>
+            
+            <span v-if="item.comment.length <= 300">
+              <div class="text-review" v-html="item.comment">
+              </div>
+            </span>
+            <span v-else>
+              <span class="text-review" :id="'comment'+ item.id" v-html="item.comment.slice(0, 300)"></span>
+              <span class="readmore" :id="'readmore'+ item.id" @click="readmore(item)">.....อ่านเพิ่มเติม</span>
+            </span>
           </div>
           <div v-if="dataReview.length > 3" class="view-all" >
             <div class="reviwe" @click="allreviwe" v-if="dataReview.length - reviwe !==0">ดูรีวิวทั้งหมด {{dataReview.length - reviwe}}</div>
@@ -64,6 +70,7 @@
 import Vue from 'vue'
 import EmptyContent from '../../empty/empty.vue'
 import {Gatway} from '@/shares/services'
+import { setAutoBuy } from '@/shares/modules/autobuy'
 export default Vue.extend({
   name:"NovelReview",
   components:{
@@ -78,12 +85,31 @@ export default Vue.extend({
     return{
       img: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
       reviwe: 3, 
-      dataReview:null
+      dataReview:null,
+      isLike:true
     }
   },
   methods:{
+    readmore(item:any){
+        let option =document.getElementById('comment'+ item.id) as HTMLElement
+        let readmore =document.getElementById('readmore'+ item.id) as HTMLElement
+        if (option.innerHTML.length <= 300){
+          readmore.innerHTML = ".....ย่อลง"
+          option.innerHTML = item.comment
+        }else{
+          readmore.innerHTML = ".....อ่านเพิ่มเติม"
+          option.innerHTML = item.comment.slice(0, 300)
+        }
+        
+        
+    },
     openObtion(key:any){
-      let option =document.getElementById(key) as HTMLElement
+      console.log(key);
+      
+      let option =document.getElementById('option'+key) as HTMLElement
+      console.log(option);
+      
+      // option.style.display = 'block'
       option.classList.toggle('option-show')
     },
      async comment(Obj:any){
@@ -100,13 +126,30 @@ export default Vue.extend({
     this.getReviewAll()
      
     },
-    async Clicklike(uuid:string){
+    async Clicklike(uuid:string, index:any){
+      let totallike = document.getElementById(uuid) as HTMLElement
+      // console.log();
+
+      
+      this.isLike = false
      let data = {
         action: 'click-like',
         comment_data_id:uuid
       }
-      await Gatway.postService('/customers/comments/post', data as any);
-      this.getReviewAll()
+      let res = await Gatway.postService('/customers/comments/post', data as any);
+      // console.log(parseInt(totallike.innerHTML));
+      
+      if (res.data.code === 405) {
+        data.action = 'click-unlike'
+        await Gatway.postService('/customers/comments/post', data as any);
+        totallike.innerHTML = (parseInt(totallike.innerHTML) - 1).toString()
+      }else{
+       totallike.innerHTML = (parseInt(totallike.innerHTML) + 1).toString()
+      }
+      setTimeout(() => {
+        this.isLike = true
+      }, 1500);
+
     },
     allreviwe(){
       if(((this as any).dataReview.length - this.reviwe) > 3){
@@ -209,6 +252,7 @@ img.img-no-data{
 .text-review {
   font-size: 17px;
   /* color: #565656; */
+    word-break: break-all;
   margin-left: 60px;
   font-family: "Sarabun", sans-serif;
 }
@@ -232,6 +276,7 @@ img.img-no-data{
 .name-review {
   display: flex;
   align-items: center;
+  word-break: break-all;
   // font-size: 18px;
 }
 .review-date {
@@ -250,5 +295,8 @@ img.img-no-data{
 .view-all{
   display: flex;
   gap: 20px;
+}
+.readmore{
+  cursor: pointer;
 }
  </style>

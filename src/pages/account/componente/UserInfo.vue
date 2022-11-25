@@ -1,28 +1,48 @@
 <template>
   <div class="userinfo">
-    <div class="ee" v-if="$store.state.auth.dataset.user_profile_datas.user_nickname === 'e9eb971e-70bc-4e4e-bfd6-38046e326e29'">
-      <p> เปลี่ยนชื่อที่แสดงในระบบ แล้วกดปุ่ม บันทึกข้อมูลส่วนตัว  </p><br>
-     <p> เพื่อสร้างข้อมูลโปรไฟล์ของท่าน จึงจะสามารถเข้าใช้งานระบบได้ ต้องขออภัยในความไม่สะดวกครับผม 🙏</p><br>
-     <div class="contor-input">
-        <div class="from-title" >ชื่อที่แสดงในระบบ 👈</div>
-        <input  v-model="Obj.user_nickname"/>
-      </div> <br>
+    <div
+      class="ee"
+      v-if="
+        $store.state.auth.dataset.user_profile_datas.user_nickname ===
+        'e9eb971e-70bc-4e4e-bfd6-38046e326e29'
+      "
+    >
+      <p>เปลี่ยนชื่อที่แสดงในระบบ แล้วกดปุ่ม บันทึกข้อมูลส่วนตัว</p>
+      <br />
+      <p>
+        เพื่อสร้างข้อมูลโปรไฟล์ของท่าน จึงจะสามารถเข้าใช้งานระบบได้
+        ต้องขออภัยในความไม่สะดวกครับผม 🙏
+      </p>
+      <br />
+      <div class="contor-input">
+        <div class="from-title">ชื่อที่แสดงในระบบ 👈</div>
+        <input v-model="Obj.user_nickname" />
+      </div>
+      <br />
       <div class="con-save">
-        <div class="nv-btn-light-blue btn" @click="submit()">บันทึกข้อมูลส่วนตัว</div>
+        <button class="nv-btn-light-blue btn" @click="submit()" >
+          บันทึกข้อมูลส่วนตัว
+        </button>
       </div>
-      </div>
+    </div>
     <div class="from" v-else>
-       <div class="contor-input-2">
+      <!-- <div class="contor-input-2">
         <div>
           <img :src="this.fileimg" width="200px">
           <div class="from-title" >รูป โปรไฟล์</div>
           <input type="file"  @change="previewFiles" accept="image/png, image/jpeg, image/jpg"/>
         </div>
-      </div> 
+      </div>  -->
       <div class="contor-input">
-        <div class="from-title" >ชื่อที่แสดงในระบบ</div>
-        <input  v-model="Obj.user_nickname"/>
-      </div> 
+        <div class="from-title">ชื่อที่แสดงในระบบ</div>
+        <input v-model="Obj.user_nickname" maxlength="30"/>
+      </div>
+      <div class="contor-input" v-if="ObjProfilreWriter === null">
+      </div>
+      <div v-else>
+        <div class="from-title">นามปากกา</div>
+        <input v-model="Obj.user_penname" maxlength="30" placeholder="กรอกนามปากกา"/>
+      </div>
       <!-- <div class="con-from">
         <div class="contor-input">
           <div class="from-title">ชื่อ</div>
@@ -38,40 +58,72 @@
         <input :value="profile.username"/>
       </div>-->
       <div class="con-save">
-        <div class="nv-btn-light-blue btn" @click="submit()">บันทึกข้อมูลส่วนตัว</div>
+        <button
+          class="nv-btn-light-blue btn"
+          @click="submit()"
+          :disabled="isLoading"
+        >
+          บันทึกข้อมูลส่วนตัว
+        </button>
       </div>
     </div>
     <div class="from nv-mt-30">
-        <div class="contor-input">
-        <div class="from-title">ชื่อผู้ใช้ <small class="requre">(สามารถใช้เพื่อ Log In แบบปกติได้) <span class="texthightlight">*สามารถแก้ไขได้ 1 ครั้ง*</span></small></div>
-        <input v-model="ObjUsername.username"/>
-        
+      <div class="contor-input">
+        <div class="from-title">
+          ชื่อผู้ใช้
+          <small class="requre"
+            >(สามารถใช้เพื่อ Log In แบบปกติได้)
+            <span class="texthightlight">*สามารถแก้ไขได้ 1 ครั้ง*</span></small
+          >
+        </div>
+        <input v-model="ObjUsername.username" />
       </div>
       <div class="contor-input">
-        <div class="from-title" >อีเมล์</div>
-        <input  :value="profile.email" disabled/>
+        <div class="from-title">อีเมล์</div>
+        <input :value="profile.email" disabled />
       </div>
-       <div class="con-save">
-        <div class="nv-btn-light-blue btn" @click="ChangeUsername()">เปลี่ยน ชื่อผู้ใช้</div>
+      <div class="con-save">
+        <button
+          class="nv-btn-light-blue btn"
+          @click="ChangeUsername()"
+          :disabled="isChangeUser"
+        >
+          เปลี่ยน ชื่อผู้ใช้
+        </button>
       </div>
     </div>
     <div class="from nv-mt-30">
       <div class="contor-input">
         <div class="from-title">รหัสผ่าน</div>
-        <input type="password" v-model="ObjPassword.password" placeholder="********"/>
+        <input
+          type="password"
+          v-model="ObjPassword.password"
+          placeholder="********"
+        />
       </div>
       <div class="contor-input">
         <div class="from-title">ยืนยันรหัสผ่าน</div>
-        <input type="password"  v-model="ObjPassword.Confirmpassword" placeholder="********"/>
+        <input
+          type="password"
+          v-model="ObjPassword.Confirmpassword"
+          placeholder="********"
+        />
       </div>
       <div class="con-save">
-        <div class="nv-btn-light-blue btn" @click="ChangePassword()">เปลี่ยนรหัสผ่าน</div>
+        <button
+          class="nv-btn-light-blue btn"
+          @click="ChangePassword()"
+          :disabled="isChangePasswond"
+        >
+          เปลี่ยนรหัสผ่าน
+        </button>
       </div>
     </div>
     <div class="from nv-mt-30">
       <div class="con-save">
-        <div class="nv-btn-light-blue btn" @click="clear()">ล้างนิยายอ่านต่อ</div>
-        <!-- <div class="nv-btn-light-blue btn" @click="ChangePassword()">เปลี่ยนรหัสผ่าน</div> -->
+        <button class="nv-btn-light-blue btn" @click="clear()" :disabled="isClear">
+          ล้างนิยายอ่านต่อ
+        </button>
       </div>
     </div>
   </div>
@@ -80,97 +132,137 @@
 import Vue from "vue";
 import { Gatway } from "@/shares/services";
 import { alert } from "@/shares/modules/alert";
-import { sms_alert_Change_Password, sms_alert_Update_UserInformation } from "@/shares/constants/smsalert"
+import {
+  sms_alert_Change_Password,
+  sms_alert_Update_UserInformation,
+} from "@/shares/constants/smsalert";
 export default Vue.extend({
   name: "userinfo",
-  data(){
-    return{
-      fileimg:'' as any,
-      Obj:{
-        first_name: this.$store.state.auth.dataset.user_profile_datas.first_name,
-        id:this.$store.state.auth.dataset.user_profile_datas.id,
-        last_name:this.$store.state.auth.dataset.user_profile_datas.last_name,
-        user_id:this.$store.state.auth.dataset.id,
-        user_img:this.$store.state.auth.dataset.user_profile_datas.id,
-        user_nickname: this.$store.state.auth.dataset.user_profile_datas.user_nickname ? this.$store.state.auth.dataset.user_profile_datas.user_nickname : this.$store.state.auth.display_name,
-        user_profile_data_type_id:'a406c04d-3f50-4ea8-986e-315452753638',
+  data() {
+    return {
+      fileimg: "" as any,
+      Obj: {
+        first_name:
+          this.$store.state.auth.dataset.user_profile_datas.first_name,
+        id: this.$store.state.auth.dataset.user_profile_datas.id,
+        last_name: this.$store.state.auth.dataset.user_profile_datas.last_name,
+        user_id: this.$store.state.auth.dataset.id,
+        user_img: this.$store.state.auth.dataset.user_profile_datas.id,
+        user_nickname: this.$store.state.auth.dataset.user_profile_datas
+          .user_nickname
+          ? this.$store.state.auth.dataset.user_profile_datas.user_nickname
+          : this.$store.state.auth.display_name,
+        user_profile_data_type_id: "a406c04d-3f50-4ea8-986e-315452753638",
+        user_penname: this.$store.state.auth.dataset.user_profile_datas
+          .user_penname
         // type_of_company_data_id:''
-      }, 
-      ObjPassword:{
-        password:'',
-        Confirmpassword:'',
       },
-      ObjUsername:{
-        id:this.$store.state.auth.dataset.id,
-        username:this.$store.state.auth.dataset.username,
-        status_change_username:true
+      ObjProfilreWriter:this.$store.state.auth.dataset.profile_writer,
+      ObjPassword: {
+        password: "",
+        Confirmpassword: "",
       },
-      FilesIDCard:'' as any
-    }
+      ObjUsername: {
+        id: this.$store.state.auth.dataset.id,
+        username: this.$store.state.auth.dataset.username,
+        status_change_username: true,
+      },
+      FilesIDCard: "" as any,
+      isLoading: false,
+      isChangeUser: false,
+      isChangePasswond: false,
+      isClear: false,
+    };
   },
-  methods:{
-    async submit(){
-      let res = await Gatway.postService('/customers/profile-data',  this.Obj as any )
+  methods: {
+    async submit() {
+      this.isLoading = true;
+      let res = await Gatway.postService(
+        "/customers/profile-data",
+        this.Obj as any
+      );
       console.log(this.Obj);
-      let formData = new FormData();
-            formData.append("file", this.FilesIDCard as any);
-            formData.append("ref", this.$store.state.auth.dataset.user_profile_datas.id);
-            formData.append("table", "user_profile_data_user_img");
-            await Gatway.postService(
-              "/upload/image/ref-table",
-              formData as any
-            );
-      if( res.data.code === 200){
-        alert(sms_alert_Update_UserInformation.successful ,'success')
-        this.$store.commit('reset') 
+      if (res.data.code === 200) {
+        this.isLoading = false;
+        alert(sms_alert_Update_UserInformation.successful, "success");
+        this.$store.commit("reset");
       }
     },
-    async ChangeUsername(){
-      let res = await Gatway.postService('/customers/user-info/change-username', this.ObjUsername as any)
-      res.data.code === 200 
-      ? alert(sms_alert_Update_UserInformation.successful, 'success') 
-      : null
+    async ChangeUsername() {
+      this.isChangeUser = true;
+      let res = await Gatway.postService(
+        "/customers/user-info/change-username",
+        this.ObjUsername as any
+      );
+      if (res.data.code === 200) {
+        this.$store.commit("reset");
+        alert(sms_alert_Update_UserInformation.successful, "success");
+        this.isChangeUser = false;
+      } else {
+        this.isChangeUser = false;
+        null;
+      }
       //  await  this.submit()
-      this.$store.commit('reset')
-       
     },
     previewFiles(event) {
-			var reader = new FileReader()
-     this.FilesIDCard = event.target.files[0]
-			reader.readAsDataURL(event.target.files[0])
-			reader.onload = () => {
-        this.fileimg = reader.result
-			};
-		},
-    async ChangePassword(){
-      if(this.ObjPassword.password.length >= 8){
-        if(this.ObjPassword.password === this.ObjPassword.Confirmpassword){
+      var reader = new FileReader();
+      this.FilesIDCard = event.target.files[0];
+      reader.readAsDataURL(event.target.files[0]);
+      reader.onload = () => {
+        this.fileimg = reader.result;
+      };
+    },
+    async ChangePassword() {
+      this.isChangePasswond = true;
+      if (this.ObjPassword.password.length >= 8) {
+        if (this.ObjPassword.password === this.ObjPassword.Confirmpassword) {
+          this.isChangePasswond = true;
           let data = await {
-            id:this.$store.state.auth.dataset.id,
-            password:this.ObjPassword.password,
-            password_confirmation:this.ObjPassword.Confirmpassword
+            id: this.$store.state.auth.dataset.id,
+            password: this.ObjPassword.password,
+            password_confirmation: this.ObjPassword.Confirmpassword,
+          };
+          let res = await Gatway.postService(
+            "/customers/user-info/change-password",
+            data as any
+          );
+          let test = JSON.stringify(res.data.data);
+          if (res.data.code === 200) {
+            this.isChangePasswond = false;
+            alert(sms_alert_Change_Password.successful, "success");
+          } else {
+            alert(test, "error");
+            this.isChangePasswond = false;
           }
-          let res = await Gatway.postService('/customers/user-info/change-password', data as any)
-          let test = JSON.stringify(res.data.data)
-          res.data.code === 200 ? alert(sms_alert_Change_Password.successful, 'success') : alert(test,'error')
-        }else{
-          alert('Password ไม่ตรงกัน','error')
+        } else {
+          this.isChangePasswond = false;
+
+          alert("Password ไม่ตรงกัน", "error");
         }
-      }else{
-         alert('Password ต้องมากกว่า 8 ตัว','error') 
+      } else {
+        this.isChangePasswond = false;
+
+        alert("Password ต้องมากกว่า 8 ตัว", "error");
       }
     },
-    clear(){
-     localStorage.removeItem("StoryRead");
-    }
+    clear() {
+      localStorage.removeItem("StoryRead");
+    },
   },
-  mounted(){
+  mounted() {
     // this.ChangePassword()
-  }
+    console.log(this.$store.state.auth.dataset)
+    console.log(this.$route.query?.user_nickname);
+    if(this.$route.query?.user_nickname){
+    window.alert('ท่านยังไม่ได้ บันทึก ชื่อที่แสดงในระบบ ') 
+        
+    }
+    
+
+  },
 });
 </script>
 <style lang="scss" scoped>
-
 .btn {
   //   width: 120px;
   text-align: center;
@@ -181,21 +273,21 @@ export default Vue.extend({
   display: flex;
   justify-content: flex-end;
 }
-.requre{
+.requre {
   font-size: 12px;
   margin-left: 10px;
 }
 .texthightlight {
   color: #b80909;
 }
-.ee{
-    color: #ffffff;
-    padding: 10px;
-    background: #ff4949;
-     font-family: "Sarabun", sans-serif;
-     border-radius: 5px;
+.ee {
+  color: #ffffff;
+  padding: 10px;
+  background: #ff4949;
+  font-family: "Sarabun", sans-serif;
+  border-radius: 5px;
 }
-  input[type="color"],
+input[type="color"],
 input[type="date"],
 input[type="datetime"],
 input[type="datetime-local"],
@@ -214,7 +306,7 @@ select:focus,
 textarea {
   font-size: 16px;
 }
-.contor-input-2{
+.contor-input-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;

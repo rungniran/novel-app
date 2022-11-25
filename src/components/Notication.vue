@@ -1,152 +1,125 @@
 <template>
   <div class="noti-menu">
-    <!-- <div v-if="notification.length === 0" class="notication">
-          ไม่มีการแจ้งเตือน
-      </div> -->
-    <div v-if="notification" class="contain-noti noti">
-      <h2 style="margin: 5px">แจ้งเตือนจากระบบ</h2>
-      <div class="content-detail noti">
-        <div class="detail-noti-notimg noti">
-          <!-- <i class="fa fa-circle icon-color noti" aria-hidden="true"></i> -->
-          <p class="noti font-header">ปิดปรับปรุง 18.00</p>
-           <svg
-          class="detail-noti noti del-icon"
-          width="16"
-          height="20"
-          viewBox="0 0 25 29"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            class="noti"
-            d="M14.9554 23.5625H16.2946C16.4722 23.5625 16.6426 23.4909 16.7682 23.3634C16.8937 23.236 16.9643 23.0631 16.9643 22.8828V10.6484C16.9643 10.4682 16.8937 10.2953 16.7682 10.1678C16.6426 10.0404 16.4722 9.96875 16.2946 9.96875H14.9554C14.7778 9.96875 14.6074 10.0404 14.4818 10.1678C14.3563 10.2953 14.2857 10.4682 14.2857 10.6484V22.8828C14.2857 23.0631 14.3563 23.236 14.4818 23.3634C14.6074 23.4909 14.7778 23.5625 14.9554 23.5625ZM24.1071 4.53125H19.5084L17.611 1.31973C17.3729 0.917021 17.0361 0.58379 16.6334 0.352507C16.2307 0.121224 15.7758 -0.000223356 15.3131 3.08378e-07H9.68694C9.22441 -2.76842e-05 8.76975 0.121512 8.36724 0.352786C7.96473 0.58406 7.62808 0.917185 7.39007 1.31973L5.49163 4.53125H0.892857C0.656057 4.53125 0.428955 4.62673 0.261512 4.79669C0.0940686 4.96664 0 5.19715 0 5.4375L0 6.34375C0 6.5841 0.0940686 6.81461 0.261512 6.98457C0.428955 7.15452 0.656057 7.25 0.892857 7.25H1.78571V26.2812C1.78571 27.0023 2.06792 27.6938 2.57025 28.2037C3.07258 28.7136 3.75388 29 4.46429 29H20.5357C21.2461 29 21.9274 28.7136 22.4298 28.2037C22.9321 27.6938 23.2143 27.0023 23.2143 26.2812V7.25H24.1071C24.3439 7.25 24.571 7.15452 24.7385 6.98457C24.9059 6.81461 25 6.5841 25 6.34375V5.4375C25 5.19715 24.9059 4.96664 24.7385 4.79669C24.571 4.62673 24.3439 4.53125 24.1071 4.53125ZM9.58929 2.88357C9.61913 2.83316 9.66135 2.79147 9.71182 2.76258C9.76229 2.73369 9.81929 2.71859 9.87723 2.71875H15.1228C15.1806 2.71868 15.2375 2.73383 15.2879 2.76272C15.3382 2.7916 15.3804 2.83324 15.4102 2.88357L16.3845 4.53125H8.61551L9.58929 2.88357ZM20.5357 26.2812H4.46429V7.25H20.5357V26.2812ZM8.70536 23.5625H10.0446C10.2222 23.5625 10.3926 23.4909 10.5182 23.3634C10.6437 23.236 10.7143 23.0631 10.7143 22.8828V10.6484C10.7143 10.4682 10.6437 10.2953 10.5182 10.1678C10.3926 10.0404 10.2222 9.96875 10.0446 9.96875H8.70536C8.52776 9.96875 8.35743 10.0404 8.23185 10.1678C8.10627 10.2953 8.03571 10.4682 8.03571 10.6484V22.8828C8.03571 23.0631 8.10627 23.236 8.23185 23.3634C8.35743 23.4909 8.52776 23.5625 8.70536 23.5625Z"
-            fill="#DF3D0A"
-          />
-        </svg>
-        </div>
-
-        <!-- <div class="notihide">iooo</div> -->
-
-       
+    <div v-if="notificationdata.length !== 0">
+      <div class="name-article">
+        <p class="name-ar">การแจ้งเตือน</p>
+        <small @click="delNoti()">ล้าง</small>
       </div>
-      <h2 style="margin: 5px">แจ้งเตือน</h2>
-      <div class="content-detail noti">
-        <div class="detail-noti-img noti">
-          <!-- <i class="fa fa-circle icon-color-novel noti" aria-hidden="true"></i> -->
-          <img class="img-noti" :src="$path.image('loading.png')" />
-          <div class="noti">
-            <p class=" font-header">เพียงรักข้ามภพ</p>
-            <p class=" font-subheader">อัพเดต</p>
-          </div>
-           <svg
-          class="detail-noti noti del-icon"
-          width="16"
-          height="20"
-          viewBox="0 0 25 29"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+      <div class="conthianer-box-noti">
+        <div
+          v-for="item in notificationdata"
+          :key="item.id"
+          :class="item.status === 1 ? 'noti-box' : 'noti-box noti-box-read'"
         >
-          <path
-            class="noti"
-            d="M14.9554 23.5625H16.2946C16.4722 23.5625 16.6426 23.4909 16.7682 23.3634C16.8937 23.236 16.9643 23.0631 16.9643 22.8828V10.6484C16.9643 10.4682 16.8937 10.2953 16.7682 10.1678C16.6426 10.0404 16.4722 9.96875 16.2946 9.96875H14.9554C14.7778 9.96875 14.6074 10.0404 14.4818 10.1678C14.3563 10.2953 14.2857 10.4682 14.2857 10.6484V22.8828C14.2857 23.0631 14.3563 23.236 14.4818 23.3634C14.6074 23.4909 14.7778 23.5625 14.9554 23.5625ZM24.1071 4.53125H19.5084L17.611 1.31973C17.3729 0.917021 17.0361 0.58379 16.6334 0.352507C16.2307 0.121224 15.7758 -0.000223356 15.3131 3.08378e-07H9.68694C9.22441 -2.76842e-05 8.76975 0.121512 8.36724 0.352786C7.96473 0.58406 7.62808 0.917185 7.39007 1.31973L5.49163 4.53125H0.892857C0.656057 4.53125 0.428955 4.62673 0.261512 4.79669C0.0940686 4.96664 0 5.19715 0 5.4375L0 6.34375C0 6.5841 0.0940686 6.81461 0.261512 6.98457C0.428955 7.15452 0.656057 7.25 0.892857 7.25H1.78571V26.2812C1.78571 27.0023 2.06792 27.6938 2.57025 28.2037C3.07258 28.7136 3.75388 29 4.46429 29H20.5357C21.2461 29 21.9274 28.7136 22.4298 28.2037C22.9321 27.6938 23.2143 27.0023 23.2143 26.2812V7.25H24.1071C24.3439 7.25 24.571 7.15452 24.7385 6.98457C24.9059 6.81461 25 6.5841 25 6.34375V5.4375C25 5.19715 24.9059 4.96664 24.7385 4.79669C24.571 4.62673 24.3439 4.53125 24.1071 4.53125ZM9.58929 2.88357C9.61913 2.83316 9.66135 2.79147 9.71182 2.76258C9.76229 2.73369 9.81929 2.71859 9.87723 2.71875H15.1228C15.1806 2.71868 15.2375 2.73383 15.2879 2.76272C15.3382 2.7916 15.3804 2.83324 15.4102 2.88357L16.3845 4.53125H8.61551L9.58929 2.88357ZM20.5357 26.2812H4.46429V7.25H20.5357V26.2812ZM8.70536 23.5625H10.0446C10.2222 23.5625 10.3926 23.4909 10.5182 23.3634C10.6437 23.236 10.7143 23.0631 10.7143 22.8828V10.6484C10.7143 10.4682 10.6437 10.2953 10.5182 10.1678C10.3926 10.0404 10.2222 9.96875 10.0446 9.96875H8.70536C8.52776 9.96875 8.35743 10.0404 8.23185 10.1678C8.10627 10.2953 8.03571 10.4682 8.03571 10.6484V22.8828C8.03571 23.0631 8.10627 23.236 8.23185 23.3634C8.35743 23.4909 8.52776 23.5625 8.70536 23.5625Z"
-            fill="#DF3D0A"
-          />
-        </svg>
-        </div>
-        <!-- <div class="notihide">io</div> -->
-
-       
-      </div>
-      <h2 style="margin: 5px">ติดตาม</h2>
-      <div class="content-detail noti">
-        <div class="detail-noti-notimg noti">
-          <!-- <i class="fa fa-circle icon-color-novel noti" aria-hidden="true"></i> -->
-          <!-- <img class="img-noti" :src="$path.image('loading.png')"> -->
-          <div class="noti">
-            <p class=" font-header">
-              คุณ <span style="color: #910fcf">Lemon</span> ได้กดติดตามคุณ
-            </p>
-            <p class=" font-subheader">เมื่อ 5 นาทีทที่แล้ว</p>
+          <div @click="to(item)">
+            <div>
+              <div class="contain-noti">
+                <img
+                  class="img-noti"
+                  :src="item.url_image ? item.url_image : imgDefault"
+                  alt=""
+                  width="80%"
+                />
+                <small class="detail-noti">
+                 <span class="hl">  {{ item.title }} </span>
+                  <span v-if="item.table === 'comment_datas'">
+                    ตอนกลับคอมเม้นต์คุณ
+                  </span>
+                  <span v-if="item.table !== 'comment_datas'">{{
+                    item.body
+                  }}</span>
+                </small>
+              </div>
+            </div>
           </div>
-           <svg
-          class="detail-noti noti del-icon"
-          width="16"
-          height="20"
-          viewBox="0 0 25 29"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            class="noti"
-            d="M14.9554 23.5625H16.2946C16.4722 23.5625 16.6426 23.4909 16.7682 23.3634C16.8937 23.236 16.9643 23.0631 16.9643 22.8828V10.6484C16.9643 10.4682 16.8937 10.2953 16.7682 10.1678C16.6426 10.0404 16.4722 9.96875 16.2946 9.96875H14.9554C14.7778 9.96875 14.6074 10.0404 14.4818 10.1678C14.3563 10.2953 14.2857 10.4682 14.2857 10.6484V22.8828C14.2857 23.0631 14.3563 23.236 14.4818 23.3634C14.6074 23.4909 14.7778 23.5625 14.9554 23.5625ZM24.1071 4.53125H19.5084L17.611 1.31973C17.3729 0.917021 17.0361 0.58379 16.6334 0.352507C16.2307 0.121224 15.7758 -0.000223356 15.3131 3.08378e-07H9.68694C9.22441 -2.76842e-05 8.76975 0.121512 8.36724 0.352786C7.96473 0.58406 7.62808 0.917185 7.39007 1.31973L5.49163 4.53125H0.892857C0.656057 4.53125 0.428955 4.62673 0.261512 4.79669C0.0940686 4.96664 0 5.19715 0 5.4375L0 6.34375C0 6.5841 0.0940686 6.81461 0.261512 6.98457C0.428955 7.15452 0.656057 7.25 0.892857 7.25H1.78571V26.2812C1.78571 27.0023 2.06792 27.6938 2.57025 28.2037C3.07258 28.7136 3.75388 29 4.46429 29H20.5357C21.2461 29 21.9274 28.7136 22.4298 28.2037C22.9321 27.6938 23.2143 27.0023 23.2143 26.2812V7.25H24.1071C24.3439 7.25 24.571 7.15452 24.7385 6.98457C24.9059 6.81461 25 6.5841 25 6.34375V5.4375C25 5.19715 24.9059 4.96664 24.7385 4.79669C24.571 4.62673 24.3439 4.53125 24.1071 4.53125ZM9.58929 2.88357C9.61913 2.83316 9.66135 2.79147 9.71182 2.76258C9.76229 2.73369 9.81929 2.71859 9.87723 2.71875H15.1228C15.1806 2.71868 15.2375 2.73383 15.2879 2.76272C15.3382 2.7916 15.3804 2.83324 15.4102 2.88357L16.3845 4.53125H8.61551L9.58929 2.88357ZM20.5357 26.2812H4.46429V7.25H20.5357V26.2812ZM8.70536 23.5625H10.0446C10.2222 23.5625 10.3926 23.4909 10.5182 23.3634C10.6437 23.236 10.7143 23.0631 10.7143 22.8828V10.6484C10.7143 10.4682 10.6437 10.2953 10.5182 10.1678C10.3926 10.0404 10.2222 9.96875 10.0446 9.96875H8.70536C8.52776 9.96875 8.35743 10.0404 8.23185 10.1678C8.10627 10.2953 8.03571 10.4682 8.03571 10.6484V22.8828C8.03571 23.0631 8.10627 23.236 8.23185 23.3634C8.35743 23.4909 8.52776 23.5625 8.70536 23.5625Z"
-            fill="#DF3D0A"
-          />
-        </svg>
         </div>
-        <!-- <div class="notihide">iooo</div> -->
-       
-      </div>
-      <h2 style="margin: 5px">โปรโมชัน</h2>
-      <div class="content-detail noti">
-        <div class="detail-noti-img noti">
-          <!-- <i class="fa fa-circle icon-color-novel noti" aria-hidden="true"></i> -->
-          <img class="img-noti" :src="$path.image('loading.png')" />
-          <div class="noti">
-            <p class=" font-header">
-              <span style="color: #910fcf">เคล็ดกายานวดารา</span> จัดโปรโมชันซื้อตอนที่ 100 - 200 ลดราคาเหลือตอนละ 1.5 เหรียญ
-            </p>
-            <p class=" font-subheader">เมื่อ 5 นาทีที่แล้ว</p>
-          </div>
-           <svg
-          class="noti del-icon"
-          width="16"
-          height="20"
-          viewBox="0 0 25 29"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            class="noti"
-            d="M14.9554 23.5625H16.2946C16.4722 23.5625 16.6426 23.4909 16.7682 23.3634C16.8937 23.236 16.9643 23.0631 16.9643 22.8828V10.6484C16.9643 10.4682 16.8937 10.2953 16.7682 10.1678C16.6426 10.0404 16.4722 9.96875 16.2946 9.96875H14.9554C14.7778 9.96875 14.6074 10.0404 14.4818 10.1678C14.3563 10.2953 14.2857 10.4682 14.2857 10.6484V22.8828C14.2857 23.0631 14.3563 23.236 14.4818 23.3634C14.6074 23.4909 14.7778 23.5625 14.9554 23.5625ZM24.1071 4.53125H19.5084L17.611 1.31973C17.3729 0.917021 17.0361 0.58379 16.6334 0.352507C16.2307 0.121224 15.7758 -0.000223356 15.3131 3.08378e-07H9.68694C9.22441 -2.76842e-05 8.76975 0.121512 8.36724 0.352786C7.96473 0.58406 7.62808 0.917185 7.39007 1.31973L5.49163 4.53125H0.892857C0.656057 4.53125 0.428955 4.62673 0.261512 4.79669C0.0940686 4.96664 0 5.19715 0 5.4375L0 6.34375C0 6.5841 0.0940686 6.81461 0.261512 6.98457C0.428955 7.15452 0.656057 7.25 0.892857 7.25H1.78571V26.2812C1.78571 27.0023 2.06792 27.6938 2.57025 28.2037C3.07258 28.7136 3.75388 29 4.46429 29H20.5357C21.2461 29 21.9274 28.7136 22.4298 28.2037C22.9321 27.6938 23.2143 27.0023 23.2143 26.2812V7.25H24.1071C24.3439 7.25 24.571 7.15452 24.7385 6.98457C24.9059 6.81461 25 6.5841 25 6.34375V5.4375C25 5.19715 24.9059 4.96664 24.7385 4.79669C24.571 4.62673 24.3439 4.53125 24.1071 4.53125ZM9.58929 2.88357C9.61913 2.83316 9.66135 2.79147 9.71182 2.76258C9.76229 2.73369 9.81929 2.71859 9.87723 2.71875H15.1228C15.1806 2.71868 15.2375 2.73383 15.2879 2.76272C15.3382 2.7916 15.3804 2.83324 15.4102 2.88357L16.3845 4.53125H8.61551L9.58929 2.88357ZM20.5357 26.2812H4.46429V7.25H20.5357V26.2812ZM8.70536 23.5625H10.0446C10.2222 23.5625 10.3926 23.4909 10.5182 23.3634C10.6437 23.236 10.7143 23.0631 10.7143 22.8828V10.6484C10.7143 10.4682 10.6437 10.2953 10.5182 10.1678C10.3926 10.0404 10.2222 9.96875 10.0446 9.96875H8.70536C8.52776 9.96875 8.35743 10.0404 8.23185 10.1678C8.10627 10.2953 8.03571 10.4682 8.03571 10.6484V22.8828C8.03571 23.0631 8.10627 23.236 8.23185 23.3634C8.35743 23.4909 8.52776 23.5625 8.70536 23.5625Z"
-            fill="#DF3D0A"
-          />
-        </svg>
-        </div>
-        <!-- <div class="notihide">iooo</div> -->
-       
       </div>
     </div>
+    <div v-else class="not-data">ไม่มีการแจ้งเตือน</div>
   </div>
 </template>
 <script lang="js">
 import Vue from "vue";
+import { Gatway } from "@/shares/services";
+import Novel from "@/pages/novel/Novel.vue"
+const _Novel = new Novel
 export default Vue.extend({
   name: "notication",
   data() {
     return {
       notification: [1],
+      notificationdata:'',
+      notificationdata_comment:[] ,
+      notificationdata_novel:[] ,
+      notificationdata_ep:[] ,
+      imgDefault: this.$path.image('loading.png'),
     };
   },
   methods: {
-    opennoti() {
-      // this.$store.commit("reset");
-      document
-        .getElementsByClassName("noti-menu")[0]
-        .classList.toggle("noti-show");
-      // this.$emit("closedLeft",{})
-      // console.log(document
-      // .getElementsByClassName("noti-menu")[0])
+    async opennoti() {
+      const notiele =  await document.getElementsByClassName("noti-menu")[0]
+      if(notiele.classList.length === 1){
+        notiele.classList.add("noti-show");
+        await this.gotNoti()
+      }else{
+        notiele.classList.remove("noti-show");
+      }
     },
     closenoti() {
       document
         .getElementsByClassName("noti-menu")[0]
         .classList.remove("noti-show");
-      // console.log("remove")
     },
+    async gotNoti(){
+      if(this.$store.state.auth.token){
+      let res = await Gatway.getService("/customers/notification/fetch"); // console.log("remove") ?status=read
+        this.notificationdata_ep = await []
+        this.notificationdata_novel= await []
+        this.notificationdata_comment = await []
+        const data = [[],[],[]]
+        res.data.data.filter(async (elememt)=>{
+          if(elememt.table ==='novel_episode_datas' || elememt.table === 'comment_datas'){
+            data[1].push(elememt)
+            this.notificationdata_ep.push(elememt)
+          }else if (elememt.table ==='novel_data'){
+            data[0].push(elememt)
+            this.notificationdata_novel.push(elememt)
+          }else{
+            data[1].push(elememt)
+            this.notificationdata_comment.push(elememt)
+          }
+        })
+        this.notificationdata = res.data.data
+        // this.notificationdata =res.data.data.length
+      }
+
+    },
+    async to(item){
+      await Gatway.postService("/customers/notification/read",{id:item.id})
+      var urlReply = item.url.split("/")
+      var url = urlReply[urlReply.length - 1]
+      var type = urlReply[urlReply.length - 2]
+      this.$emit('getnovel')
+      if(item.table === "comment_datas"){
+        await this.$router.push('/'+ type + "/"+url+"?type="+item.table+"&ref="+item.ref)
+        window.location.reload()
+      }
+      else if(item.table === "novel_episode_datas"){
+        this.$router.push('/'+ type + "/"+url+"?type="+item.table+"&ref="+item.ref)
+        await this.$store.getters._GetNovelHeader(item.ref);
+        window.location.reload()
+      }else{
+        this.$router.push('/'+ type+ '/' + item.ref)
+        window.location.reload()
+      }
+    },
+    async delNoti(){
+       Gatway.DelService("/customers/notification/delete/"+ this.$store.state.auth.dataset.id);
+    }
   },
   mounted() {
+    this.gotNoti()
     document.addEventListener("click", (event) => {
-      //  console.log("noti",!event.target.matches('.user-active'))
       if (!event.target.matches(".noti")) {
         var dropdowns = document.getElementsByClassName("noti-menu");
         var i = 0;
@@ -162,100 +135,40 @@ export default Vue.extend({
 });
 </script>
 <style scoped lang="scss">
-.notihide {
-  display: inline-block;
-  color: #8b8a8e00;
-}
-.del-icon {
-  // width: 43px;
-  position: absolute;
+.name-article {
+  padding: 10px;
+  // border-bottom: 1px solid #c3c3c3;
+  padding-left: 10px;
   display: flex;
-  // justify-content: end;
-  // align-items: center;
-  right: 0;
-  margin-right: 5px;
+  align-items: center;
+  justify-content: space-between;
+  // margin-top: 10px;
 }
-.font-subheader {
-  font-size: 12px;
-  color: #8b8a8e;
-}
-.font-header {
-  font-size: 13px;
+.name-ar {
+  font-size: 16px;
+  font-weight: 500;
 }
 .img-noti {
-  width: 100%;
-  border-radius: 10px;
+  border-radius: 3px;
+}
+.detail-noti {
+  display: inline;
+  align-items: center;
+  color: #848484;
+}
+.color-writer {
+  color: #9b5afb;
+  font-weight: 500;
 }
 .contain-noti {
-  position: relative;
-  // display: flex;
-  width: 260px;
-  height: 421px;
-  // display: flex;
-  justify-content: start;
-  overflow: hidden;
-  overflow-y: scroll;
-}
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-track {
-  background: #96969600;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #bfbfbf7d;
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #8484849e;
-}
-.detail-noti-img {
-  // display: flex;
+  // word-break: break-all;
+  cursor: pointer;
   display: grid;
-  grid-template-columns: 1.5fr 5fr 0.2fr;
+  grid-template-columns: 1fr 4fr;
+  padding: 5px;
   align-items: center;
-  gap: 10px;
+  // border-bottom: 2px solid #c3c3c3;
 }
-.detail-noti-notimg {
-  // display: flex;
-  display: grid;
-  grid-template-columns: 4fr 0.2fr;
-  align-items: center;
-  gap: 10px;
-}
-// .detail-incard{
-//   font-size: 16px;
-// }
-.icon-color {
-  color: #f4ba40;
-}
-.icon-color-novel {
-  color: #8b8a8e;
-}
-.content-detail {
-  // display: flex;
-  // justify-content: space-between;
-  // align-items: center;
-  padding: 15px 10px;
-  // background-color: aqua;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-}
-// .profile-menu {
-//   position: absolute;
-//   top: 32px;
-//   padding: 0px 5px;
-//   border-radius: 5px;
-//   box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
-//     rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
-//   // width: 200px;
-//   background: #ffffff;
-//   right: 5px;
-
-//   transition: 0.3s;
-// }
-
 .noti-menu {
   opacity: 0;
   pointer-events: none;
@@ -274,6 +187,65 @@ export default Vue.extend({
 .noti-show {
   opacity: 10;
   pointer-events: auto;
-  top: 55px;
+  top: 60px;
+}
+
+.noti-menu {
+  word-break: break-word;
+  right: 0px;
+  max-height: 450px;
+  width: 280px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding-left: 5px;
+}
+.noti-box {
+  // border: 1px solid #c3c3c3;
+}
+.noti-box:hover {
+  background-color: #ededed9e;
+  transition: ease-in-out 0.2s;
+}
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #96969600;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ffffff7d;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #aaaaaaac;
+}
+.not-data {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // height: 400px;
+  padding: 20px;
+  color: #c5c5c5;
+}
+.noti-box-read {
+  background: #e5e5e5;
+  border-radius: 3px;
+}
+.box-noti {
+  cursor: pointer;
+  display: grid;
+  gap: 2.5px;
+}
+.hl{
+  color: #1e1e1e;
+  // font-weight: 700;
+}
+.conthianer-box-noti{
+  display: grid;
+  gap: 4px;
+  padding-bottom: 4.5px;
 }
 </style>

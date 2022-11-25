@@ -1,17 +1,22 @@
 <template>
-  <img
-    :src="src ? src : 'https://novelkingdom.co/loading.png'"
-    :alt="$attrs.alt || ''"
-  />
+<picture>
+  <source type="image/webp" media="(max-width: 799px)" :srcset="image  +'?quality=auto&format=webp'" />
+  <source type="image/jpeg" :srcset="image  +'?quality=auto&format=webp'">
+  <img sizes="(max-width: 600px) 480px,800px" :src="image +'?quality=auto&format=webp'" :alt="name" loading="lazy" />
+</picture>
 </template>
 
 <script>
 export default {
   props: {
-    src: {
+    image: {
       type: String,
       default: 'https://novelkingdom.co/loading.png',
     },
+    name:{
+      type: String,
+      default: 'https://novelkingdom.co/loading.png',
+    }
   },
 
   computed: {

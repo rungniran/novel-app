@@ -1,5 +1,6 @@
 <template>
 <div>
+  <!-- {{mywork}} -->
   <div v-if="mywork">
     <div id="Mywork" >
       <Work :data="mywork" />

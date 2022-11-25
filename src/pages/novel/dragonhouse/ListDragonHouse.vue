@@ -115,7 +115,12 @@ export default Vue.extend({
     },
   },
   async mounted() {
-    await this.get();
+    // console.log('sdds');
+    // if((this as any).$isdrogon.includes(this.$route.params.id) === true){
+    //   console.log('sdds');
+      
+       await this.get();
+    // }
     await this.Searct();
   },
 });

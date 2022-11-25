@@ -1,10 +1,6 @@
 <template>
   <div class="nv-box-white">
     <div class="nv-box-white con-hisC" v-if="dataItem">
-      <!-- <div v-for="(item, index) in dataItem" :key="index">
-      </div> -->
-
-
       <div v-if="data.data.length !== 0">
         <table>
           <tr>
@@ -49,12 +45,14 @@
         ยังไม่มีประวัติการเติม
       </div>
     </div>
-
+    <div v-else>
+      loading...
+    </div>
   </div>
   
 </template>
 
-<script lang="js">
+<script lang="ts">
 import Vue from 'vue'
 import { Gatway } from '@/shares/services'
 import { TypeStatusWallet } from '@/shares/constants'
@@ -92,7 +90,7 @@ export default Vue.extend({
         per_page:[],
         datalistdate:null,
         monthset:monthset,
-        dataItem:{}
+        dataItem:null as any,
       }
     },
     methods:{

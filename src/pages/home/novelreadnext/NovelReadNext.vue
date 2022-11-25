@@ -1,7 +1,6 @@
 <template>
-  <div class="NovelReadNext">
     <carousel
-      v-if="dataitem"
+      v-if="opject"
       :items="1"
       :loop="true"
       :margin="10"
@@ -12,55 +11,14 @@
       :dots="false"
       :responsive="responsive"
     >
-      <div v-for="(items, index) in dataitem" :key="index">
-        <div v-if="items.datail.novel_episode_datas.length !== 0">
+      <div v-for="(items, index) in opject" :key="index">
+        <div v-if="items.datail">
+          <!-- {{items.datail.novel_episode_datas.lengt }} -->
           <router-link
-            :to="'/read/' + items.id_ep"
+            :to=" items.datail.novel_episode_datas.length !== 0 ? '/read/' + items.id_ep : '/novel/' + items.id"
             class="NovelRead-box-carousel NovelReadNext"
           >
-            <!-- {{items}} -->
-            <!-- {{'https://119.59.97.111/storage/'+items.id +'.png'}}
-            :src="
-                'https://119.59.97.111/storage/novel_image/' + items.id + '.png'
-              " -->
-            <img
-              class="item-banner"
-              :src="items.datail.image_data ? items.datail.image_data.url : $path.image('loading.png')" 
-         
-              alt
-            />
-            <div class="grod-detail">
-              <div class="name line-1">{{ items.datail.title }}</div>
-              <div class="subname line-1">
-                {{
-                  items.datail.novel_episode_datas.length !== 0
-                    ? items.datail.novel_episode_datas[0]["name"]
-                    : null
-                }}
-              </div>
-            </div>
-          </router-link>
-        </div>
-        <div v-else-if="items.datail.novel_episode_datas.length === 0">
-           <router-link
-            :to="'/novel/' + items.id"
-            class="NovelRead-box-carousel NovelReadNext"
-          >
-            <!-- {{'https://119.59.97.111/storage/'+items.id +'.png'}} -->
-            <!-- <img
-              class="item-banner"
-              :src="
-                'https://119.59.97.111/storage/novel_image/' + items.id + '.png'
-              "
-              @error="$event.target.src = $path.image('loading.png')"
-              alt
-            /> -->
-              <img
-              class="item-banner"
-              :src="items.datail.image_data ? items.datail.image_data.url : $path.image('loading.png')" 
-         
-              alt
-            />
+            <NovelImage :image="$filter._dataUrl(items.datail.image_data)" :alt="items.datail.title "></NovelImage>
             <div class="grod-detail">
               <div class="name line-1">{{ items.datail.title }}</div>
               <div class="subname line-1">
@@ -75,13 +33,11 @@
         </div>
       </div>
     </carousel>
-  </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import carousel from "vue-owl-carousel";
-import { Gatway } from "@/shares/services";
 export default Vue.extend({
   name: "NovelReadNext",
   props: {
@@ -102,6 +58,9 @@ export default Vue.extend({
         415: {
           items: 2.5,
         },
+        540:{
+           items: 3,
+        },
         768: {
           items: 4,
         },
@@ -115,33 +74,33 @@ export default Vue.extend({
       dataitem: null,
     };
   },
-  methods: {
-    async NovelReadNext() {
-      let res = await Gatway.postService(
-        "/customers/remembers/novel-data",
-        this.$store.state.storyread.story_Read as any
-      );
+  // methods: {
+  //   async NovelReadNext() {
+  //     // let res = await Gatway.postService(
+  //     //   "/customers/remembers/novel-data",
+  //     //   this.$store.state.storyread.story_Read as any
+  //     // );
       
-      let data = [] as any;
+  //     // let data = [] as any;
 
-      this.$store.state.storyread.story_Read.forEach((element: any) => {
-        res.data.data.forEach((elementres: any) => {
+  //     // this.$store.state.storyread.story_Read.forEach((element: any) => {
+  //     //   res.data.data.forEach((elementres: any) => {
 
-          if (elementres) {
-            if (elementres.id === element.id) {
-              data.push({ ...element, datail: elementres });
-            }
-          }
-        });
-      });
-  
+  //     //     if (elementres) {
+  //     //       if (elementres.id === element.id) {
+  //     //         data.push({ ...element, datail: elementres });
+  //     //       }
+  //     //     }
+  //     //   });
+  //     // });
+  //     // console.log("readnext",this.$store.state.storyread.story_Read)
       
-      this.dataitem = data;
-    },
-  },
-  mounted() {
-    this.NovelReadNext();
-  },
+  //     // this.dataitem = data;
+  //   },
+  // },
+  // mounted() {
+  //   this.NovelReadNext();
+  // },
 });
 </script>
 <style lang="scss" scoped>
@@ -156,7 +115,7 @@ $second-grayLight: #cfd4d9;
   flex-direction: column;
   grid-gap: 10px;
   justify-content: center;
-  align-items: flex-start;
+  // align-items: flex-start;
 }
 .NovelReadNext .nv-box-carousel .grod-detail {
   display: flex;
@@ -170,10 +129,10 @@ $second-grayLight: #cfd4d9;
   color: #1e2046;
   font-size: 18px !important;
 }
-.subname {
-  font-size: 15px;
-  color: #646464;
-}
+// .subname {
+//   font-size: 15px;
+//   color: #646464;
+// }
 .owl-stage-outer {
   padding: 15px 0px;
 }

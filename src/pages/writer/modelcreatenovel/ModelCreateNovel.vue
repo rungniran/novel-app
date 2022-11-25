@@ -94,7 +94,7 @@ export default Vue.extend({
 	
 }
 
-@media (max-width: 415px){
+@media (max-width: 450px){
 .box-create-novel {
   display: grid;
   grid-template-columns: 1fr;

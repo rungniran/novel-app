@@ -3,14 +3,14 @@ $second-gray: #444349;
 $second-grayLight: #cfd4d9;
 .owl-carousel .owl-item img {
   border-radius: 10px;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  // box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 .nv-box-carousel {
   display: flex;
   flex-direction: column;
   grid-gap: 10px;
   justify-content: center;
-  align-items: center;
+  // align-items: center;
 }
 .nv-box-carousel .grod-detail {
   display: flex;
@@ -25,7 +25,7 @@ $second-grayLight: #cfd4d9;
 }
 .subname {
   font-size: 15px;
-  color: rgb(182, 182, 182);
+  color: #7a7a7a !important;
 }
 .content {
   padding-top: 59px;
@@ -39,7 +39,7 @@ $second-grayLight: #cfd4d9;
     rgba(230, 222, 255, 0.433) 2.72%,
     rgba(175, 151, 249, 0.432) 100%
   );
-  padding-bottom: 100px;
+  padding-bottom: 50px;
 }
 
 // .center {
@@ -90,12 +90,19 @@ $second-grayLight: #cfd4d9;
   align-items: center;
   zoom: 0.895;
 }
+.view-list-header,
+.list,
+.view {
+  display: flex;
+  align-items: center;
+  zoom: 0.95;
+}
 .list {
   margin-left: 20px;
 }
 .count-numble-view {
   margin-left: 7px;
-  color: #606060;
+  // color: #606060;
   // font-weight: 500;
 }
 .view .count-numble-view {
@@ -103,11 +110,11 @@ $second-grayLight: #cfd4d9;
 }
 .fa-list {
   margin-top: 1.69px;
-  color: #606060;
+  // color: #606060;
 }
 .fa-eye {
   margin-top: 1.9px;
-  color: #606060;
+  // color: #606060;
 }
 .nv-center {
   display: flex;
@@ -140,7 +147,7 @@ $second-grayLight: #cfd4d9;
     padding: 35px 15px;
   }
   .content {
-    padding-top: 20px;
+    padding-top: 13px;
   }
   .view-list,
   .list,
@@ -149,6 +156,18 @@ $second-grayLight: #cfd4d9;
     align-items: center;
     // zoom: 1.05;
   }
+  .nv-title {
+    font-size: 20px;
+}
+}
+@media (max-width:550px){
+  .view-list-header,
+.list,
+.view {
+  display: flex;
+  align-items: center;
+  zoom: 0.95;
+}
 }
 @media (max-width: 415px) {
   .view-list,
@@ -165,10 +184,20 @@ $second-grayLight: #cfd4d9;
   }
   .content {
     //    padding-top: 21px;
-    padding-bottom: 15px;
+    // padding-bottom: 15px;
+    // background: #ffffff;
   }
 }
 
+@media (max-width: 350px) {
+  .view-list,
+  .list,
+  .view {
+    display: flex;
+    align-items: center;
+    zoom: 0.75;
+  }
+}
 // .nv-box-white{
 //     opacity: 1.0;
 //     animation-fill-mode: both;

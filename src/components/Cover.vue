@@ -52,7 +52,7 @@ export default Vue.extend({
 })
 </script>
 <style lang="scss" scoped>
-$topcover: 280px ;
+$topcover: 100px ;
 .img-cover{
     position: absolute;
     display: flex;

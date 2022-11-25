@@ -10,11 +10,12 @@
       <!-- <h1><span style="opacity:0.6">ผลลัพธ์สำหรับ&nbsp;</span></h1><br> -->
       <div class="tach">
         <div class="list-s a">นิยาย</div>
-        <div class="list-s">ผู้แต่ง</div>
-        <div class="list-s">แท็ก</div>
+        <div class="list-s a">ผู้แต่ง</div>
+        <div class="list-s a">แท็ก</div>
       </div>
-      <div class="b-mo">
+      <div class="b-mos">
         <input
+          type="search"
           class="input-searct"
           placeholder="ค้นหา"
           v-model="wordSearct"
@@ -27,12 +28,19 @@
           :to="'/novel/' + item.id"
         >
           <div class="nv-img">
-            <img
+         <!--    <img
               :src="item.image_data.url"
               class="nv-img-novel loading-img"
               width="100%"
               onerror="this.onerror=null;this.src='https://novelkingdom-80a1d.firebaseapp.com/img/loading.a7cb0bda.png';"
-            />
+            /> -->
+            <!-- {{image_data}} -->
+            <!-- {{dataUrl(item.image_data)}} -->
+             <NovelImage
+                  :image="dataUrl(item.image_data)"
+                  :alt="item.title"
+                ></NovelImage>
+               <NovelPomotion :cleckP='item.novel_promotion_datas.length ' @cleckandP="0" msmP="Sale" msmE='จบ' :cleckE='item.status_end_novel'/>
             <div class="line-1">{{ item.title }}</div>
           </div>
         </router-link>
@@ -52,12 +60,15 @@
 import Vue from "vue";
 import { Gatway } from "@/shares/services";
 import EmptyContent from "../../pages/empty/empty.vue";
+import {_Search} from "./Search"
+const logic = new _Search
 export default Vue.extend({
   name: "Search",
   data() {
     return {
+       dataUrl: logic._dataUrl,
       data: [],
-      wordSearct: "",
+      wordSearct: "" as any,
     };
   },
   components: {
@@ -65,8 +76,10 @@ export default Vue.extend({
   },
   methods: {
     async getNovelType() {
-      let res = await Gatway.getService("/guest/novel/group-type");
-      this.novelAll(res.data.data);
+      let data =  await this.$store.getters._getGroupType
+      this.novelAll(data);
+      // let res = await Gatway.getService("/guest/novel/group-type");
+      // this.novelAll(res.data.data);
     },
 
     novelAll(ojb: any) {
@@ -82,27 +95,73 @@ export default Vue.extend({
       });
       this.data = data;
     },
+    //  filteredItems() {
+    //   var data = this.datas.filter((item) => {
+    //     let dd = [];
+    //     for (let i = 0; i < this.Arraysearch.length; i++) {
+    //       console.log(item[this.Arraysearch[i]]);
+    //       dd.push(item[this.Arraysearch[i]]);
+    //     }
+    //     console.log(JSON.stringify(dd));
+    //     return JSON.stringify(dd)
+    //       .toLowerCase()
+    //       .match(this.keysearch.toLowerCase());
+    //   });
+    //   this.onChangePage(data);
+    // },
     Searct() {
-      var data = [] as any;
-      this.data.filter((Blob: any) => {
-        if (Blob.title.toLowerCase().match(this.wordSearct.toLowerCase())) {
-          // setTimeout(()=> {
-          data.push(Blob);
-          this.$router.push(`/search#${this.wordSearct.toLowerCase()}`);
-          // }, index * 100);
-        }
-      });
-
-      return data;
+      // console.log(this.wordSearct.toLowerCase().split("#"));
+      
+      // if(this.wordSearct.toLowerCase().split("#")[0] !== ""){
+        let data = this.data.filter((Blob: any) => { 
+          let ss = [ 
+            Blob["tags"],
+            Blob["title"],
+            Blob["penname_preview"], 
+            Blob["novel_category_data_preview"],  
+            Blob["novel_data_type_preview"],
+            Blob["novel_rating_data_preview"]
+            
+          ]
+          
+          
+          if( Blob["tags"].length !== 0){
+            ss[0] = JSON.stringify(JSON.parse(Blob["tags"])) 
+          }
+          // console.log(ss);
+          // this.$router.push(`/search?key=${this.wordSearct.toLowerCase()}`);
+          return JSON.stringify(ss).toLowerCase().match(this.wordSearct.toLowerCase())
+        });
+        console.log(data)
+        return data;
+      // }else{
+      //   let data1 = this.data.filter((Blob: any) => { 
+      //     var ss = [Blob["tags"]] as any
+      //     if( Blob["tags"].length !== 0){
+      //       ss[0] = JSON.stringify(JSON.parse(Blob["tags"])) 
+      //       // console.log( JSON.stringify(JSON.parse(Blob["tags"])) ); 
+      //     }else{
+      //       //
+      //     }
+      //     console.log(ss);
+          
+      //     this.$router.push(`/search#${this.wordSearct.toLowerCase()}`);
+      //     return JSON.stringify(ss).toLowerCase().match(this.wordSearct.toLowerCase().split("#")[1].toLowerCase())
+      //   }); 
+      //   return data1;
+      // }
     },
   },
   mounted() {
     this.getNovelType();
-    this.wordSearct = this.$route.hash.split("#")[1];
+    // console.log(this.$route);
+    // 
+    this.wordSearct = this.$route.query.key ? this.$route.query.key : '';
   },
 });
 </script>
 <style lang="scss" scoped>
+$gap:40px 10px;
 .search {
   width: 100%;
   // max-width: 1150px;
@@ -142,7 +201,7 @@ h1 {
 .tach {
   display: flex;
   grid-gap: 30px;
-  box-shadow: inset 0 -1px 0 rgb(230 230 230);
+  // box-shadow: inset 0 -1px 0 rgb(230 230 230);
 }
 .list-s {
   padding: 10px 0px;
@@ -150,14 +209,14 @@ h1 {
   font-size: 14px;
 }
 .a {
-  box-shadow: inset 0px -1px 0px #9456fb;
+  box-shadow: 0 2px 1px -1px #9456fb;
   color: #9456fb;
 }
 .con-resouth {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
   padding-top: 20px;
-  grid-gap: 20px;
+  grid-gap: $gap;
 }
 
 .dfdf {
@@ -168,7 +227,7 @@ h1 {
     rgb(255, 255, 255) 65%
   );
 }
-.b-mo {
+.b-mos {
   // background:  #f6c334c7;
   width: 100%;
   height: 80px;
@@ -199,7 +258,13 @@ h1 {
 .image-box {
   // margin-right: 80px;
 }
-
+.nv-img{
+ position: relative;
+}
+.nv-img img {
+ 
+  border-radius: 7px;
+}
 @media (max-width: 768px) {
   .con-resouth {
     grid-template-columns: 1fr 1fr 1fr 1fr;

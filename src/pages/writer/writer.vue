@@ -13,21 +13,21 @@
       <div class="box-profile">
         <div class="con-profile">
           <div
-            class="profile"
-            style="
-              background: url(https://cdn-icons-png.flaticon.com/512/149/149071.png) center center/cover;
+            class="profile border-3-b"
+            :style="
+              `background: url( ${$profileimgW} ) center center/cover;`
             "
           ></div>
-          <div v-if="profile" class="nv-username">{{ this.$store.state.auth.display_name}}</div>
+          <div v-if="profile" class="nv-username name-writer">{{ _name(this.$store.state.auth.dataset)}}</div>
           <!-- <div v-if="profile">{{ profile.username }}</div> -->
         </div>
         <div class="data-info nv-mt-30">
-          <div class="box-follow">
+          <div class="box-follows">
             <div class="follow">
               <span>{{follow.length}}</span>
               <div>กำลังติดตาม</div>
             </div>
-            <div class="follow">
+            <div class="follow" v-if="this.$store.state.auth.dataset.profile_writer">
               <span>0</span>
               <div>ผู้ติดตาม</div>
             </div>
@@ -39,9 +39,12 @@
             >
               เพิ่มผลงาน
             </button>
-            <router-link to="/writer/howtonovel" class="nv-btn-orange btn-link"
-              >คู่มือนักเขียน</router-link
-            >
+            <button class="nv-btn-orange ">
+
+              <router-link to="/writer/howtonovel" 
+                >คู่มือนักเขียน</router-link
+              >
+            </button>
           </div>
         </div>
         <!-- <div class="dcoin">
@@ -148,6 +151,23 @@ export default Vue.extend({
       }else{
         return false
       }
+    },
+    _name(item:any):string{
+      console.log(item.show_name);
+      
+      if(item.profile_writer){
+        return item.profile_writer.user_nickname
+      }
+      else{
+        if(item.user_profile_datas.user_nickname){
+           return item.user_profile_datas.user_nickname
+        }else{
+          return item.show_name
+        }
+      }
+      
+        // return this.$store.state.auth.dataset.user_profile_datas.user_nickname
+      
     }
 
 
@@ -163,12 +183,28 @@ export default Vue.extend({
       ? this.changeComponent("Mywork")
       : this.changeComponent(this.$route.hash.slice(1));
   },
+  computed: {
+    // _name: ()=> {
+    //   if((this as any).$store.state.auth.dataset.profile_writer){
+    //     return (this as any).$store.state.auth.dataset.profile_writer.user_nickname
+    //   }
+    //   else{
+    //     if((this as any).$store.state.auth.dataset.user_profile_datas.user_nickname){
+    //        return (this as any).$store.state.auth.dataset.user_profile_datas.user_nickname
+    //     }else{
+    //       return 'ไม่พบชื่อในระบบ'
+    //     }
+    //   }
+      
+    //     // return this.$store.state.auth.dataset.user_profile_datas.user_nickname
+      
+    // }
+  },
 });
 </script>
 <style lang="scss" scoped>
-.custom-font{
-  font-family: Kanit;
-  width: 100%;
+.nv-btn-orange a {
+  color: #fff;
 }
   .b-mo{
   background:  #f4ba40;
@@ -189,6 +225,9 @@ font-size: 14px;
 .blink{
   text-decoration: underline;
   color: rgb(0, 0, 0);
+}
+.name-writer{
+  word-break: break-all;
 }
 .dcoin{
   background:#f4bb4036;
@@ -225,8 +264,14 @@ font-size: 14px;
   align-items: center;
 }
 .profile {
-  width: 100px;
-  height: 100px;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+}
+.box-follows{
+  display: flex;
+  grid-gap: 10px;
+  justify-content: space-around;
 }
 .box-follow {
   display: grid;
@@ -291,7 +336,9 @@ $radiustap: 5px;
 	
 }
 @media (max-width: 768px){
-	
+	.b-mo {
+    margin-top: 50px;
+  }
 }
 
 @media (max-width: 415px){
@@ -309,5 +356,8 @@ $radiustap: 5px;
   border: 1px solid rgb(220, 220, 220);
   margin: 2px;
 }
+.b-mo {
+    margin-top: 50px;
+  }
 }
 </style>

@@ -2,19 +2,20 @@ import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import Home from '../pages/home/Home.vue'
 import NotFound from '../pages/404.vue'
+
 import store from '../store'
 import { writer } from './writer'
 import { profile } from './profile'
-
-
-import Meta from 'vue-meta'
-Vue.use(Meta, {
-  keyName: 'metaInfo',
-  // attribute: 'data-vue-meta',
-  // ssrAttribute: 'data-vue-meta-server-rendered',
-  // tagIDKeyName: 'vmid',
-  // refreshOnceOnNavigation: true
-})
+import Login from '@/components/Login.vue'
+const _Login= new Login as any
+// import Meta from 'vue-meta'
+// Vue.use(Meta, {
+//   keyName: 'metaInfo',
+//   // attribute: 'data-vue-meta',
+//   // ssrAttribute: 'data-vue-meta-server-rendered',
+//   // tagIDKeyName: 'vmid',
+//   // refreshOnceOnNavigation: true
+// })
 Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
@@ -31,28 +32,28 @@ const routes: Array<RouteConfig> = [
   //   name:'Read',
   //   component: NotFound
   // },
-  {
-    path: '/about',
-    name: 'About',
-    component: () => import('../pages/About.vue')
-  },
-  {
-    path:'/password/reset',
-    name:'resetpassword',
-    component: () => import('../pages/account/ResetPassword.vue'),
-    // meta:{ requiresAuth: true }
-  },
+  // {
+  //   path: '/about',
+  //   name: 'About',
+  //   component: () => import('../pages/About.vue')
+  // },
+  // {
+  //   path:'/password/reset',
+  //   name:'resetpassword',
+  //   component: () => import('../pages/account/ResetPassword.vue'),
+  //   // meta:{ requiresAuth: true }
+  // },
   {
     path:'/submitpassword',
     name:'resetpassword',
     component: () => import('../pages/account/Submitpassword.vue'),
     // meta:{ requiresAuth: true }
   },
-  {
-    path: '/about',
-    name: 'About',
-    component: () => import('../pages/About.vue')
-  },
+  // {
+  //   path: '/about',
+  //   name: 'About',
+  //   component: () => import('../pages/About.vue')
+  // },
   {
     path: '/contact',
     name: 'contact',
@@ -93,6 +94,11 @@ const routes: Array<RouteConfig> = [
     name:'Howtousepromotion',
     component: () => import('../pages/writer/howtousepromotion/HowTousePromotion.vue')
   },
+  {
+    path:'/accounts/o/oauth2/auth/oauthchooseaccount',
+    name:'ban',
+    component: () => import('../pages/ban.vue')
+  },
   // ________________________________________________auth__________________________________________________________
 
   {
@@ -123,6 +129,12 @@ const routes: Array<RouteConfig> = [
     path:'/account',
     name:'Account',
     component: () => import('../pages/account/Account.vue'),
+    meta:{ requiresAuth: true }
+  },
+  {
+    path:'/device',
+    name:'Device',
+    component: () => import('../pages/device/Device.vue'),
     meta:{ requiresAuth: true }
   },
   {
@@ -190,19 +202,26 @@ const routes: Array<RouteConfig> = [
     component: () => import('../pages/wallet/WalletModal/WalletConfirm/WalletConfirm.vue'),
     meta:{ requiresAuth: true }
   },
+
   {
-    path:'/f',
-    name:'sd',
-    component: () => import('../pages/fac.vue'),
+    path:'/password/reset',
+    name:'resetpassword',
+    component: () => import('../pages/account/ResetPassword.vue'),
+    // meta:{ requiresAuth: true }
   },
-
   // ________________________________________________pages_error______________________________________________________
-
+  {
+    path: '/401',
+    name:'accessrights',
+    component: () => import('../pages/401.vue')
+  },
   {
     path: '/:catchAll(.*)',
     name:'NotFound',
     component:NotFound
-  }
+  },
+
+
 
 ]
 // abstract
@@ -214,24 +233,22 @@ const router = new VueRouter({
 
 router.beforeEach( async (to, from, next)=>{
   document.title = 'Novel Kingdom'
-  const loggedIn: boolean | undefined =  store.getters.loggedIn
+  
+  const loggedIn: string | null =  (store as any).state.auth.token
+  console.log(loggedIn);
+  
   if(to.meta?.requiresAuth === true ){
-    if(loggedIn === false){
-      const login_crad = document.getElementsByClassName("login-crad")[0] as HTMLElement
-      const login = document.getElementsByClassName("login")[0] as HTMLElement
-      login_crad.classList.add("login-crad-show")
-      login.classList.add("show")
-    }else{
-      await  next()
-      if(to.hash === ""){
-        // window.scrollTo(0, 0);
+    if(!loggedIn){
+      try {
+        await _Login.openlogin() as any
+      } catch (error) {
+        next('/401#login')
       }
-      
+    }else{
+      next()
     }
   }else{
-    await next()
-    // window.scrollTo(0, 0);
-    
+    next()
   }
 })
 

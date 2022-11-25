@@ -21,6 +21,7 @@ export default Vue.extend({
   margin-bottom: -200px;
   min-width: 300px;
   transition: .5s;
+  width: 300px;
   opacity: 0;
   animation-name: example;
   animation-fill-mode: both;
@@ -29,13 +30,14 @@ export default Vue.extend({
 @mixin all-aler($color, $color-border, $background) {
     @extend .aler;
     color: $color;
+    
     background-color: $background;
     border:1px solid $color-border;
     
 }
 
 .aler-system{
-  @include all-aler(#fabfae,#DF3D0A, #DF3D0A);
+  @include all-aler(#f7e0d9,#DF3D0A, #DF3D0A);
 }
 .success{
   @include all-aler(#dee9e4,#dee9e4, #61BCBE);
@@ -44,6 +46,12 @@ export default Vue.extend({
 .error{
   @include all-aler(#fabfae,#DF3D0A, #DF3D0A);
 }
+.wraning{
+  @include all-aler(#664d03,#fff3cd, #fff3cd);
+}
+    // color: #664d03;
+    // background-color: #fff3cd;
+    // border-color: #fff3cd;
 
 @keyframes example {
   0% {

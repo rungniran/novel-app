@@ -104,7 +104,7 @@ export default Vue.extend({
     addsize(): void {
       let story = document.getElementsByClassName("story")[0] as HTMLElement;
       let fonrsize = this.fonrsize + 1;
-      if (fonrsize < 51) {
+      if (fonrsize < 46) {
         story.style.fontSize = fonrsize + "px";
         this.fonrsize = fonrsize;
          this.$emit('clickFonrSize', fonrsize)

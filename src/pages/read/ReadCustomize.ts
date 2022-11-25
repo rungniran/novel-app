@@ -21,6 +21,7 @@ export function changback(treme: string):string {
   const Topbar = document.getElementById('Topbar') as HTMLElement
   const listmenu = document.getElementsByClassName('list-sub-menu')
   const footer = document.getElementsByClassName('footer')[0] as HTMLElement
+  const menuiocn = document.getElementsByClassName('menumobile')[0] as HTMLElement
   if(treme === 'default'){
     content.style.background = 'linear-gradient(180deg, rgba(230, 222, 255, 0.433) 2.72%, rgba(175, 151, 249, 0.432) 100%)'
     Topbar.style.background = '#fff'
@@ -30,6 +31,7 @@ export function changback(treme: string):string {
      for (let i= 0; i < listmenu.length -1 ;i++) {
       (listmenu[i] as HTMLElement).style.color = '#1E2046'
     }
+    menuiocn.style.color = '#1c1140';
     
   }else if(treme === 'dark'){
     content.style.background = '#151515'
@@ -40,13 +42,15 @@ export function changback(treme: string):string {
     for (let i= 0; i < listmenu.length -1 ;i++) {
       (listmenu[i] as HTMLElement).style.color = '#a2a2a2'
     }
+    menuiocn.style.color = '#a2a2a2';
   }else if(treme === 'fzooss'){
     content.style.background = '#ece0cb'
-    Topbar.style.background ='#ece0cb'
+    Topbar.style.background ='#fadaa1'
     text.style.color = '#a68700'
     for (let i= 0; i < listmenu.length -1 ;i++) {
       (listmenu[i] as HTMLElement).style.color = '#a68700'
     }
+    menuiocn.style.color = '#a68700';
   }
   localStorage.setItem("Theme", treme);
   for (let i = 0; i < tremearry.length; i++) {

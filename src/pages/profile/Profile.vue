@@ -15,7 +15,7 @@
       </div>
       <div class="contant">
         <div class="box-username">
-          <div class="nv-username">
+          <div class="nv-username line-1">
             <span v-if="gatitemProfile.user_profile_datas[0].user_nickname">
               {{ gatitemProfile.user_profile_datas[0].user_nickname }}
             </span>
@@ -101,6 +101,7 @@
                     :src=" item.image_data 
                 ? item.image_data.url
                 : $path.image('loading.png')"
+                     @error="$event.target.src = $path.image('loading.png')"
                     width="100%"
                     class="nv-img-novel"
                   />
@@ -108,6 +109,30 @@
               </div>
             </div>
           </div>
+          <!-- <div class="nv-mt-20"  v-if="followerWriter">
+             <div class="title">นักเขียนที่ติดตาม</div>
+             <div class="con-all">
+             <router-link
+                  class="box-all"
+                  v-for="(item, index) in followerWriter"
+                  :key="index"
+                  :to="'/profile/'+ item.user_id + '/writer'"
+                >
+              <span v-if="item.follow_user.user_profile_datas[0]">
+                  <img
+                    :src=" item.follow_user.user_profile_datas[0].image_data
+                ? item.follow_user.user_profile_datas[0].image_data.url
+                : $path.image('loading.png')"
+                     @error="$event.target.src = $path.image('loading.png')"
+                     width="100px"
+                    height="100px"
+                    class="profile border-3-b"
+                  />
+                  <p class="name-center">   {{item.follow_user.user_profile_datas[0].user_nickname}} </p>
+              </span>
+                </router-link>
+             </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -126,6 +151,7 @@ export default Vue.extend({
       gatitemProfile: {},
       bookShelfData: null as any,
       treasureBoxDatas: null as any,
+      followerWriter: null as any
     };
   },
   components: {
@@ -142,8 +168,13 @@ export default Vue.extend({
         "/guest/profile",
         this.$route.params.username
       );
-      this.bookShelfData = profile.data.data.bookShelfData;
-      console.log(profile.data.data.treasureBoxDatas);
+
+      // let follower_writer = await Gatway.getIDService(
+      //   "/follower_writer", '0405B9CE-9EED-4C83-BA9E-CA8B74622E89'
+      // );
+      // console.log(follower_writer);
+      // this.followerWriter = follower_writer.data.data
+           this.bookShelfData = profile.data.data.bookShelfData;
       this.treasureBoxDatas = profile.data.data.treasureBoxDatas;
       // let follow = await Gatway.getService("/customers/follow-datas");
       // console.log(follow);
@@ -161,7 +192,7 @@ export default Vue.extend({
   position: relative;
   overflow: hidden;
 }
-$topcover: 280px;
+$topcover: 150px;
 .img-cover {
   position: absolute;
   display: flex;
@@ -190,6 +221,12 @@ $topcover: 280px;
   bottom: -60px;
   display: flex;
   justify-content: center;
+}
+.name-center{
+  text-align: center;
+}
+.profile{
+  border-radius: 50%;
 }
 .Lv {
   position: absolute;
@@ -248,6 +285,7 @@ $topcover: 280px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
       align-items: center;
+          // justify-items: center;
   grid-gap: 20px;
 }
 
@@ -263,7 +301,7 @@ $topcover: 280px;
   left: 20px;
 }
 .nv-img-novel {
-  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+  // box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 }
 @media (max-width: 1024px) {
 }

@@ -3,7 +3,7 @@
     <div class="nv-box-white nv-mt-40">
       <div class="add-coin">
         <div class="writer-profile">
-          <div
+          <!-- <div
             class="nv-profile-small"
             style="
               background: url(https://cdn-icons-png.flaticon.com/512/149/149071.png)
@@ -13,10 +13,8 @@
           <div class="con-username">
             <div v-if="profile">{{ this.$store.state.auth.display_name }}</div>
             <div v-if="profile">{{ profile.dragon }}</div>
-          </div>
-        </div>
-        <div class="box-coin">
-          <div class="nv-con-coin">
+          </div> -->
+           <div class="nv-con-coin">
             <img
               :src="$path.image('coin-gold.png')"
               width="25px"
@@ -27,14 +25,31 @@
             this.$store.state.auth.dataset.coin_balance_sandbox
           )
         }}
-            <!-- {{ $filter.NumberToString($store.state.auth.coin) }} -->
           </div>
-          <button class="nv-btn-yellow custom-font" @click="$refs.walletModal.open()">
+        </div>
+        <div class="box-coin">
+          <!-- <div class="nv-con-coin">
+            <img
+              :src="$path.image('coin-gold.png')"
+              width="25px"
+              height="25px"
+            />
+             {{
+          $filter.NumberToString(
+            this.$store.state.auth.dataset.coin_balance_sandbox
+          )
+        }}
+          </div> -->
+          <button class="nv-btn-yellow " @click="$refs.walletModal.open()">
             เติมเหรียญ
           </button>
-          <router-link to="/wallet/howtopayment" class="nv-btn-orange btn-link"
-            >คู่มือเติมเงิน</router-link
-          >
+          <button class="nv-btn-orange">
+          <router-link to="/wallet/howtopayment"
+            >
+            คู่มือเติมเงิน
+            </router-link
+            >
+          </button>
         </div>
       </div>
     </div>
@@ -93,6 +108,9 @@ export default Vue.extend({
 .contai-modal {
   background: #000000c4 !important;
 }
+.nv-btn-orange a {
+  color: #fff;
+}
 .add-coin {
   display: flex;
   justify-content: space-between;
@@ -104,7 +122,7 @@ export default Vue.extend({
 }
 .box-coin {
   display: flex;
-  grid-gap: 20px;
+  grid-gap: 10px;
 }
 .tap-writer {
   width: 100%;
@@ -123,13 +141,10 @@ export default Vue.extend({
   border-radius: 0px 5px 5px 0px;
   border-left: 0px solid;
 }
-.custom-font{
-  font-family: Kanit;
-  // width: 100%;
 
-}
-.nv-con-coin {
-  // color: #e49b2b;
+.nv-con-coin{
+  // color: #e39829;
+  font-size: 18px;
 }
 @media (max-width: 1024px) {
 }
@@ -149,15 +164,7 @@ export default Vue.extend({
   //     align-items: center;
 
   // }
-  .writer-profile {
-    display: none;
-  }
 
-  .box-coin {
-    display: flex;
-    grid-gap: 20px;
-    width: 100%;
-    justify-content: space-between;
-  }
+
 }
 </style>

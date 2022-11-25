@@ -1,5 +1,4 @@
 <template>
-  <div class="NovelCarousel">
     <!-- <pre> {{ opject }}</pre> -->
     <carousel
       :items="1"
@@ -15,9 +14,6 @@
       :responsive="responsive"
       :navText="sdds"
     >
-      <template>
-        <!-- <pre>{{opject}}</pre> -->
-
         <router-link
           v-for="(items, index) in opject"
           :key="index"
@@ -25,51 +21,13 @@
           class="nv-box-carousel carousel"
         >
           <div class="box-mywork">
-            <img
-              class="item-banner"
-              :src="
-                items.image_data
-                  ? items.image_data.url
-                  : $path.image('loading.png')
-              "
-              onerror="this.onerror=null;this.src='https://novelkingdom-80a1d.firebaseapp.com/img/loading.a7cb0bda.png';"
-              :alt="items.title"
-            />
-            <div
-              class="promotion"
-              v-if="items.novel_promotion_datas.length !== 0"
-            >
-              <div>
-                <div class="tag">
-                  <div class="tag-side tag-3-side">
-                    <div class="tag-text tag-3-text">
-                      Sale
-                      <!-- <div class="rule-shape">&#10052;</div> -->
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-                class="tags-end"
-                v-if="items.status_end_novel === true"
-              >
-                <div>
-                  <div class="tag">
-                    <div class="tag-side tag-3-side">
-                      <div class="tag-text tag-3-text">
-                        จบ
-                        <!-- <div class="rule-shape">&#10052;</div> -->
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <NovelImage :image="$filter._dataUrl(items.image_data)" :alt="items.title "></NovelImage>
+            <NovelPomotion :cleckP='items.novel_promotion_datas.length ' @cleckandP="0" msmP="Sale" msmE='จบ' :cleckE='items.status_end_novel'/>
           </div>
 
           <div class="grod-detail">
             <div class="name line-1">{{ items.title }}</div>
-            <div class="subname">{{ items.novel_category_data_preview }}</div>
+            <div class="subname line-1">{{ items.novel_category_data_preview }}</div>
             <div>
               <NovelStar
                 v-if="star === true"
@@ -92,9 +50,7 @@
             </div>
           </div>
         </router-link>
-      </template>
     </carousel>
-  </div>
 </template>
 
 <script lang="ts">
@@ -127,6 +83,9 @@ export default Vue.extend({
         },
         415: {
           items: 2.5,
+        },
+        540:{
+           items: 3,
         },
         768: {
           items: 4,
@@ -166,7 +125,7 @@ $second-grayLight: #cfd4d9;
   flex-direction: column;
   grid-gap: 10px;
   justify-content: center;
-  align-items: center;
+  // align-items: center;
 }
 .nv-box-carousel .grod-detail {
   display: flex;
@@ -179,10 +138,10 @@ $second-grayLight: #cfd4d9;
   color: #1e2046;
   font-size: 18px;
 }
-.subname {
-  font-size: 15px;
-  color: rgb(182, 182, 182);
-}
+// .subname {
+//   font-size: 15px;
+//   color: rgb(182, 182, 182);
+// }
 .box-mywork {
   position: relative;
   // border: #1e2046 1px solid;
@@ -194,10 +153,10 @@ $second-grayLight: #cfd4d9;
   justify-content: start;
   // width: 70px;
   border-radius: 10%;
-  height: 15px;
+  height: 10px;
   position: absolute;
   // background: #fb5353;
-  left: -10px;
+  left: 0px !important;
   font-size: 13px;
   // z-index: 100;
   top: 5px;

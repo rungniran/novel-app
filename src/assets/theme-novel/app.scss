@@ -232,9 +232,9 @@ to {
  background-position-x: -200%;
 }
 }
-img{
-   position: relative;
-}
+// img{
+//    position: relative;
+// }
 
 
 input[type=checkbox]{
@@ -281,16 +281,34 @@ input[type=checkbox]{
   justify-content: center;
   position: relative;
 }
-
+$page:#7b57ee;
 .active .page-link{
   border-radius: 50%;
-  background: #AB93F9 !important;
+  background: $page !important;
   padding: 5px 15px !important;
   width: 37px;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
   height: 35px;
   color: #ffffff;
 }
-
+.page-number {
+  margin: 0px 0px !important;
+}
+.page-link{
+  margin: 0px 2px !important;
+  border-radius: 50%;
+  background: #ffffff !important;
+  padding: 5px 15px !important;
+  width: 37px;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  height: 35px;
+  border: 1px solid $page ;
+  color: $page ;
+}
  li.page-item.previous,li.page-item.next, li.page-item.last,li.page-item.first{
   //  border: 1px solid #AB93F9;
   //  border-radius: 50%;
@@ -300,7 +318,13 @@ input[type=checkbox]{
 .page-number{
   margin: 0px 2px;
 }
+.ql-clipboard {
+  position: fixed;
+  display: none;
 
+  left: 50%;
+  top: 50%;
+}
 
 .ql-align-center{
   text-align: center;
@@ -321,16 +345,16 @@ input[type=checkbox]{
  padding: 0px;
 }
 
-button:disabled,
-button[disabled]{
-  border: 2px solid  #cccccc;
-  background-color: #cccccc;
-  padding: 5px 15px;
-  border-radius: 5px;
-  transition: .3s;
-  color: #666666;
-  cursor: default;
-}
+// button:disabled,
+// button[disabled]{
+//   border: 2px solid  #cccccc;
+//   background-color: #cccccc;
+//   padding: 5px 15px;
+//   border-radius: 5px;
+//   transition: .3s;
+//   color: #666666;
+//   cursor: default;
+// }
 button[disabled]:hover{
   background-color: #cccccc;
   box-shadow: #ffffff 0px 0px 0px 0px;
@@ -351,13 +375,13 @@ button[disabled]:hover{
   height: 70px;
   width: 70px;
 }
-img::before{
-  content: '';
-  width: 1000px;
-  height: 1000px;
-  z-index: 100;
-  background: #1e2046;
-}
+// img::before{
+//   content: '';
+//   width: 1000px;
+//   height: 1000px;
+//   z-index: 100;
+//   background: #1e2046;
+// }
 
 select:not(:-internal-list-box) {
   overflow: scroll !important;
@@ -375,3 +399,32 @@ select:not(:-internal-list-box) {
     width: 50px;
   }
 }
+.border-3-b{
+  border: 3px solid #2164c5;
+}
+.not-novel-mys{
+  font-size: 20px;
+  text-align: center;
+}
+
+.stiker-img:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: inherit;
+  height: inherit;
+  background: #ebebeb url('http://via.placeholder.com/300?text=PlaceHolder') no-repeat center;
+  color: transparent;
+}
+// p:contains('&nbsp;') { display: none; }
+
+img{
+  position: relative;
+
+}
+.ql-editor {
+  -webkit-user-select: text;
+}
+@import 'theme-dark.scss';
+@import 'theme-ambient.scss';

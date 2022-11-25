@@ -1,6 +1,6 @@
 <template>
   <div class="NovelCategory">
-    <div class="nv-title-item nv-mt-30" v-if="data">
+    <div class="nv-title-item nv-mt-30" v-if="data.length !== 0">
       <H1 class="nv-title-center">นิยายสุดมันส์แฟนหลงเฉินไม่ควรพลาด</H1>
       <carousel
         v-if="data"
@@ -119,7 +119,7 @@ export default Vue.extend({
             randomdata.push(element);
           }
         });
-        this.data = this.makeUniqueRandom(randomdata);
+        this.data = await this.makeUniqueRandom(randomdata)
        
       }
     },

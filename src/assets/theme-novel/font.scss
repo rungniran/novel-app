@@ -31,15 +31,15 @@ a{
    color: $second-blue;
    font-weight: 500;
 }
-.gray{
-    color: #a9a9a9;
-}
+// .gray{
+//     color: #a9a9a9;
+// }
 .fa-eye{
-    color: #969696;
+    // color: #969696;
 }
 
 .fa-list{
-    color: #9f9f9f;
+    // color: #9f9f9f;
 }
 
 .line-1{
@@ -48,7 +48,12 @@ a{
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
-
+.line-3{
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
 .line-4{
     display: -webkit-box;
     -webkit-line-clamp: 4;

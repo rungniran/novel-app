@@ -30,6 +30,7 @@
     "lib": [
       "esnext",
       "dom",
+      "ES6",
       "dom.iterable",
       "scripthost"
     ]
@@ -39,8 +40,13 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
-, "src/shares/modules/color.js", "src/shares/modules/validation.ts", "src/shares/modules/validation.ts", "src/shares/services/firebase.js"  ],
+    "tests/**/*.tsx",
+    "vue-global.d.ts", 
+    "src/shares/modules/color.js", 
+    "src/shares/modules/validation.ts", 
+    "src/shares/modules/validation.ts", 
+    "src/shares/services/firebase.js"  
+  ],
   "exclude": [
     "node_modules"
   ]

@@ -6,10 +6,10 @@
       <div @click="close()" class="close">
         <i class="fas fa-angle-left"></i>
       </div>
-      <div :class="link === item.link ? 'box activate' :'box'" v-for="item, indax in server" :key="indax" @click="change(item.link)"> 
-        <h3> {{item.title}}</h3>
-        <div > {{item.link}} </div>
-        <div v-if="link === item.link" class="africa"> เปิดใช้งานอยู่</div>
+      <div :class="link === item.link ? 'box activate' :'box'" v-for="item, indax in server" :key="indax" @click="change(item)"> 
+        <!-- <h3> {{item.title}}</h3> -->
+        <div > {{item}} </div>
+        <div v-if="link === item" class="africa"> เปิดใช้งานอยู่</div>
         <div v-else class="unlink"><i class="fas fa-unlink"></i> ปิดใช้งานอยู่</div>
       </div>
       <!-- <div class="box"> 
@@ -21,21 +21,13 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
+import { Api } from "@/shares/constants"
 export default Vue.extend({
 	name:"Sarver",
   data(){
     return{
       link: localStorage.getItem('server'),
-      server:[
-        {
-          title:'server จริง',
-          link:'https://novelkingdom.co/api/'
-        },
-        {
-          title:'server เทส',
-          link:'https://119.59.97.111/api/'
-        }
-      ]
+      server:Api
     }
   },
   methods:{
@@ -72,13 +64,14 @@ export default Vue.extend({
   margin-right: 0px;
 }
 .closelink{
+  z-index: 4000;
   position: fixed;
-  right: 0;
-   padding: 10px;
+  left: 0;
+  padding: 5px;
   bottom: 0px;
   color: #ffffff;
-   background: #ef5858;
-   border-radius: 5px 0 0 0px;
+   background: #c28bfb;
+   border-radius: 0px 5px 0 0px;
 }
 .box{
   padding: 10px;
@@ -109,5 +102,37 @@ padding: 10px;
 }
 .activate{
   background: #d2d2d2;
+}
+@media (max-width: 415px) {
+  .model-emoji {
+    height: 350px;
+  width: 300px;
+
+  }
+  .text-review {
+    font-size: 17px;
+
+    margin-left: 0px;
+  }
+  .con-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    margin: 20px;
+    justify-items: center;
+  }
+  .con-stiker {
+    width: 90%;
+    padding: 0px;
+  }
+  .con-item {
+    margin: 20px 0px;
+  }
+  .title {
+    width: 100px;
+  }
+  .stiker-img {
+    height: 80px;
+    width: 80px;
+  }
 }
 </style>

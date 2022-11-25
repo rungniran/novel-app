@@ -10,7 +10,7 @@
     <template v-slot:body>
       <!-- :style="`height: ${Height}px`" -->
 
-      <div class="walllet-conthai">
+      <div class="walllet-conthai" >
         <div class="walllet-page" id="page1">
           <div class="walllet-title">ช่องทางการเติมเหรียญ</div>
           <div
@@ -21,16 +21,32 @@
           >
             <div>
               <div v-if="item.name_preview === 'True Wallet'">
-                <img v-lazy="$path.image('truemoney-wallet.png')" class="img-payment-truewallet" alt="">
+                <img
+                  v-lazy="$path.image('truemoney-wallet.png')"
+                  class="img-payment-truewallet"
+                  alt=""
+                />
               </div>
               <div v-else-if="item.name_preview === 'Master Card'">
-                <img  v-lazy="$path.image('MasterCard.png')" class="img-payment" alt="">
+                <img
+                  v-lazy="$path.image('MasterCard.png')"
+                  class="img-payment"
+                  alt=""
+                />
               </div>
               <div v-if="item.name_preview === 'Rabbit LINE Pay'">
-                <img  v-lazy="$path.image('linepay.png')" class="img-payment-rabbitline" alt="">
+                <img
+                  v-lazy="$path.image('linepay.png')"
+                  class="img-payment-rabbitline"
+                  alt=""
+                />
               </div>
               <div v-if="item.name_preview === 'Prompt Pay'">
-                <img  v-lazy="$path.image('prompt-pay.png')" class="img-payment-rabbitline" alt="">
+                <img
+                  v-lazy="$path.image('prompt-pay.png')"
+                  class="img-payment-rabbitline"
+                  alt=""
+                />
               </div>
             </div>
             <div>{{ item.name_preview }}</div>
@@ -68,6 +84,9 @@
               <div class="walllet-con-coin">
                 <img :src="$path.image('coin-gold.png')" width="20px" />
                 {{ item.coin_amount }}
+                <span v-if="parseInt(item.bonus_amount) !== 0"  class="bn"> + {{ parseInt(item.bonus_amount)}} </span>
+
+       
               </div>
               <div>{{ item.price_amount }} บาท</div>
             </div>
@@ -86,6 +105,7 @@
               <div class="walllet-con-coin">
                 <img :src="$path.image('coin-gold.png')" width="20px" />
                 {{ item.coin_amount }}
+                <span v-if="parseInt(item.bonus_amount) !== 0" class="bn"> + {{ parseInt(item.bonus_amount)}} </span>
               </div>
               <div>{{ item.price_amount }} บาท</div>
             </div>
@@ -220,18 +240,18 @@ export default Vue.extend({
       // this.page2 = await res.data.data;
       this.titlePage2 = await item.name_preview;
       this.dataObj.typeHowto = await item.name;
-      await this.heightBox(page);
+      // await this.heightBox(page);
     },
 
     async getadd() {
       let res = await Gatway.getService("/admin/topic-coin-data ");
       this.page1 = res.data.data;
     },
-    async heightBox(page) {
-      let Height = await document.getElementById("page" + page);
+    // async heightBox(page) {
+    //   let Height = await document.getElementById("page" + page);
 
-      this.Height = await Height.clientHeight;
-    },
+    //   this.Height = await Height.clientHeight;
+    // },
 
     configure() {
       let configure = OmiseCard.configure({
@@ -329,7 +349,6 @@ export default Vue.extend({
     },
 
     cleckpp(res) {
-
       if (this.$route.name === "Wallet") {
         setTimeout(() => {
           Gatway.postService("/customers/payment-gateway/prompt-pay/check", {
@@ -371,9 +390,9 @@ export default Vue.extend({
           };
           Gatway.postService("/customers/payment-gateway/payment", pay).then(
             (res) => {
+              console.log(res);
               this.$store.commit("reset");
               window.location.href = res.data.data[0].authorize_uri;
-              // window.open(res.data.data[0].authorize_uri, "MsgWindow", "width=200,height=100")
             }
           );
         }
@@ -410,7 +429,7 @@ export default Vue.extend({
   },
   mounted() {
     this.getadd();
-    this.heightBox(1);
+    // this.heightBox(1);
   },
 });
 </script>
@@ -425,11 +444,11 @@ $sizePage: 360px;
   flex-direction: column;
   align-items: stretch;
   overflow-y: scroll;
-  height: 500px;
+  height: 600px;
   width: $sizePage;
   padding: 0px;
 }
-.walllet-title{
+.walllet-title {
   font-size: 18px;
   text-align: center;
 }
@@ -461,35 +480,36 @@ $sizePage: 360px;
   height: 100%;
   overflow-y: scroll;
 }
-.img-payment{
-   position: absolute;
+.img-payment {
+  position: absolute;
   width: 20%;
   object-fit: cover;
-  transform: translate(0px,-10px);
+  transform: translate(0px, -10px);
 }
-.img-payment-truewallet{
-     position: absolute;
+.img-payment-truewallet {
+  position: absolute;
   width: 20%;
   object-fit: cover;
-  transform: translate(0px,-15px);
-  
+  transform: translate(0px, -15px);
 }
-.img-payment-rabbitline{
-       position: absolute;
+.img-payment-rabbitline {
+  position: absolute;
   width: 30%;
   object-fit: cover;
-  transform: translate(0px,-5px);
-  
+  transform: translate(0px, -5px);
 }
 .walllet-page::-webkit-scrollbar {
   display: none;
 }
+.bn{
+  color: #e49b2b;
+}
 
 .walllet-con-coin {
+  color: #444349;
   display: flex;
   grid-gap: 10px;
   align-items: center;
-  color: #e7a82f;
 }
 .PromptPay {
   text-align: center;

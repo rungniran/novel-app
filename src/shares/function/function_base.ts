@@ -23,9 +23,13 @@ const base:any | null | undefined = {
      cleckhostname() {
         const hostname = window.location.hostname 
         // if (hostname === 'novelkingdom.co' || hostname === 'www.novelkingdom.co') {
-        //   return false
+        //   return false 
         // }else 
-        if(hostname === 'localhost'){
+        if(
+          hostname === 'localhost' 
+          // || hostname === 'novelkingdom-80a1d.firebaseapp.com' 
+          // || hostname==='novelkingdom-80a1d.web.app'
+        ){
           return true
         }else{
           return false

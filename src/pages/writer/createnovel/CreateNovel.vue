@@ -1,15 +1,33 @@
 <template>
   <div class="CreateNovel">
     <div class="nv-box-white nv-mt-40" enctype="multipart/form-data">
-    <!-- {{data.image_data.url}} -->
-      <div class="img-cropper" >
-        <NovelCropper @imgCropper="imgCropper"  />
-      </div>
-      <div class="from nv-mt-30"  >
-        <div class="contor-input">
-          <div class="title">ชื่อเรื่อง <span class="is-valid">*</span></div>
-          <input v-model="data.title" id="title" required />
+    
+      <!-- {{data.image_data.url}} -->
+      <div class="img-cropper">
+        <div v-if="data.image_data">
+          <NovelCropper @imgCropper="imgCropper" type="image/jpeg" :imgupdata="data.image_data.url"/>
         </div>
+        <div v-else>
+          <NovelCropper @imgCropper="imgCropper" type="image/jpeg" />
+        </div>
+      </div>
+      <div class="from nv-mt-30">
+        <div class="title-checkend">
+          <div class="contor-input">
+            <div class="title">ชื่อเรื่อง <span class="is-valid">*</span></div>
+            <input v-model="data.title" maxlength="120" id="title" required />
+          </div>
+          <div class="grop" v-show="checkupdate">
+            <input
+              type="checkbox"
+              id="checkboxend"
+              v-model="data.status_end_novel"
+            />
+            <label for="checkboxend">นิยายจบแล้ว</label>
+          </div>
+   
+        </div>
+
         <div class="col-2">
           <div class="contor-input">
             <div class="title">หมวดหลัก <span class="is-valid">*</span></div>
@@ -19,18 +37,30 @@
 						  :value="data.novel_category_data_id"
             /> -->
 
-            <select v-model="data.novel_category_data_id" id="inCategory">	
-                            <option v-for="item,index in dropdownCategory" :key="index" :value="item.id">{{item.name}}</option>
+            <select v-model="data.novel_category_data_id" id="inCategory">
+              <option
+                v-for="(item, index) in dropdownCategory"
+                :key="index"
+                :value="item.id"
+              >
+                {{ item.name }}
+              </option>
             </select>
           </div>
           <div class="contor-input">
             <div class="title">เรทติ้ง <span class="is-valid">*</span></div>
-						<select  v-model="data.novel_rating_data_id" id="inRating">	
-								<option v-for="item,index in dropdownRating" :key="index" :value="item.id">{{item.name}}</option>
-						</select>
+            <select v-model="data.novel_rating_data_id" id="inRating">
+              <option
+                v-for="(item, index) in dropdownRating"
+                :key="index"
+                :value="item.id"
+              >
+                {{ item.name }}
+              </option>
+            </select>
           </div>
         </div>
-        <div
+        <!-- <div
           v-if="type === '4aa1927f-32ac-46a8-bd8a-361b8a5c208d'"
           class="col-2"
         >
@@ -42,24 +72,41 @@
             <div class="title">แปลโดย <span class="is-valid">*</span></div>
             <input v-model="data.translated_by" id="translatedBy" />
           </div>
-        </div>
+        </div> -->
         <div>
           <div class="title">คำโปรย <span class="is-valid">*</span></div>
-          <textarea rows="10" v-model.trim="data.detail" id="detail"></textarea>
-          <small :class="data.detail.length > 500 ? 'texterr' : '' "> {{data.detail.length}}/500 </small>
+          <textarea rows="10" v-model.trim="data.detail"  maxlength="250" id="detail"></textarea>
+          <small :class="data.detail.length > maxtext ? 'texterr' : ''">
+            {{ data.detail.length }}/{{maxtext}}
+          </small>
         </div>
         <div>
           <div class="title">เรื่องย่อ <span class="is-valid">*</span></div>
-					<NovelEditor @Editor="func_Editor" :valueWay="this.data.description"/>
+          <NovelEditor
+          height="30"
+            @Editor="func_Editor"
+            :valueWay="this.data.description"
+          />
         </div>
-        <div class="nv-mt-40">
+        <div class="nv-mt-30">
           <div class="title">แท็ก</div>
-          <input @keydown.enter='addTag'/>
+          <input @keydown.enter="addTag" @keyup.space="addTag" maxlength="25"/>
+          <div class="con-tag">
+            <div
+              v-for="(item, index) in data.tags"
+              :key="index"
+              class="tag"
+              
+            >
+              #{{ item }}<i class="fas fa-times-circle" @click="del(index)"></i>
+            </div>
+          </div>
         </div>
         <div v-if="!checkupdate" class="contai-checkbox">
           <div class="round">
             <input
               type="checkbox"
+              :checked="confirm"
               :value="confirm"
               @change="funcConfirm()"
               class="checkbox"
@@ -67,41 +114,95 @@
             />
             <label for="checkbox"></label>
           </div>
-          <div >
+          <div>
             ยอมรับ
-            <span
-              class="btn-conditions"
-              @click="$base.openmodal('modal-conditions', 'modal-animation', 0)"
+            <span class="btn-conditions" @click="$refs.Conditions.open()"
               >ข้อกำหนดและเงื่อนไขการใช้บริการ</span
             >
           </div>
         </div>
         <div>
-          <button
-					v-if="!checkupdate"
-            class="nv-btn-orange"
-            @click="
-              type === '4aa1927f-32ac-46a8-bd8a-361b8a5c208d'
+          <!-- {{$store.state.loading.isCheckLoading}} type === '4aa1927f-32ac-46a8-bd8a-361b8a5c208d'
                 ? submit()
-                : submitMy()
-            "
+                : submitMy()-->
+          <button
+            v-if="!checkupdate"
+            :disabled="disabled"
+            class="nv-btn-orange"
+            @click="link()"
           >
             ยืนยัน
           </button>
-					 <button v-else class="nv-btn-orange" @click="Updata()">
-						ยืนยัน
-					</button>
+
+          <button
+            v-else
+            class="nv-btn-orange"
+            @click="Updata()"
+            :disabled="disabled"
+          >
+            ยืนยัน
+          </button>
         </div>
       </div>
     </div>
-    <div class="alert"></div>
-    <Conditions />
+
+    <NovelModal2 ID="setime" IDCrad="setimeCrad" ref="setimeCrad" width="400px"  :Onmouse="false" :Close="true">
+       <template v-slot:body>
+          <div class="co-option-time" >
+            <div class="option-time" type="radio" @click="today(false)">
+                 <!-- <img src="https://novelkingdom.co//public/publicImages/vVybMfdekOYF3sZFsgs06C6EPCSvl9PzwAUMXSqL.png" width="100%"> -->
+                 <div>เผยแพร่</div>
+            </div>
+            <div class="option-time" @click="today(true)">
+             <!--  <img src="https://119.59.97.111/public/publicImages/yMCxiaslObKdoAcdEQ5H072MVq5eLiG4U7kXFmYS.png" width="100%"> -->
+              <div>ยังไม่เผยแพร่</div>
+            </div>
+          </div>
+     
+       </template>
+    </NovelModal2>    
+    <NovelModal2 ID="clecktime" IDCrad="clecktimeCrad" ref="clecktimeCrafd" width="400px"  :Onmouse="false" :Close="true">
+      <template v-slot:body>
+
+          <div class="contor-input">
+             <div class="title">
+              วันที่เผยแพร่ <span class="is-valid">*</span>
+            </div>
+
+            <v-date-picker is-expanded v-model="data.publisher_episode_data.date_time" @input="onDateRangeChange"/>
+     <!--        <br>
+            <div class="title">เวลาที่เผยแพร่</div>
+            <input type='time' min="00:00" max="24:00" >
+ -->          </div>
+          
+
+        <!-- </div>  @click="setsell()" -->
+        <div class="contor-input nv-mt-30">
+        <button
+            type="submit"
+            class="nv-btn-yellow"
+            @click="settime()"
+          
+          >
+            ยืนยันการตั้งเวลา
+          </button>
+        </div>
+      </template>
+
+    </NovelModal2>
+       <NovelLoading ref="loading"/>
+    <Conditions
+      :confirm="confirm"
+      @confirmConditions="confirmConditions"
+      ref="Conditions"
+    />
   </div>
 </template>
-<script >
+<script>
 import { Validation } from "../../../shares/modules/validation";
-import { Gatway, GetService, ListService } from "../../../shares/services";
-import { alert } from '@/shares/modules/alert'
+import { Gatway,  ListService } from "../../../shares/services";
+import { alert } from "@/shares/modules/alert";
+// import { sms_alert_AddNovel } from "@/shares/constants/smsalert";
 import Vue from "vue";
 
 export default Vue.extend({
@@ -110,7 +211,7 @@ export default Vue.extend({
     NovelCropper: () => import("@/components/widget/NovelCropper.vue"),
     // NovelDropdown: () => import("@/components/widget/NovelDropdown.vue"),
     Conditions: () => import("./conditions/Conditions.vue"),
-		NovelEditor: () => import("@/components/widget/NovelEditor.vue")
+    NovelEditor: () => import("@/components/widget/NovelEditor.vue"),
   },
   data() {
     return {
@@ -118,7 +219,8 @@ export default Vue.extend({
       dropdownRating: [],
       type: this.$route.params.id,
       confirm: false,
-			checkupdate: this.$route.params.idnovel,
+      maxtext:250,
+      checkupdate: this.$route.params.idnovel,
       data: {
         novel_category_data_id: "",
         novel_data_type_id: this.$route.params.id,
@@ -128,119 +230,197 @@ export default Vue.extend({
         description: "",
         detail: "",
         publisher: "",
-				translated_by:""
+        translated_by: "",
+        tags: [],
+        status_end_novel: false,
+        draft:false
       },
-      file:{}
+      file: {},
+      tags: [],
+      disabled: false,
+      
     };
   },
   methods: {
+    link(){
+        if (this.data.img) {
+           let arrvalidate = ["title", "inCategory", "inRating", "detail"];
+           if (Validation(arrvalidate) === true) {
+
+       this.$refs.setimeCrad.open()
+     }
+        } else {
+        alert("กรุณาเพิ่มรูปนิยาย", "error");
+      }
+    },
+    asopen(){
+          console.log('asasas');
+          // (this as any).$refs.clecktimeCrafd.open() 
+    },
+    today(key){
+      this.data.draft = key
+        this.type === '4aa1927f-32ac-46a8-bd8a-361b8a5c208d'
+                ? this.submit()
+                : this.submitMy()
+    },
+    onDateRangeChange(){
+       // eslint-disable-next-line no-undef
+      //  this.data.publisher_episode_data.date_time = this.data.publisher_episode_data.date_time
+    },
+    settime(){
+      console.log()
+      // this.data.publisher_episode_data.date_time = data.publisher_episode_data.date_time
+      this.type === '4aa1927f-32ac-46a8-bd8a-361b8a5c208d' ? this.submit() : this.submitMy()
+    },
     onFileChange(e) {
-      //console.log(e.target.files[0]);
       this.filename = "Selected File: " + e.target.files[0].name;
       this.file = e.target.files[0];
     },
     async submitForm() {
       let formData = new FormData();
-      formData.append('file', this.file);
-      let res = await  Gatway.postService("/test/upload",formData)
-      console.log(res.data.status);
-      res.data.status === true
-      ? alert(res.data.data, "success")
-      : null
+      formData.append("file", this.file);
+      let res = await Gatway.postService("/test/upload", formData);
+      res.data.status === true ? alert(res.data.data, "success") : null;
     },
     imgCropper(value) {
-      console.log(value);
-
       this.data.img = value;
     },
-		func_Editor(value){
+    func_Editor(value) {
       this.data.description = value;
-		},
+    },
     submit() {
+      if (this.data.img) {
       let arrvalidate = [
         "title",
-        "author",
+        // "author",
         "inCategory",
         "inRating",
-        "translatedBy",
+        // "translatedBy",
         "detail",
       ];
       if (Validation(arrvalidate) === true) {
         this.confirm === true
           ? this.createnovel()
-          : this.$base.openmodal("modal-conditions", "modal-animation", 0);
+          : this.$refs.Conditions.open();
+      }
+      }else {
+        alert("กรุณาเพิ่มรูปนิยาย", "error");
       }
     },
     submitMy() {
-      let arrvalidate = ["title", "inCategory", "inRating", "detail"];
-      if (Validation(arrvalidate) === true) {
-        this.confirm === true
-          ? this.createnovel()
-          : this.$base.openmodal("modal-conditions", "modal-animation", 0);
+      if (this.data.img) {
+        let arrvalidate = ["title", "inCategory", "inRating", "detail"];
+        if (Validation(arrvalidate) === true) {
+          this.confirm === true
+            ? this.createnovel()
+            : this.$refs.Conditions.open();
+        }
+      } else {
+        alert("กรุณาเพิ่มรูปนิยาย", "error");
       }
     },
     async createnovel() {
-      let formData = new FormData();
-      this.data = {...this.data,  formData } 
-      let res = this.data.detail.length < 500 ? await  Gatway.postService("/customers/novel", this.data) : null
-      if(res.data.code === 200){
-        formData.append('file', this.data.img);
-        formData.append('novel_data_id',  res.data.data.id)
-        await Gatway.postService("/upload/image/novel-data", formData)
-        if(res.data.status === true){
-          alert(res.data.data, "success")
-          this.$router.push("/writer") ;
-        } 
+      await this.$refs.loading.switchloading(true)
+      this.disabled = true;
+      //  this.$store.commit("isCheckLoading",{status: true});
+      let res =
+        this.data.detail.length < this.maxtext
+          ? await Gatway.postService("/customers/novel", this.data)
+          : null;
+      if (res.data.code === 200) {
+
+        // formData.append("file", this.data.img);
+        // formData.append("novel_data_id", res.data.data.id);
+        // await Gatway.postService("/upload/image/novel-data", formData);
+        let formData = new FormData();
+        formData.append("file", this.data.img);
+        formData.append("ref", res.data.data.id);
+        formData.append("table", "novel");
+        await Gatway.postService("/upload/image/ref-table", formData);
+        if (res.data.status === true) {
+
+          // alert(sms_alert_AddNovel(this.res.data.data.title), "success");
+          alert("สร้างนิยายสำเร็จ", "success");
+          this.$router.push("/writer");
+        }
+        await this.$refs.loading.switchloading(false)
+        this.disabled = false;
       }
-      
     },
     async novelRatingDataId() {
-      const res = await ListService.listRating()
+      const res = await ListService.listRating();
       this.dropdownRating = await res.data.data.reverse();
-
     },
     async novelCategoryDataId() {
-      const res = await ListService.listCategory()
+      const res = await ListService.listCategory();
       this.dropdownCategory = await res.data.data;
+    },
+    confirmConditions() {
+      this.funcConfirm();
     },
     funcConfirm() {
       this.confirm === false ? (this.confirm = true) : (this.confirm = false);
     },
-		async GetServiceMy(){
-		  const res = await	GetService.getNovel(this.$route.params.idnovel)
-			this.data = res.data.data
-		},
-		async Updata(){
-      const res = this.data.detail.length < 500 ? await Gatway.PutService('/customers/novel' , this.$route.params.idnovel, this.data) : null
-      if(res.data.code === 200){      
-        let formData = new FormData();
-        formData.append('file', this.data.img);
-        formData.append('novel_data_id',  this.$route.params.idnovel)
-        alert(res.data.data, "success")
-        console.log(this.data.img);
-        let resimg = this.data.img ? await Gatway.postService("/upload/image/novel-data", formData) : null
-        this.$router.go(-1) ;
-        
-      }
-		},
-		addTag(event){
-			console.log(event.target.value);
-		}
-  },
-  mounted() {
-    this.novelRatingDataId();
-    this.novelCategoryDataId();
-		this.checkupdate
-		? this.GetServiceMy()
-		: null
+    async GetServiceMy() {
 
+      const res = await Gatway.getIDService('/customers/novel',this.$route.params.idnovel);
+      this.data = res.data.data;
+      this.data.tags = JSON.parse(res.data.data.tags);
+    },
+    async Updata() {
+      this.disabled = true;
+      const res =
+        this.data.detail.length < 1000
+          ? await Gatway.PutService(
+              "/customers/novel",
+              this.$route.params.idnovel,
+              this.data
+            )
+          : null;
+
+      if (res.data.code === 200) {
+        // let formData = new FormData();
+        // formData.append("file", this.data.img);
+        // formData.append("novel_data_id", this.$route.params.idnovel);
+        alert(res.data.data, "success");
+        // await Gatway.PutService("/upload/image/novel-data", this.$route.params.idnovel ,formData)
+        let formData = new FormData();
+        formData.append("file", this.data.img);
+        formData.append("ref", this.$route.params.idnovel);
+        formData.append("table", "novel");
+        // await Gatway.postService("/upload/image/ref-table", formData);
+        await this.data.img
+          ? await Gatway.postService("/upload/image/ref-table", formData)
+          : null;
+        this.$router.push('/writer/novelpreview/'+this.$route.params.idnovel)
+      }
+      this.disabled = false;
+    },
+    addTag(event) {
+      this.data.tags.push(event.target.value);
+      event.target.value = "";
+    },
+    del(index) {
+      this.data.tags.splice(index, 1);
+    },
+  },
+  async mounted() {
+    console.log("testurl",this.checkupdate);
+
+    await this.novelRatingDataId();
+    await this.novelCategoryDataId();
+   await this.checkupdate ? this.GetServiceMy() : null;
+  //  await this.$store.commit("checkLoading",{status: false});
     // console.log(this.$route.params.idnovel);
   },
+  //   beforeUpdate(){
+  //      this.$store.commit("checkLoading",{status: false});
+  // }
 });
 </script>
 <style lang="scss" scoped>
 .nv-box-white {
-  max-width: 950px;
+  // max-width: 950px;
   position: relative;
   overflow: hidden;
 }
@@ -253,6 +433,9 @@ export default Vue.extend({
 .checkbox {
   width: 20px !important;
 }
+.checkboxEndNovel{
+  display: none;
+}
 .contai-checkbox {
   height: 30px;
   display: flex;
@@ -263,6 +446,17 @@ export default Vue.extend({
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 20px;
+}
+
+.title-checkend {
+  display: grid;
+  grid-template-columns: 5fr auto;
+  align-items: end;
+  gap: 10px;
+}
+.grop {
+  display: flex;
+  align-items: center;
 }
 .contor-input {
   display: grid;
@@ -358,6 +552,27 @@ textarea:focus-visible {
   border: 2px solid #ff6c6c;
   border-radius: 5px;
 }
+.co-option-time{
+      display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    font-family: Sarabun,sans-serif;
+}
+.option-time{
+   padding: 20px;
+    border: 2px solid #ffc54c;
+    font-size: 18px;
+    background: #fbc24b;
+    border-radius: 4px;
+    color: #ffffff;
+    cursor: pointer;
+    text-align: center;
+}
+.option-time:hover{
+  // background: #fbc24b;
+  background: #fff3d9;
+  color: #ffc54c;
+}
 .btn-conditions {
   text-decoration: underline;
   cursor: pointer;
@@ -365,7 +580,32 @@ textarea:focus-visible {
 .btn-conditions:hover {
   color: #ff6c6c;
 }
-.texterr{
+.texterr {
   color: red;
- }
+}
+.con-tag {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.tag {
+  margin-top: 10px;
+  padding: 5px;
+  border-radius: 10px;
+  background: #cecece;
+  position: relative;
+}
+.fa-times-circle {
+  position: absolute;
+  top: -3px;
+  cursor: pointer;
+  transform: scale(0);
+  transition: 0.3s;
+}
+.tag:hover {
+  cursor: pointer;
+}
+.tag:hover .fa-times-circle {
+  transform: scale(1);
+}
 </style>

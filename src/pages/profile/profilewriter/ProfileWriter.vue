@@ -5,16 +5,14 @@
       <!-- <cover :data="gatitemProfile" /> -->
       <div class="img-cover">
       <div
-        class="img-profile"
-        style="
-          background: url(https://cdn-icons-png.flaticon.com/512/149/149071.png) center center/cover;
-        "
+        class="img-profile border-3-b"
+       :style="'background: url(' + profileImage +') center center/cover'"
       >
       </div>
     </div>
     <div class="contant">
         <div class="box-username">
-            <div  class="nv-username">
+            <div  class="nv-username line-1">
                <span v-if="gatitemProfile.user_profile_datas[0].user_nickname">    {{ gatitemProfile.user_profile_datas[0].user_nickname}} </span>
                <span v-else>{{ gatitemProfile.user_profile_datas[0].first_name}} {{ gatitemProfile.user_profile_datas[0].last_name}}</span>
             </div>
@@ -35,8 +33,8 @@
           <div>เรื่อง</div>
         </div>
         <div class="follow">
-          <span v-if="gatitemProfile.user_profile_datas[0].follower">{{
-            gatitemProfile.user_profile_datas[0].follower
+          <span v-if="gatitemProfile.count_follow_data">{{
+            gatitemProfile.count_follow_data
           }}</span>
           <span v-else>{{gatitemProfile.count_follow_data}}</span>
           <div>ผู้ติดตาม</div>
@@ -51,10 +49,21 @@
               class="nv-btn-light-blue msg viewprofile"
               >ดูโปรไฟล์นักอ่าน</router-link
             >
+            
+            <div v-if="isfollow ">
             <!-- <div class="nv-btn-yellow msg">ส่งข้อความ</div>
             <div class="nv-btn-yellow msg" @click="$base.openmodal('modal-xl', 'modal-animation', 0)">ส่งกำลังใจ</div> -->
-            <div class="nv-btn-yellow msg" @click="follow(gatitemProfile.id)">
+              <div v-if='cleck'>
+            <div  class="nv-btn-yellow msg" v-if="followStatus === true" @click="follow(gatitemProfile.id)">
               ติดตาม
+            </div>
+            <div class="nv-btn-yellow msg" v-else @click="unfollow()">
+              เลิกติดตาม
+            </div>
+              </div>
+            </div>
+            <div v-else>
+              กำลังโหลด....
             </div>
           </div>
         </div>
@@ -69,7 +78,7 @@
             <div class="conthianer-novel">
               <div
                 v-for="(item, index) in gatitemProfile.novel_datas"
-                :key="index"
+                :key="index" class="sd"
               >
                 <router-link :to="'/novel/' + item.id">
                   <img
@@ -79,6 +88,7 @@
                     width="100%"
                     class="nv-img-novel image"
                   />
+                     <NovelPomotion :cleckP='item.novel_promotion_datas.length ' @cleckandP="0" msmP="Sale" msmE='จบ' :cleckE='item.status_end_novel'/>
                   <div class="line-1 conthianer-novel-title">
                     {{ item.title }}
                   </div>
@@ -107,15 +117,20 @@ import Vue from "vue";
 import { Gatway } from "@/shares/services";
 import { alert } from "@/shares/modules/alert";
 import EmptyContent from "../../empty/empty.vue";
+import  profile_writer  from "@/shares/modules/image";
 export default Vue.extend({
   name: "profilewriter",
   data() {
     return {
       mywork: [...Array(10).keys()],
-      gatitemProfile: {},
+      gatitemProfile: {} as any,
+      followStatus:true,
+      isfollow: true,
+      profileImage:'' as any
     };
   },
   components: {
+    
     // cover: () => import("@/components/Cover.vue"),
     // ModalCheerUp: () => import("./components/ModalCheerUp.vue"),
     EmptyContent,
@@ -123,34 +138,63 @@ export default Vue.extend({
   },
   methods: {
     async getdata() {
-      console.log('sddssdsdds');
-      
       let res = await Gatway.getIDService(
         "/guest/profile-data/index",
         this.$route.params.username
       );
-      console.log(res.data.data,'sddsdsds');
-
-      this.gatitemProfile = res.data.data;
+      if(res.data.data.user_profile_datas.length > 1){
+        this.profileImage =  await profile_writer(res.data.data.user_profile_datas[1].id, 0)
+      }else{
+        this.profileImage = 'https://cdn-icons-png.flaticon.com/512/149/149071.png'
+      }
+      
+      this.gatitemProfile = await res.data.data;
+     (this as any).cleck ? await this.cleckfollow() : ''
+      // await this.savefile()
     },
     async follow(id) {
+      this.isfollow = false
       let res = await Gatway.postService("/customers/follow-datas", {
         follow_user_id: id,
       } as any);
+      
+     this.cleckfollow()  
       res.data.code === 200 ? alert("ติดตาม", "success") : null;
+      this.gatitemProfile.count_follow_data = this.gatitemProfile.count_follow_data + 1
     },
     async getnovel() {
       let res = await Gatway.getService("/customers/novel");
     },
+    async cleckfollow(){
+      let res = await Gatway.postService("/customers/follow-datas/check-follow", {user_id:this.gatitemProfile.id} as any);
+      this.isfollow = true
+      // this.getdata()
+      this.followStatus = res.data.data.followStatus
+
+    },
+    async unfollow() {
+      this.isfollow = false
+      let follow1 = await Gatway.getService("/customers/follow-datas");
+      let data = follow1.data.data.filter((item:any)=>{
+        return  item.follow_user.id === this.gatitemProfile.id
+      })
+      await Gatway.DelService("/customers/follow-datas/"+data[0].id);
+      this.cleckfollow()
+      this.gatitemProfile.count_follow_data = this.gatitemProfile.count_follow_data - 1
+    },
+
   },
   mounted() {
-    // this.getnovel()
     this.getdata();
   },
 });
 </script>
 <style lang="scss" scoped>
-$topcover: 280px ;
+$gap:40px 10px;
+$topcover: 150px;
+.sd{
+  position: relative;
+}
 .nv-box-white {
   position: relative;
   overflow: hidden;
@@ -171,13 +215,13 @@ $topcover: 280px ;
 .con-mywork {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  grid-gap: 30px;
+  grid-gap: 30px ;
 }
 .image {
   position: relative;
   overflow: hidden;
-  border-radius: 15px;
-  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+  border-radius: 7px;
+  // box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 }
 
 .type-novel {
@@ -225,7 +269,7 @@ $topcover: 280px ;
 .conthianer-novel {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-  gap: 20px;
+  gap: $gap;
 }
 .conthianer-novel-title {
   font-size: 17px;
@@ -248,6 +292,8 @@ $topcover: 280px ;
     height: 130px;
     border-radius: 100%;
     background: #848484;
+    
+    // border: 3px solid #2164c5;
     margin: auto;
     bottom: -60px;
     display: flex;
@@ -311,7 +357,7 @@ $topcover: 280px ;
   .conthianer-novel {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 20px;
+    gap: $gap;
   }
 }
 @media (max-width: 415px) {
@@ -324,7 +370,7 @@ $topcover: 280px ;
   .conthianer-novel {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: $gap;
   }
   .con-detail-btn {
     display: grid;

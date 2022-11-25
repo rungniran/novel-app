@@ -9,10 +9,22 @@ $radius: 5px;
 -o-user-select: none;
 user-select: none;
 }
+
+
+.bg-promode{
+  // background: #11111100;
+  // border-radius: 20px;
+  // overflow: hidden;
+  padding: 0px;
+  // padding-top: 90px;
+}
 // dark_____________________________________________________
 .dark .box-read {
   background: #1c1c1e;
   
+}
+.story-file100{
+  white-space: break-spaces;
 }
 .NovelEditterComment {
   padding: 0px;
@@ -42,7 +54,7 @@ user-select: none;
 }
 .dark .con-read {
 	background: #313131;
-  border-bottom: 0px solid #ffffff;;
+  border-bottom: 1px solid #313131;;
 }
 .dark .read .bg-color-theme{
   background-color: #1c1c1e;
@@ -58,6 +70,7 @@ user-select: none;
 // }
 .dark .read .story {
   color: #a2a2a2 !important;
+  // white-space: pre-wrap;
   transition: 0.3s;
 }
 .dark .read .nv-btn-gold .fa-list{
@@ -152,10 +165,14 @@ user-select: none;
   justify-content: center;
 }
 
+.paginate {
+  margin: 20px 0px;
+}
 .box-read {
 	margin-top: 0px;
   padding: 0px;
 	overflow: hidden;
+  background: #fff;
   position: relative;
   border-radius: $radius;
 	border-top-left-radius: 0px;
@@ -174,10 +191,11 @@ user-select: none;
   // background: linear-gradient(rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 5%, rgba(255, 255, 255, 0.6) 5%, rgb(255, 255, 255) 65%);
 	// box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
 	// box-shadow: rgba(49, 49, 49, 0.2) 0px 3px 10px 0px;
-  border-bottom: 0px solid #f0f0f0;
+  border-bottom: 1px solid #eaeaea;
   // box-shadow: rgba(0, 0, 0, 0.02) 0px 10px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
     // box-shadow: 0 1px 0px 0px #ebebeb;
 	 position: -webkit-sticky;
+   background:  #ffffff;
   position: sticky;
   top: 0px;
   display: flex;
@@ -369,7 +387,7 @@ div.sticky {
 .story{
   margin-block-start: 1em;
   margin-block-end: 1em;
-  line-height: 1.9 ;
+  line-height: 1.7 ;
 }
 .Comments{
   padding: 0px;
@@ -378,6 +396,9 @@ div.sticky {
   border-radius: 10px;
   padding-bottom: 50px;
 }
+// .bg-promode{
+//   padding: 30px;
+// }
 @media (max-width: 1024px) {
 	.story{
 		    margin: 30px 35px !important;
@@ -405,20 +426,40 @@ div.sticky {
 	.fa-list .read{
 		color: #fff;
 	}
+  .con-read{
+    margin-top: -1.5px;
+ }
 }
 @media (max-width: 768px) {
 	.story{
 		    margin: 30px 35px !important;
 	}
+  .con-read{
+     margin-top: 48px
+  }
   // .nv-btn-gold-ep{
   //   border-radius: 50px;
   // }
 }
 @media (max-width: 415px) {
 	.story{
-		    margin: 30px 10px !important;
+    margin: 30px 17px !important;
 	}
 }
 
 
 
+button:disabled,
+button[disabled]{
+  // border: 2px solid  #cccccc;
+  background-color: #cccccc;
+  cursor: pointer;
+  border-radius: 5px;
+  color: #fff;
+  padding: 5px 15px;
+  border: 0px solid !important;
+  font-size: 16px !important;
+  display: flex;
+  justify-content: center;
+
+}

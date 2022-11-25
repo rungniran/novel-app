@@ -27,7 +27,7 @@
       </div>
       <div>
         <div></div>
-        <button class="nv-btn-orange button" @click="getitem()">ยืนยัน</button>
+        <button class="nv-btn-orange button" @click="getitem()" :disabled="submitReport">ยืนยัน</button>
       </div>
     </div>
     <br />
@@ -235,51 +235,51 @@ export default Vue.extend({
       monthset: [
         {
           key: "01",
-          name: "เดือนมกราคม",
+          name: "มกราคม",
         },
         {
           key: "02",
-          name: "เดือนกุมภาพันธ์",
+          name: "กุมภาพันธ์",
         },
         {
           key: "03",
-          name: "เดือนมีนาคม ",
+          name: "มีนาคม ",
         },
         {
           key: "04",
-          name: "เดือนเมษายน",
+          name: "เมษายน",
         },
         {
           key: "05",
-          name: "เดือนพฤษภาคม",
+          name: "พฤษภาคม",
         },
         {
           key: "06",
-          name: "เดือนมิถุนายน",
+          name: "มิถุนายน",
         },
         {
           key: "07",
-          name: "เดือนกรกฎาคม",
+          name: "กรกฎาคม",
         },
         {
           key: "08",
-          name: "เดือนสิงหาคม",
+          name: "สิงหาคม",
         },
         {
           key: "09",
-          name: "เดือนกันยายน",
+          name: "กันยายน",
         },
         {
           key: "10",
-          name: "เดือนตุลาคม",
+          name: "ตุลาคม",
         },
         {
           key: "11",
-          name: "เดือนพฤศจิกายน",
+          name: "พฤศจิกายน",
         },
         {
           key: "12",
-          name: "เดือนธันวาคม",
+          name: "ธันวาคม",
         },
       ],
       ojb: {
@@ -288,6 +288,7 @@ export default Vue.extend({
       },
       monthValue: "",
       yearset: "",
+      submitReport:false,
     };
   },
   components: {
@@ -306,10 +307,17 @@ export default Vue.extend({
       return d < 10 ? "0" + d.toString() : d.toString();
     },
     async getitem() {
+      this.submitReport = true;
       let res = await Gatway.getService(
         `/customers/withdraw-data?month=${this.ojb.month}&year=${this.ojb.year}`
       );
-      this.listwithdraw = res.data.data[0];
+      // console.log(res.data.code)
+      if(
+        res.data.code === 200
+      ){
+        this.listwithdraw = res.data.data[0];
+        this.submitReport = false;
+      }
     },
 //     getBase64Image(imageUrl) {
 //        // eslint-disable-next-line no-undef
@@ -408,6 +416,9 @@ base64ToArrayBuffer(base64) {
       // const link = document.createElement("a");
       // console.log(link);
     },
+    // pad(d) {
+    //   return d < 10 ? "0" + d.toString() : d.toString();
+    // },
   },
   mounted() {
     this.$store.commit("reset");
@@ -421,7 +432,8 @@ base64ToArrayBuffer(base64) {
     }
     this.ojb.year = d.getFullYear();
     this.yearset = yearago;
-    this.ojb.month = "0" + (month + 1);
+    console.log(this.pad(month + 1) );
+    this.ojb.month = this.pad(month + 1) ;
     this.withdraw();
   },
 });

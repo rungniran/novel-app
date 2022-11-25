@@ -38,8 +38,7 @@
                 </div>
                 <div
                   @click="
-                    openmodel(item, index);
-                    indexBookshelf = index;
+                    openmodel(item, index)
                   "
                   class="del"
                 >
@@ -64,23 +63,15 @@
           <EmptyContent
             pathName="10.png"
             text="ชั้นหนังสือของคุณว่างเปล่า"
-            :isSearch="true"
+           
             fontSize="36px"
           ></EmptyContent>
         </div>
       </div>
 
       <div v-else>londing...</div>
-      <!-- <div v-if="bookshelf.length !== 0">
-        <div class="image-box">
-          <img src="https://scontent.xx.fbcdn.net/v/t1.15752-9/287992077_1115924365660109_1000606353681780584_n.png?stp=dst-png_p235x165&_nc_cat=109&ccb=1-7&_nc_sid=aee45a&_nc_eui2=AeHfYN0zAzI--J4X7LwCE4oRot7GjLd4f26i3saMt3h_bjuT9rBT1AIFg_5kFxaSOjKppmLiDXIveoz5tXL5z-9N&_nc_ohc=1YoUJEW7UtgAX8wE3Qg&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&oh=03_AVLEw5KlsehzbzZdxZDYbqkrYCldhee9EJdpOaVYHTgQig&oe=62DC7954" alt="">
-            <div class="talkbubble">
-              <div class="text-no">ยังไม่มีนิยายของคุณในชั้นหนังสือ หานิยายเล่มโปรดของคุณสิ !!!</div>
-            </div>
-           
-        </div> -->
     </div>
-    <NovelModal2
+    <!-- <NovelModal2
       ID="BookshelfConfirm"
       IDCrad="BookshelfConfirmCrad"
       ref="BookshelfConfirm"
@@ -92,6 +83,7 @@
           <div class="bth-grob">
             <button class="nv-btn-yellow" @click="closemodel()">ยกเลิก</button>
             <button
+            :disabled="isDelete"
               class="nv-btn-orange"
               @click="del(itemBookshelf.id, indexBookshelf)"
             >
@@ -100,7 +92,8 @@
           </div>
         </div>
       </template>
-    </NovelModal2>
+    </NovelModal2> -->
+    <ConfirmDialogue  ref="DeleteEp" @close="close()"></ConfirmDialogue>
   </div>
 </template>
 <script lang="ts">
@@ -118,73 +111,51 @@ export default Vue.extend({
       bookshelf: null as any,
       itemBookshelf: {} as any,
       indexBookshelf: null,
+      isDelete:false,
     };
   },
   components: {
-    NovelModal2: () => import("@/components/widget/NovelModal2.vue"),
+    // NovelModal2: () => import("@/components/widget/NovelModal2.vue"),
     EmptyContent,
   },
   methods: {
-    openmodel(item: any) {
-      this.itemBookshelf = item;
-      (this as any).$refs.BookshelfConfirm.open();
+    async openmodel(item: any,i) {
+       let confirm = await (this as any).$refs.DeleteEp.show({
+          title: 'ลบนิยายออกจากชั้นหนังสือ',
+          message: `ต้องการลบ ${item.title} ออกจากชั้นหนังสือ`,
+          okButton: 'ยืนยัน',
+      })
+      if(confirm === true){
+         await Gatway.DelService(`/customers/novel/remove-bookshelf/${item.id}`
+      );
+       this.bookshelf.splice(i, 1);
+       await (this as any).$refs.DeleteEp.close()
+      }
     },
+
     closemodel() {
       (this as any).$refs.BookshelfConfirm.close();
     },
-    async del(uuid: any, i: any) {
-      let res = await Gatway.DelService(
-        `/customers/novel/remove-bookshelf/${uuid}`
-      );
-      
-      alert(sms_alert_Bookshelf(this.itemBookshelf.title), "success");
-      this.bookshelf.splice(i, 1);
-      this.closemodel();
-    },
+
     async getBookshelf() { 
       let res = await Gatway.getService("/customers/novel/fetch-bookshelf");
       this.bookshelf = res.data.data;
-      let remembers = await Gatway.postService(
-        "/customers/remembers/novel-data",
-        this.$store.state.storyread.story_Read as any
-      );
-      // console.log(remembers);
-
+      let remembers = await Gatway.postService("/customers/remembers/novel-data", this.$store.state.storyread.story_Read as any);
       let data = [] as any;
-      res.data.data.forEach(element => {
+      // this.$store.state.storyread.story_Read.forEach()
+      // console.log(this.$store.state.storyread.story_Read);
+      res.data.data.forEach((element : any) => {
         const index = remembers.data.data.findIndex((object:any) => {
           if(object){
             return object.id === element.id;
           }
         });
-        // console.log(res.data.data[index]);
         res.data.data[index] !== undefined
         ? data.push({...element, ep_last:remembers.data.data[index]?.novel_episode_datas[0].name})
         : data.push({...element, ep_last:'ยังไม่ได้อ่านนิยาย'})
-        // if(){
-
-        // }
-        // remembers.data.data.indexOf()
-        // remembers.data.data.forEach(remember => {
-        //   console.log(element.id, remember.id);
-
-        // });
-        
       });
       console.log(data);
-     this.bookshelf =  data 
-      // let remembers = await Gatway.postService('/customers/remembers/novel-data', this.$store.state.storyread.story_Read as any)
-      //  res.data.data.forEach(element => {
-      //   // console.log(element.id);
-      //   remembers.data.data.forEach(elementres => {
-      //     console.log(elementres);
-
-      //     elementres.id === element.id
-      //     ? this.bookshelf.push({...element,})
-      //     : this.bookshelf.push({...element,})
-      //   });
-
-      //  });
+      this.bookshelf =  data 
     },
   },
   mounted() {
@@ -217,7 +188,7 @@ export default Vue.extend({
 .bookshelf {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  grid-gap:20px;
+  grid-gap: 40px 15px;
 }
 .img {
   border-radius: 12px;
@@ -235,7 +206,6 @@ img.img-no-data {
   justify-content: center;
   flex-direction: column;
   //    box-shadow: rgba(99, 99, 99, 0.571) 0px 2px 8px 0px;
-  padding: 5px;
 }
 .text-no {
   color: #fff;
@@ -285,7 +255,7 @@ input::placeholder {
 .detail {
   display: flex;
   flex-direction: column;
-  grid-gap: 10px;
+  grid-gap: 0px;
   padding: 0px 4px;
 }
 .count-ep-late {

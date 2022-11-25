@@ -1,8 +1,9 @@
 <template>
     <div class="found">
-        <div class="Oop">Oop !</div>
-      <div class="SD"><span class="found404"> 404 </span> | ขออภัย เราไม่พบหน้าที่คุณร้องขอ </div><br>
-      <div class="back" @click="back">กลับหน้าเดิม</div>
+      <!-- <v-calendar is-expanded /> -->
+      <img :src="$path.image('404.png')" class="found404">
+      <!-- <div class="SD"><span class="found404"> 404 </span> | ขออภัย เราไม่พบหน้าที่คุณร้องขอ </div><br> -->
+      <!-- <div class="back" @click="back">กลับหน้าเดิม</div> -->
     </div>
 </template>
 <script lang="ts">
@@ -44,6 +45,9 @@ export default Vue.extend({
     font-size: 40px;
     color: #be97fd;
     font-weight: 600;
+}
+.found404{
+    max-width: 400px;
 }
 // .found404{
 //     font-size: 25px;

@@ -36,8 +36,8 @@
     <span class="icon"><i class="fas fa-star "></i></span>
   </label>
 </div>
-          <textarea v-model="Obj.html" rows="10" cols="50">ssd</textarea>
-          <button class="nv-btn-yellow" @click="comment('create-comment-review')">ยืนยัน</button>
+          <textarea v-model="Obj.html" rows="10" cols="50"  maxlength="2000">ssd</textarea>
+          <button class="nv-btn-yellow" @click="comment('create-comment-review')" :disabled="isloading">ยืนยัน</button>
         </div>
         <div class="loading" v-show="isloading"> 
           <svg
@@ -101,11 +101,12 @@ export default Vue.extend({
       
       let res = await Gatway.postService('/customers/comments/post', this.Obj as any);
       if(res.data.code === 200){
-        this.isloading = false
+        
         this.reset()
         this.$emit('ResetReviwe',{});
         (this as any).$refs.Modeal.close()
       }
+      this.isloading = false
       
       // (this as any).$base.closemodal('review-modal', 'review-modal-amination', 1)
 

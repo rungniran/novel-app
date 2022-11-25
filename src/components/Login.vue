@@ -7,7 +7,7 @@
       <div class="container-from login-from">
         <div class="socail">
           <div class="center text-login">เข้าสู่ระบบ</div>
-                  <!-- <div class="contor-input">
+          <!-- <div class="contor-input">
             <div class="title">test </div>
             <input type="password" v-model="test" class="input" />
           </div> -->
@@ -16,7 +16,6 @@
             เข้าสู่ระบบด้วย Google
           </div>
           <div @click="logInWithFacebook">
-      
             <div class="facebook">
               <i class="fab fa-facebook" style="font-size: 20px"></i>
               เข้าสู่ระบบด้วย Facebook
@@ -26,14 +25,24 @@
         <div class="from">
           <div class="contor-input">
             <div class="title">ชื่อผู้ใช้ หรืออีเมล</div>
-            <input type="text" v-model="dataLogin.username" class="input" />
+            <input
+              type="text"
+              v-model="dataLogin.username"
+              class="input user"
+            />
           </div>
           <div class="contor-input">
             <div class="title">รหัสผ่าน</div>
-            <input type="password" v-model="dataLogin.password" class="input" />
+            <input
+              type="password"
+              v-model="dataLogin.password"
+              class="input password"
+            />
           </div>
-          <div class="forget-password title" @click="forget()" >ลืมรหัสผ่าน</div>
-          <button class="nv-btn-orange" @click="login">เข้าสู่ระบบ</button>
+          <div class="forget-password title" @click="forget()">ลืมรหัสผ่าน</div>
+          <button class="nv-btn-orange" @click="login" :disabled="isLoading">
+            เข้าสู่ระบบ
+          </button>
           <div class="aret">อีเมลหรือรหัสผ่าน ไม่ถูกต้อง</div>
         </div>
         <div class="register">
@@ -85,6 +94,7 @@
             <input
               type="password"
               class="input"
+              id="regispass"
               v-model="resgister.password"
               @keyup="isRTL"
               placeholder="รหัสผ่านต้องมากกว่า 8 ตัว"
@@ -95,11 +105,14 @@
             <input
               type="password"
               class="input"
+              id="regisconpass"
               v-model="resgister.password_confirmation"
             />
           </div>
           <button
+            :disabled="isLoading"
             class="nv-btn-orange"
+            id="registerbtn"
             style="margin-top: 15px"
             @click="resgisteCostomer()"
           >
@@ -150,7 +163,7 @@
       <template v-slot:body>
         <div>
           <figure class="img-dragon">
-            <img class="img-no-data" src="../assets/images/dragon/11.png" />
+            <!-- <img class="img-no-data" src="../assets/images/dragon/11.png" /> -->
           </figure>
           <p style="text-align: center">
             การสมัครของคุณสำเร็จโปรดยืนยันตัวตนใน email
@@ -161,28 +174,37 @@
         </div>
       </template>
     </NovelModal2>
-    <NovelModal2
-      IDCrad="SubmitemailCard"
-      ref="Submitemail"
-    >
-    <template v-slot:body>
-      <div class="center text-login">รีเซ็ตรหัสผ่านของคุณ</div>
-     <div class="from">
+    <NovelModal2 IDCrad="SubmitemailCard" ref="Submitemail">
+      <template v-slot:body>
+        <div class="center text-login">รีเซ็ตรหัสผ่านของคุณ</div>
+        <div class="from">
           <div class="contor-input">
             <div class="title">ชื่อผู้ใช้ หรืออีเมล</div>
             <input type="text" class="input" />
           </div>
-     </div>
-    </template>
+        </div>
+      </template>
     </NovelModal2>
+    <NovelLoading ref="loading" />
   </div>
 </template>
 
 <script>
 import Vue from "vue";
-import { Auth, Gatway } from "../shares/services";
+import { Auth, Gatway , Devices} from "../shares/services";
+import DeviceDetector from "device-detector-js";
 // import { facebook_app_id } from "../shares/constants";
 import { Validation } from "@/shares/modules/validation";
+// const deviceDetector = new DeviceDetector();
+// const userAgent = navigator.userAgent;
+// const device = deviceDetector.parse(userAgent);
+// const devices = {
+//    device_name: device.device.type,
+//    platform: device.os.name,
+//    device: device.client.name,
+   
+//   }
+
 import {
   getAuth,
   signInWithPopup,
@@ -229,32 +251,34 @@ export default Vue.extend({
     this.comlogin();
   },
   methods: {
-    login() { 
+    login() {
+      this.isLoading = true;
+      // var deviceDetector = new DeviceDetector();
+      // var userAgent = navigator.userAgent;
+      // var device = deviceDetector.parse(userAgent);
       Auth.login({
         usernameOrEmail: this.dataLogin.username,
         password: this.dataLogin.password,
+        ...Devices
       }).then((res) => {
         let token = res.data.data.token;
         let status = res.data.status.toString();
         if (res.data.status === true) {
-          // this.$store.commit("login", { token, status });
-          this.cleckTest(token,status)
+          this.cleckTest(token, status, res.data);
         } else {
           const alert = document.getElementsByClassName("aret")[0];
           alert.style.transform = "scale(1.0)";
         }
+        this.isLoading = false;
       });
       // }
     },
-    async forget(){
-      this.$router.push('/submitpassword')
-      this.close()
-      // this.$refs.Submitemail.open()
-      // let res = await Gatway.postService('/password/confirm-resetpassword', {} )
-      // console.log(res);
-      //  window.alert("ส่ง")
+    async forget() {
+      this.$router.push("/submitpassword");
+      this.close();
     },
     openlogin() {
+      console.log("sdfsd");
       document
         .getElementsByClassName("login-crad")[0]
         .classList.add("login-crad-show");
@@ -318,6 +342,9 @@ export default Vue.extend({
     async logInWithFacebook() {
       const provider = new FacebookAuthProvider();
       try {
+        // var deviceDetector = new DeviceDetector();
+        // var userAgent = navigator.userAgent;
+        // var device = deviceDetector.parse(userAgent);
         const res = await signInWithPopup(getAuth(), provider);
         // console.log(
         //   res.user.providerData[0].email,
@@ -332,10 +359,18 @@ export default Vue.extend({
           first_name: res._tokenResponse.firstName
             ? res._tokenResponse.firstName
             : "-",
+          
           last_name: res._tokenResponse.lastName
             ? res._tokenResponse.lastName
             : "-",
           name: email,
+          user_nickname: res._tokenResponse.displayName,
+          ...Devices
+
+          
+          // device_name: device.device.type,
+          // platform: device.os.name,
+          // device: device.client.name,
         };
         // console.log(login);
         this.CleckEmail(login);
@@ -351,33 +386,33 @@ export default Vue.extend({
           last_name: error.customData._tokenResponse.lastName
             ? error.customData._tokenResponse.firstName
             : "-",
+          user_nickname: error.customData._tokenResponse.displayName,
           name: error.customData.email,
+          ...Devices
         };
-  
+
         this.CleckEmail(loginErr);
       }
     },
 
-    isRTL(s){           
+    isRTL(s) {
       if (/^[\u0E00-\u0E7F]+$/.test(s.target.value)) {
         s.target.value = s.target.value.substr(0, s.target.length - 1);
-        this.smserr = 'ห้ามเป็นภาษาไทย'
-      }else if (/^[a-zA-Z0-9]+$/.test(s.target.value)) {
-        this.smserr = 'รูปแบบถูกต้อง'
-      }else{
+        this.smserr = "ห้ามเป็นภาษาไทย";
+      } else if (/^[a-zA-Z0-9]+$/.test(s.target.value)) {
+        this.smserr = "รูปแบบถูกต้อง";
+      } else {
         s.target.value = s.target.value.substr(0, s.target.length - 1);
-        this.smserr = 'ห้ามเป็นภาษาไทย'
+        this.smserr = "ห้ามเป็นภาษาไทย";
       }
-      
     },
-
 
     async CleckEmail(item) {
       const resfacebook = await Gatway.postService("/login-facebook", item);
       let token = resfacebook.data.data.token;
       let status = true;
       // this.$store.commit("login", { token, status });
-      this.cleckTest(token,status)
+      this.cleckTest(token, status, resfacebook.data);
     },
 
     async logingoogle() {
@@ -392,19 +427,25 @@ export default Vue.extend({
         last_name: res._tokenResponse.lastName
           ? res._tokenResponse.lastName
           : "-",
+        user_nickname: res._tokenResponse.displayName,
+        ...Devices
       };
+      console.log(data);
       const resgmail = await Gatway.postService("/login-gmail", data);
       let token = resgmail.data.data.token;
       let status = true;
       // this.$store.commit("login", { token, status });
-      this.cleckTest(token,status)
+      this.cleckTest(token, status, resgmail.data);
     },
 
-    cleckTest(token, status){
-      // if(this.test === '7695cfc2-5a7a-40b9-b4bf-5bdbd254197e'){
-        this.$store.commit("login", { token, status });
-      // }
-    }
+    async cleckTest(token, status, res) {
+      if (res.code === 200) {
+        
+        await this.$store.commit("login", { token, status });
+      } else if (res.code === 405) {
+        window.alert("อุปกรณ์ของคุณล็อกอินเกิน 5 เครื่องแล้ว");
+      }
+    },
   },
 });
 </script>
@@ -505,8 +546,8 @@ img.img-no-data {
   text-align: right;
   cursor: pointer;
 }
-.forget-password:hover{
-   color: red;
+.forget-password:hover {
+  color: red;
 }
 .from {
   display: flex;

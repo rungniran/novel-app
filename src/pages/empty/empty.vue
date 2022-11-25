@@ -1,7 +1,7 @@
 <template>
   <div class="image-box">
     <figure class="img-dragon">
-      <img class="img-no-data" v-lazy="$path.imageEmpty(pathName)" alt="" />
+      <img class="img-no-data" :src="$path.imageEmpty(pathName)" alt="" />
       <!-- {{$path.imageEmpty(pathName)}} -->
     </figure>
 
@@ -81,6 +81,7 @@ export default {
 }
 img.img-no-data {
   width: 50%;
+  height: 50%;
 }
 .img-dragon {
   display: flex;

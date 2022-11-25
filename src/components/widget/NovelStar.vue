@@ -1,5 +1,5 @@
 <template>
-  <div class="NovelStar">
+  <!-- <div class="NovelStar"> -->
     <div v-if="rating === 0">
       <i class="fas fa-star"></i>
       <i class="fas fa-star"></i>
@@ -42,7 +42,7 @@
       <i class="fas fa-star active"></i>
       <i class="fas fa-star active"></i>
     </div>
-  </div>
+  <!-- </div> -->
 </template>
 
 <script lang="ts">

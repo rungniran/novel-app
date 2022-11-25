@@ -14,40 +14,10 @@
       :responsive="responsive"
       v-if="item"
     >
-      <div  v-for="(items, index) in item" :key="index">
-        <router-link v-if="items.ref" :to="items.url ? items.url  :'novel/'+ items.ref"> <img :src="items.image_data.url" alt /></router-link>
-        <img v-else :src="items.image_data.url" alt />
+      <div  v-for="(items, index) in item" :key="index"  @click="open(items.url)"  >
+          <NovelImage :image="items.image_data.url" :alt="items.title " datatype="Banner"></NovelImage>
+
       </div>
-      <!-- <div>
-        <img :src="$path.imageCover('คุณหนูสี่.jpg')" alt />
-      </div>
-      <div>
-        <img :src="$path.imageCover('เคล็ดกายา.jpg')" alt />
-      </div>
-      <div>
-        <img :src="$path.imageCover('กดซื้อหลายตอน.jpg')" alt />
-      </div>
-      <div>
-        <img :src="$path.imageCover('ช่องทางเติมเหรียญ.jpg')" alt />
-      </div>
-      <div>
-        <img :src="$path.imageCover('ท่านอ๋อง.jpg')" alt />
-      </div>
-      <div>
-        <img :src="$path.imageCover('เทพสงคราม.jpg')" alt />
-      </div>
-      <div>
-        <img :src="$path.imageCover('นครแห่งบาป.jpg')" alt />
-      </div>
-      <div>
-        <img :src="$path.imageCover('แม่สาวเข็มเงิน.jpg')" alt />
-      </div>
-      <div>
-        <img :src="$path.imageCover('ยอดนักรบ.jpg')" alt />
-      </div>
-      <div>
-        <img :src="$path.imageCover('องค์ชายขี้โรค.jpg')" alt />
-      </div> -->
     </carousel>
   </div>
 </template>
@@ -89,10 +59,18 @@ export default Vue.extend({
       let statusname = banner.data.data.filter((element:any)=>{
         return !element.table
       })
+      console.log(statusname);
+      
       this.imgitem = statusname
       // this.banner = banner.data.data.sort((a, b) => {
       //   return a.ranking - b.ranking;
       // });
+    },
+    open(url){
+      window.open(url)
+    },
+    route(uuid){
+      this.$router.push('/novel/'+ uuid)
     }
   },
   mounted(){

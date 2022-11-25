@@ -70,7 +70,10 @@ export default Vue.extend({
     },
   },
   mounted() {
-    this.getListDragon();
+     if((this as any).$isdrogon.includes(this.$route.params.id) === true){
+         this.getListDragon();
+    }
+    // this.getListDragon();
   },
 });
 </script>

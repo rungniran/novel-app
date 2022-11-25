@@ -28,9 +28,9 @@
         {{ this.$store.state.auth.dataset.profile_writer.note }}
       </div>
     </div>
-    
+
     <div :class="'nv-box-white nv-mt-40'">
-    <div class="title">สมัครนักเขียน</div>
+      <div class="title">สมัครนักเขียน</div>
       <div class="con-from">
         <div></div>
         <div class="contor-input">
@@ -56,7 +56,11 @@
               และต้องมีมากกว่า 1000 เหรียญ
             </p>
           </li>
-          <li><p class="content-detail">ชื่อ-นามสกุล (ต้องตรงกับหน้าสมุดบัญชีเท่านั้น)</p></li>
+          <li>
+            <p class="content-detail">
+              ชื่อ-นามสกุล (ต้องตรงกับหน้าสมุดบัญชีเท่านั้น)
+            </p>
+          </li>
         </div>
         <div class="from">
           <div class="contor-input">
@@ -68,7 +72,7 @@
               id="file"
               ref="myFiles"
               @change="previewFiles"
-              accept="image/jpg"
+              accept="image/jpeg"
             />
           </div>
           <!-- <div class="col-2-grid" v-if="dataProfile.type_of_company_data_id === type_of_company_data_id.personal">
@@ -88,6 +92,7 @@
               v-model="company"
               id="nameaccoun"
               placeholder="ชื่อบัญชี"
+              maxlength="30"
             />
           </div>
           <div class="col-2-grid">
@@ -120,15 +125,11 @@
           </div>
         </div>
         <div class="contor-input">
-          <h1 class="content-article">
-
-            2. แนบสำเนาบัตรประชาชน
-          </h1>
-          <p class="content-detail"
-            >สำเนาบัตรประชาชนที่มีชื่อ-นามสกุล พร้อมลายเซ็นสำเนาถูกต้อง
-            ต้องตรงกับบัญชีธนาคาร สำหรับออกเอกสารหักภาษี ณ ที่จ่าย
-            (ภงด.90)</p
-          >
+          <h1 class="content-article">2. แนบสำเนาบัตรประชาชน</h1>
+          <p class="content-detail">
+            สำเนาบัตรประชาชนที่มีชื่อ-นามสกุล พร้อมลายเซ็นสำเนาถูกต้อง
+            ต้องตรงกับบัญชีธนาคาร สำหรับออกเอกสารหักภาษี ณ ที่จ่าย (ภงด.90)
+          </p>
         </div>
         <div class="from">
           <div class="contor-input">
@@ -137,6 +138,7 @@
               type="text"
               v-model="dataProfile.user_nickname"
               id="user_nickname"
+              maxlength="30"
             />
           </div>
           <div class="contor-input">
@@ -155,8 +157,9 @@
             <input
               type="file"
               style=""
+              id="fileIdCard"
               @change="previewFilesIDCard"
-              accept="image/jpg"
+              accept="image/jpeg"
             />
           </div>
           <div
@@ -173,6 +176,7 @@
                 v-model="dataProfile.first_name"
                 id="first_name_back"
                 placeholder="ชื่อ"
+                maxlength="30"
               />
             </div>
             <div class="contor-input">
@@ -182,6 +186,7 @@
                 v-model="dataProfile.last_name"
                 id="last_name_back"
                 placeholder="นามสกุล"
+                maxlength="30"
               />
             </div>
           </div>
@@ -215,21 +220,22 @@
               style="resize: none; height: 100px"
               id="card_address"
               v-model="dataObj.address.card_address"
+              maxlength="100"
             ></textarea>
           </div>
           <div class="from-title checkbox">
-            <input type="checkbox" @change="Copyassress()" /> ที่อยู่ปัจจุบัน
+            <input type="checkbox" @change="Copyassress()" maxlength="100" />
+            ที่อยู่ปัจจุบัน
           </div>
         </div>
         <div class="contor-input">
           <h1 class="content-article">
-
             3. เพิ่มที่อยู่ปัจจุบัน หรือ ที่อยู่ที่สามารถติดต่อได้
           </h1>
-          <p class="content-detail"
-            >คุณสามารถดาวน์โหลด สำเนาเอกสารหักภาษี ณ ที่จ่ายได้ทันที
-            หากต้องการฉบับจริงโปรดติดต่อมาที่</p
-          >
+          <p class="content-detail">
+            คุณสามารถดาวน์โหลด สำเนาเอกสารหักภาษี ณ ที่จ่ายได้ทันที
+            หากต้องการฉบับจริงโปรดติดต่อมาที่
+          </p>
         </div>
         <div class="from">
           <div class="contor-input">
@@ -238,6 +244,7 @@
               style="resize: none; height: 100px"
               id="current_address"
               v-model="dataObj.address.current_address"
+              maxlength="100"
             ></textarea>
           </div>
           <div class="contor-input">
@@ -257,6 +264,7 @@
               placeholder="email@example.com"
               id="email_support"
               v-model="dataObj.address.email_support"
+              maxlength="50"
             />
           </div>
           <div class="checkbox">
@@ -289,7 +297,7 @@
                 !! ลงทะเบียน
               </button>
             </div>
-            <button v-else class="nv-btn-yellow" @click="cleck()">
+            <button v-else class="confirm" @click="cleck()">
               ลงทะเบียน
             </button>
           </div>
@@ -364,7 +372,7 @@ export default Vue.extend({
         first_name: "",
         last_name: "",
         type_of_company_data_id: type_of_company_data_id.personal,
-        user_nickname: "",
+        user_penname: "",
       },
 
       getdataWreter: null,
@@ -405,9 +413,28 @@ export default Vue.extend({
       }
     },
     previewFiles(e) {
+      const fi = document.getElementById("file") as HTMLInputElement | null;
+      // Check if any file is selected.
+      if ((fi as any).files.length > 0) {
+        for (let i = 0; i <= (fi as any).files.length - 1; i++) {
+          const fsize = (fi as any).files.item(i).size;
+          const file = Math.round(fsize / 1024);
+          // The size of the file.
+
+          if (file > 2048) {
+            alert(
+              "ขนาดรูปหน้าสมุดธนาคารเกิน 2 MB. กรุณาเลือกรูปใหม่",
+              "error"
+            );
+            this.fileAccount = null;
+            return false;
+          } else {
+            return this.fileAccount = e.target.files[0];
+          }
+        }
+      }
       // e.target.files[0].type = 'image/jpeg'
 
-      this.fileAccount = e.target.files[0];
       // console.log(this.FilesIDCard);
     },
     confirmConditions() {
@@ -420,8 +447,26 @@ export default Vue.extend({
       this.dataObj.address.current_address = this.dataObj.address.card_address;
     },
     previewFilesIDCard(e) {
+      const fi = document.getElementById("fileIdCard") as HTMLInputElement | null;
+
+      if ((fi as any).files.length > 0) {
+        for (let i = 0; i <= (fi as any).files.length - 1; i++) {
+          const fsize = (fi as any).files.item(i).size;
+          const file = Math.round(fsize / 1024);
+          // The size of the file.
+
+          if (file >= 2048) {
+            alert(
+              "ขนาดรูปสำเนาบัตรประชาชนเกิน 2 MB. กรุณาเลือกรูปใหม่",
+              "error"
+            );
+            return false;
+          } else {
+            return this.FilesIDCard = e.target.files[0];
+          }
+        }
+      }
       //  e.target.files[0].type = 'image/jpeg'
-      this.FilesIDCard = e.target.files[0];
       // console.log(this.FilesIDCard);
     },
     cleck() {
@@ -441,6 +486,7 @@ export default Vue.extend({
         "phone_numble",
         "email_support",
         "user_nickname",
+
       ];
       console.log(Validation(arrvalidate as any));
 
@@ -577,7 +623,7 @@ export default Vue.extend({
           }
         }
       } else {
-        alert("ไม่พบไฟล์", "error");
+        alert("ไม่พบไฟล์รูปหรือไฟล์รูปเกินขนาด", "error");
       }
     },
 
@@ -644,7 +690,7 @@ export default Vue.extend({
           this.dataProfile.last_name = (
             this as any
           ).profile.profile_writer.last_name;
-          this.dataProfile.user_nickname = (
+          this.dataProfile.user_penname = (
             this as any
           ).profile.profile_writer.user_nickname;
           this.dataProfile.type_of_company_data_id = (
@@ -713,9 +759,10 @@ export default Vue.extend({
 
 // }
 .title {
-  font-size: 20px;
+  font-size: 30px;
   color: #272727;
   width: max-content;
+   font-family: Sarabun,sans-serif;
   font-weight: 400;
   padding: 5px;
 }
@@ -730,11 +777,26 @@ export default Vue.extend({
   display: flex;
   align-items: center;
 }
-.content-article{
-  color: #a187f7;
+.from{
+      border: 2px solid #e0c8ff;
+      display: flex;
+    flex-direction: column;
+    justify-content: center;
+    grid-gap: 20px;
+    background: #eee1ff;
+    padding: 10px;
+    border-radius: 5px;
 }
-.content-detail{
-  font-size: 15px;
+.content-article {
+      font-family: Sarabun,sans-serif;
+  color: #a187f7;
+  font-weight: 600;
+      font-size: 19px;
+      margin-bottom: 16px;
+}
+.content-detail {
+      font-family: Sarabun,sans-serif;
+  font-size: 16px;
 }
 @media (max-width: 1024px) {
 }

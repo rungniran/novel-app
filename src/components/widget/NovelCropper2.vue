@@ -19,11 +19,11 @@
 			:default-size="defaultSize"
 			image-restriction="stencil"
 			:stencil-size="{
-				width: 	500,
-				height: 707
+				width: 	width,
+				height: height
 			}"
 			:stencil-props="{
-				aspectRatio: 500/707,
+				aspectRatio: width/height,
 				scalable: false, 
 				movable: false,
 
@@ -63,6 +63,14 @@ export default Vue.extend({
 		type:{
 			type:String,
 			default:'image/png'
+		},
+			width:{
+			type:Number,
+			default:500
+		},
+		height:{
+			type:Number,
+			default:707
 		}
 	},
 	data: () => {
@@ -173,6 +181,8 @@ export default Vue.extend({
 
 		reset(){
 			this.img = ''
+			this.$emit("reset" , {})
+
 		},
 		zoom() {
 			this.$refs.cropper.zoom(2);
@@ -196,6 +206,7 @@ export default Vue.extend({
 }
 .edit-profile{
   position: absolute;
+
   bottom:10px;
   right:7px;
   /* background: #1d2044; */
@@ -253,11 +264,16 @@ export default Vue.extend({
   display: none;
 }
 .file{
-	background: #dfdfdf00;
-	width: 130px;
-	height: 130px;
-	border-radius: 100%;
-	cursor: pointer;
+    background: #dfdfdf00;
+    width: 30px;
+    border: 0px solid;
+    height: 30px;
+    /* border-radius: 100%; */
+    position: absolute;
+    bottom: 0px;
+    right: 7px;
+    cursor: pointer;
+	
 }
 .vue-preview__wrapper{
 	border-radius: 100px !important;
@@ -292,6 +308,7 @@ export default Vue.extend({
     top: 120px;
 }
 .NovelCropper-input{
+	color: rgba(51, 153, 255, 0);
     height: 130px;
 	width: 130px;
 	border-radius: 100%;

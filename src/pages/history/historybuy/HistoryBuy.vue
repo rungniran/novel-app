@@ -3,11 +3,13 @@
     <!-- {{listbuy.data.length}} -->
     <div v-if="listbuy">
       <div
-        v-for="(item, index) in listbuy.data"
+        v-for="(item, index) in listbuy"
         :key="index"
-        class="con-storyBuy pc"
-      >
-        <div class="detail-novel" >
+        
+      > 
+      <span  v-if="item.payment_data" class="con-storyBuy pc">
+
+        <div class="detail-novel" v-if="item.payment_data.novel_data">
           <img
             class="img-history-buy"
             v-if="item.payment_data.novel_data"
@@ -29,18 +31,7 @@
                 {{ item.payment_data.novel_data.title }}</span
               >
             </p>
-            <!-- <div v-if="item.payment_data.payment_transaction_datas">
-              <div v-if="item.payment_data.payment_transaction_datas.length <= 1 ">
-                <span v-if="JSON.parse(item.payment_data.payment_transaction_datas[0].json_data)"> 
-                  {{JSON.parse(item.payment_data.payment_transaction_datas[0].json_data).name}}
-                </span>
-              </div>
-              <div v-else>
-                  ซื้อยกเซต 
-                  {{JSON.parse(item.payment_data.payment_transaction_datas[0].json_data).name}} - 
-                  {{JSON.parse(item.payment_data.payment_transaction_datas[item.payment_data.payment_transaction_datas.length - 1].json_data).name}}
-              </div>
-            </div> -->
+  
             <p
               class="sub-title"
               v-if="item.payment_data.payment_transaction_datas"
@@ -81,26 +72,37 @@
                   }}
                 </span>
               </span>
+              <span class="mobile">
+                 <p>{{ $filter.toThaiDateString(item.created_at) }}</p>
+          <div class="buy-coin">
+            <img :src="$path.image('coin-gold.png')" height="20px" />
+            <p class="custom-font-coin">{{ item.payment_data.total }} เหรียญ</p>
+          </div>
+              </span>
             </p>
           </div>
         </div>
         <!-- <div v-else>
 
         </div> -->
-        <div class="date-price">
+        <div class="date-price" v-if="item.payment_data">
           <p>{{ $filter.toThaiDateString(item.created_at) }}</p>
           <div class="buy-coin">
             <img :src="$path.image('coin-gold.png')" height="20px" />
             <p class="custom-font-coin">{{ item.payment_data.total }} เหรียญ</p>
           </div>
         </div>
+      </span>
+      <span v-else>
+        <!-- ไม่มีข้อมูลการซื้อ -->
+      </span>
       </div>
-      <div
-        v-for="(item, index) in listbuy.data"
+      <!-- <div
+        v-for="(item, index) in listbuy"
         :key="index"
         class="con-storyBuy-mobile mobile"
       >
-        <div class="detail-novel">
+        <div class="detail-novel" v-if="item.payment_data.novel_data">
           <img
             class="img-history-buy"
             v-if="item.payment_data.novel_data"
@@ -175,8 +177,8 @@
             <div></div>
           </div>
         </div>
-      </div>
-      <div v-if="listbuy.data.length === 0">
+      </div> -->
+      <div v-if="listbuy.length === 0">
         <EmptyContent
           class="image"
           pathName="6.png"
@@ -184,7 +186,16 @@
           fontSize="36px"
         ></EmptyContent>
       </div>
-      <NovelPaginate v-else :count="listbuy.last_page" @click="getlist" />
+      <NovelPaginate v-else :count="last_page" @click="getlist" />
+      
+      <!-- <jw-pagination
+          id="pagination"
+          :items="bbb"
+          @changePage="onChangePage"
+          :pageSize="12"
+          :maxPages="3"
+          :labels="customLabels"
+        ></jw-pagination> -->
     </div>
     <div v-else>loading...</div>
   </div>
@@ -194,6 +205,14 @@ import Vue from "vue";
 import { Gatway } from "@/shares/services";
 import NovelPaginate from "@/components/widget/NovelPaginate.vue";
 // import { transaction_type_data } from "@/shares/constants/enum";
+import JwPagination from "jw-vue-pagination";
+Vue.component("jw-pagination", JwPagination);
+const customLabels = {
+  first: "<<",
+  last: ">>",
+  previous: "<",
+  next: ">",
+};
 import EmptyContent from "../../empty/empty.vue";
 const monthset = {
   "01": "ม.ค.",
@@ -212,10 +231,15 @@ const monthset = {
 export default Vue.extend({
   data() {
     return {
+      customLabels:customLabels,
+      bbb:[] as any,
       listbuy: null,
       per_page: [] as any,
+      last_page: 0,
       datalistdate: null,
       monthset: monthset,
+      pageOfItems:[] as any,
+      page:1
     };
   },
   components: {
@@ -223,20 +247,44 @@ export default Vue.extend({
     NovelPaginate,
   },
   methods: {
+      onChangePage(pageOfItems: never[]) {
+        console.log(pageOfItems);
+        
+      this.pageOfItems = pageOfItems;
+      // window.scrollTo({top: 0, behavior: 'smooth'});
+    },
     async getlist(page) {
       let res = await Gatway.getService(
         "/customers/transaction-data/fetch-transaction/ซื้อนิยาย?page=" + page
       );
+     this.listbuy = res.data.data.data
+     this.last_page = res.data.data.last_page
+      // if(res.data.data.data.length !== 0){
+      //   console.log(res.data.data.data);
+        
+      //   await this.er(res.data.data.data)
+      //   this.page += 1
+      //   this.getlist(this.page)
+
+      // }
+
       
-      this.listbuy = res.data.data;
     },
+    er(array){
+      this.bbb
+      array.forEach((res)=>{
+        console.log(res);
+        this.bbb.push(res)
+      })
+      },
+      
     read(id){
       
        this.$router.push('/read'+ id)
     }
   },
   mounted() {
-    this.getlist(1);
+    this.getlist(this.page);
     // this.getCadis();
   },
 });
@@ -387,12 +435,13 @@ export default Vue.extend({
   color: #ffff;
   cursor: pointer;
 }
-
+.mobile{
+  display: none;
+}
 .con-storyBuy {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: white;
   margin-bottom: 20px;
   // padding: 10px;
   border-radius: 10px;
@@ -443,6 +492,9 @@ p {
 }
 
 @media (max-width: 820px) {
+  .mobile{
+  display:block;
+}
   // .name {
   //   font-size: 20px;
   // }
@@ -460,6 +512,9 @@ p {
 }
 }
 @media (max-width: 768px) {
+  .date-price{
+    display: none;
+  }
   .name {
     font-size: 20px;
   }
@@ -502,7 +557,7 @@ p {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: white !important;
+ 
     // padding: 10px;
     margin-bottom: 20px;
     border-radius: 10px;
@@ -512,9 +567,9 @@ p {
     display: flex;
     justify-content: space-between;
   }
-  .pc {
-    display: none;
-  }
+  // .pc {
+  //   display: none;
+  // }
   // .buy-coin {
   //   flex-direction: columns !important;
   // }
